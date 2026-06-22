@@ -1,0 +1,132 @@
+{
+  "errors": {
+    "backHome": "ホームに戻る",
+    "notFoundTitle": "ページが見つかりません...",
+    "notFoundDescription": "申し訳ありませんが、リクエストされたページが見つかりませんでした。",
+    "serverErrorTitle": "サーバーエラー",
+    "serverErrorDescription": "申し訳ありません。サーバー側で問題が発生しました。\n後でもう一度お試しください、またはサポートにお問い合わせください。"
+  },
+  "shop": {
+    "saveText": "{saveText}オフ",
+    "from": "から",
+    "start": "開始",
+    "affirm": "/月",
+    "size": "サイズを選択",
+    "accessory": "アクセサリーを追加",
+    "discount": "追加割引あり",
+    "wallMount": "(壁掛け金具付き)",
+    "total": "合計",
+    "stock": "在庫あり"
+  },
+  "reviews": {
+    "reviews": "レビュー",
+    "matchingReviewsFound": "件の合計レビュー",
+    "noReviewsFound": "レビューが見つかりません。",
+    "matchingQuestionsFound": "件の合計質問",
+    "writeReview": "レビューを書く",
+    "searchReviews": "レビューを検索",
+    "rating": "評価",
+    "sortBy": "並び替え",
+    "most": "メディア付き",
+    "mostRecent": "新着レビュー順",
+    "mostRating": "評価が高い順",
+    "highestRating": "評価が高い順",
+    "lowestRating": "評価が低い順",
+    "viewMoreReplies": "もっと見る",
+    "concealReplies": "閉じる",
+    "verifiedReviewer": "認証済み",
+    "contactUs": "お問い合わせ"
+  },
+  "questions": {
+    "questions": "ご質問",
+    "askQuestion": "お問い合わせ"
+  },
+  "questionForm": {
+    "askQuestion": "お問い合わせ",
+    "describeYourQuestion": "お問い合わせ内容を記入してください",
+    "yourName": "お名前",
+    "emailAddress": "メールアドレス",
+    "tip": "このメッセージがあなたからのものであることを確認するため、確認メールをお送りします",
+    "submit": "送信",
+    "loading": "読み込み中",
+    "placeEnterYourName": "お名前をご記入ください",
+    "tipQuestionDetail": "詳細を教えていただければ、迅速に対応させていただきます",
+    "placeEnterYourEmail": "メールをご記入ください",
+    "questionSubmittedSuccessfully": "お問い合わせを送信しました",
+    "failedToSubmitQuestion": "お問い合わせを送信できませんでした",
+    "pleaseFillInAllFields": "すべてのフィールドを入力してください",
+    "pleaseEnterAValidEmailAddress": "有効なメールアドレスを入力してください"
+  },
+  "reviewForm": {
+    "writeReview": "レビューを書く",
+    "rating": "レーティング",
+    "placeEnterYourReview": "ご満足いただけた点や改善してほしい点をお聞かせください",
+    "addTitle": "タイトルを追加",
+    "yourName": "お名前",
+    "emailAddress": "メールアドレス",
+    "tip": "このレビューがあなたからのものであることを確認するため、確認メールをお送りいたします",
+    "addPhotosVideos": "写真・動画を追加",
+    "indicatesRequiredFields": "必須項目",
+    "reviewSubmittedSuccessfully": "レビューを送信しました。承認後表示されます",
+    "failedToSubmitReview": "レビューを送信できませんでした",
+    "pleaseFillInAllFields": "すべてのフィールドを入力してください",
+    "pleaseEnterAValidEmailAddress": "有効なメールアドレスを入力してください",
+    "placeEnterYourNickName": "ニックネーム",
+    "placeEnterYourReviewTitle": "レビューのタイトル",
+    "placeEnterYourEmail": "メール"
+  },
+  "purchase": {
+    "quantity": "数量",
+    "color": "カラー",
+    "stockArrivalEmail": "入荷お知らせメール"
+  },
+  "common": {
+    "code": "コード",
+    "all": "すべて",
+    "loading": "読み込み中",
+    "clearFilters": "フィルターをクリア",
+    "copy": "コピー",
+    "copied": "コピーしました",
+    "copyCode": "コードをコピー",
+    "copySuccessful": "コピー成功！",
+    "subscriptionThankYou": "ご購読ありがとうございます！",
+    "inTotal": "合計",
+    "overView": "概要"
+  },
+  "expand": {
+    "showLess": "簡略表示",
+    "showMore": "もっと見る"
+  },
+  "blog": {
+    "backToBlogPage": "ブログページに戻る",
+    "totalView": "総閲覧数",
+    "viewToday": "今日の閲覧数"
+  },
+  "popup": {
+    "shopNow": "今すぐ購入",
+    "thankSubmit": "ご登録ありがとうございます!"
+  },
+  "carousel": {
+    "explore": "製品の詳細を見る",
+    "bookDemo": "デモを予約する"
+  },
+  "tooltip": {
+    "tip": "発送は平日のみ対応しており、週末や祝日の場合は発送が遅れることがございます"
+  },
+  "productCard": {
+    "description": "製品概要",
+    "save": "オフ",
+    "viewDetail": "詳しく見る"
+  },
+  "commentSlide": {
+    "verifed": "購入者によるレビュー"
+  },
+  "ecommerce": {
+    "buyNow": "今すぐ購入",
+    "addToCart": "カートに追加"
+  },
+  "freeGift": {
+    "title": "限定時間の無料ギフト",
+    "label": "無料"
+  }
+}

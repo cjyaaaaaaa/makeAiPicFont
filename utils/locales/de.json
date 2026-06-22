@@ -1,0 +1,132 @@
+{
+    "errors": {
+      "backHome": "Zurück zur Startseite",
+      "notFoundTitle": "Seite nicht gefunden...",
+      "notFoundDescription": "Entschuldigung, die von Ihnen angeforderte Seite konnte nicht gefunden werden.",
+      "serverErrorTitle": "Serverfehler",
+      "serverErrorDescription": "Entschuldigung, auf unserer Seite ist ein Fehler aufgetreten.\nBitte versuchen Sie es später erneut oder kontaktieren Sie den Support."
+    },
+    "shop": {
+      "saveText": "Sparen {saveText}",
+      "from": "Ab",
+      "start": "Ab",
+      "affirm": "/Monat mit Affirm",
+      "size": "Größe auswählen",
+      "accessory": "Zubehör hinzufügen",
+      "discount": "Zusatzrabatt verfügbar",
+      "wallMount": "(mit Wandmontage)",
+      "total": "Gesamt",
+      "stock": "Auf Lager"
+    },
+    "reviews": {
+      "reviews": "Bewertungen",
+      "matchingReviewsFound": "Passende Bewertungen gefunden.",
+      "noReviewsFound": "Keine Bewertungen gefunden.",
+      "matchingQuestionsFound": "Passende Fragen gefunden.",
+      "writeReview": "Bewertung schreiben",
+      "searchReviews": "Bewertungen durchsuchen",
+      "rating": "Bewertung",
+      "sortBy": "Sortieren nach",
+      "most": "Mit Medien",
+      "mostRecent": "Neueste",
+      "mostRating": "Beste Bewertung",
+      "highestRating": "höchste Bewertung",
+      "lowestRating": "niedrigste Bewertung",
+      "viewMoreReplies": "Mehr Antworten anzeigen",
+      "concealReplies": "Antworten verbergen",
+      "verifiedReviewer": "Verifizierter Bewerter",
+      "contactUs": "Kontaktiere uns"
+    },
+    "questions": {
+      "questions": "Fragen",
+      "askQuestion": "Frage stellen"
+    },
+    "questionForm": {
+      "askQuestion": "Frage stellen",
+      "describeYourQuestion": "Frage stellen",
+      "yourName": "Ihre Name",
+      "emailAddress": "Email Adresse",
+      "tip": "Wir senden Ihnen eine E-Mail, um zu bestätigen, dass diese Nachricht von Ihnen stammt.",
+      "submit": "Senden",
+      "loading": "Lädt",
+      "placeEnterYourName": "Ihre Name eingeben",
+      "tipQuestionDetail": "Mehr Details beschleunigen unsere Hilfe bei der Beantwortung Ihrer Frage.",
+      "placeEnterYourEmail": "Email Adresse eingeben",
+      "questionSubmittedSuccessfully": "Frage erfolgreich eingereicht",
+      "failedToSubmitQuestion": "Frage konnte nicht eingereicht werden",
+      "pleaseFillInAllFields": "Bitte alle Felder ausfüllen",
+      "pleaseEnterAValidEmailAddress": "Bitte gültige E-Mail Adresse eingeben"
+    },
+    "reviewForm": {
+      "writeReview": "Bewertung schreiben",
+      "rating": "Bewertung",
+      "placeEnterYourReview": "Bewerte das Produkt",
+      "addTitle": "Titel hinzufügen",
+      "yourName": "Ihre Name",
+      "emailAddress": "Email Adresse",
+      "tip": "Wir senden Ihnen eine E-Mail, um zu bestätigen, dass diese Bewertung von Ihnen stammt.",
+      "addPhotosVideos": "Fotos/Videos hinzufügen",
+      "indicatesRequiredFields": "indiziert erforderliche Felder",
+      "reviewSubmittedSuccessfully": "Bewertung erfolgreich eingereicht, sie wird nach Genehmigung angezeigt",
+      "failedToSubmitReview": "Bewertung konnte nicht eingereicht werden",
+      "pleaseFillInAllFields": "Bitte alle Felder ausfüllen",
+      "pleaseEnterAValidEmailAddress": "Bitte gültige E-Mail Adresse eingeben",
+      "placeEnterYourNickName": "Spitzname",
+      "placeEnterYourReviewTitle": "Bewertungstitel",
+      "placeEnterYourEmail": "Email"
+    },
+    "purchase": {
+      "quantity": "Menge",
+      "color": "Farbe",
+      "stockArrivalEmail": "Lagerbestand-E-Mail"
+    },
+    "common": {
+      "code": "Code",
+      "all": "Alle",
+      "loading": "Lädt",
+      "clearFilters": "Filter zurücksetzen",
+      "copy": "Kopieren",
+      "copied": "Kopiert",
+      "copyCode": "Code kopieren",
+      "copySuccessful": "Kopieren erfolgreich!",
+      "subscriptionThankYou": "Vielen Dank für Ihr Abonnement!",
+      "inTotal": "insgesamt",
+      "overView": "Übersicht"
+    },
+    "expand": {
+      "showLess": "Weniger anzeigen",
+      "showMore": "Mehr anzeigen"
+    },
+    "blog": {
+      "backToBlogPage": "Zurück zur Blog-Seite",
+      "totalView": "Gesamtanzahl der Aufrufe",
+      "viewToday": "Aufrufe heute"
+    },
+    "popup": {
+      "shopNow": "Jetzt anzeigen",
+      "thankSubmit": "Danke fürs Abonnieren!"
+    },
+    "carousel": {
+      "explore": "Entdecken Sie das Produkt",
+      "bookDemo": "Demo buchen"
+    },
+    "tooltip": {
+      "tip": "1.Versand nur an Werktagen; Verzögerungen an Wochenenden und Feiertagen möglich.\n 2. Spezifische Versandrichtlinien variieren je nach Region"
+    },
+    "productCard": {
+      "description": "Beschreibung",
+      "save": "Sie sparen",
+      "viewDetail": "Mehr sehen"
+    },
+    "commentSlide": {
+      "verifed": "Verifizierter Bewerter"
+    },
+    "ecommerce": {
+      "buyNow": "Jetzt kaufen",
+      "addToCart": "Zum Warenkorb hinzufügen"
+    },
+    "freeGift": {
+      "title": "Zeitbegrenzte kostenlose Geschenke",
+      "label": "Kostenlos"
+    }
+  }

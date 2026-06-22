@@ -1,0 +1,70 @@
+{
+  "common": {
+    "siteName": "LUMINA",
+    "language": "语言"
+  },
+  "auth": {
+    "emailPlaceholder": "请输入邮箱",
+    "sendVerificationCode": "发送验证码",
+    "loginTip": "支持 Google 登录或邮箱验证码登录。",
+    "googleLogin": "使用 Google 登录",
+    "orContinueWith": "或继续使用"
+  },
+  "home": {
+    "hero": {
+      "eyebrow": "AI studio / create with voice",
+      "title1": "Create stunning audio",
+      "title2": "experiences from one sentence",
+      "desc": "围绕录音、转写、检索与知识沉淀，帮助企业快速搭建可落地的音视频应用。",
+      "primaryAction": "开始体验",
+      "secondaryAction": "查看案例"
+    },
+    "features": {
+      "eyebrow": "现在支持 3 个领先的 AI 模型",
+      "title1": "一键生成惊艳图片",
+      "title2": "从一句话开始",
+      "desc": "在同一个地方调用 Stable Diffusion、DALL·E 和 Midjourney 生成专业级视觉效果，无需设计经验。",
+      "panelTypeLabel": "AI 图片生成",
+      "panelTitle": "产品替换",
+      "promptLabel": "提示词：",
+      "prompt": "把第二张图里的人，换成第一张图里的瓶子。",
+      "create": "生成",
+      "inputLabel": "描述你的图片关键词",
+      "inputPlaceholder": "例如：黄昏下的未来城市天际线，电影级灯光，超高细节……",
+      "uploadImages": "上传图片",
+      "chooseModel": "选择模型",
+      "startGenerating": "开始生成",
+      "trusted": "受到全球 200,000+ 创作者信赖",
+      "models": [
+        { "no": "01", "tag": "Versatile", "title": "Stable Diffusion XL", "subtitle": "Stability AI", "desc": "Open and highly flexible. Great for any style and fast iteration." },
+        { "no": "02", "tag": "Precise", "title": "DALL·E 3", "subtitle": "OpenAI", "desc": "Best at following detailed prompts and rendering text accurately." },
+        { "no": "03", "tag": "Artistic", "title": "Midjourney v6", "subtitle": "Midjourney", "desc": "Cinematic, highly stylized results with a distinctive aesthetic." }
+      ]
+    },
+    "gallery": {
+      "eyebrow": "01",
+      "title": "Everything you need to create",
+      "desc": "A complete toolkit for turning ideas into production-ready visuals.",
+      "cards": [
+        { "id": "g1", "no": "01", "title": "Multiple AI models", "desc": "Switch between Stable Diffusion, DALL·E and Midjourney in one click." },
+        { "id": "g2", "no": "02", "title": "Prompt optimization", "desc": "Our AI rewrites your prompt for sharper, more detailed results." },
+        { "id": "g3", "no": "03", "title": "Full control", "desc": "Tune size, style, quantity, steps and guidance to taste." },
+        { "id": "g4", "no": "04", "title": "Organized library", "desc": "Every generation saved, searchable and ready to reuse." }
+      ]
+    },
+    "steps": {
+      "title": "From idea to image in seconds",
+      "desc": "Three simple steps.",
+      "items": [
+        { "no": "01", "title": "描述你的想法", "desc": "输入你的想法，快速生成内容框架。" },
+        { "no": "02", "title": "选择模型", "desc": "选择合适的能力组合与呈现方式。" },
+        { "no": "03", "title": "生成结果", "desc": "生成最终页面，并持续优化。" }
+      ]
+    },
+    "cta": {
+      "title": "Ready to bring your ideas to life?",
+      "desc": "Start now — no setup required.",
+      "action": "Create your first page"
+    }
+  }
+}

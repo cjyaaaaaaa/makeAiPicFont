@@ -1,0 +1,120 @@
+{
+  "errors": {
+    "backHome": "Regresar a inicio",
+    "notFoundTitle": "Página no encontrada...",
+    "notFoundDescription": "Lo sentimos, pero no se pudo encontrar la página que solicitaste.",
+    "serverErrorTitle": "Error del servidor",
+    "serverErrorDescription": "Lo sentimos, algo salió mal de nuestra parte.\nPor favor, intente nuevamente más tarde o contacta con soporte."
+  },
+  "reviews": {
+    "reviews": "Reseñas",
+    "matchingReviewsFound": "Se encuentran reseñas coincidentes",
+    "noReviewsFound": "No se encuentran reseñas",
+    "matchingQuestionsFound": "Se encuentran preguntas coincidentes",
+    "writeReview": "Escribir una reseña",
+    "searchReviews": "Buscar reseñas",
+    "rating": "Puntuación",
+    "sortBy": "Ordenar por",
+    "most": "Con Media",
+    "mostRecent": "Más reciente",
+    "mostRating": "Más valoraciones",
+    "highestRating": "Mayor puntuación",
+    "lowestRating": "Menor puntuación",
+    "viewMoreReplies": "Ver más respuestas",
+    "concealReplies": "Ocultar respuestas",
+    "verifiedReviewer": "Revisor verificado",
+    "contactUs": "Contacta con nosotros"
+  },
+  "questions": {
+    "questions": "Preguntas",
+    "askQuestion": "Hacer una pregunta"
+  },
+  "questionForm": {
+    "askQuestion": "Hacer una pregunta",
+    "describeYourQuestion": "Describe tu pregunta:",
+    "yourName": "Tu nombre:",
+    "emailAddress": "Dirección de correo electrónico",
+    "tip": "Te enviaremos un correo electrónico para verificar que este mensaje proviene de ti.",
+    "submit": "Enviar",
+    "loading": "Cargando...",
+    "placeEnterYourName": "Ingresa tu nombre",
+    "tipQuestionDetail": "Más detalles acelerarán nuestra ayuda para responder a tu consulta de manera oportuna.",
+    "placeEnterYourEmail": "Ingresa tu correo electrónico",
+    "questionSubmittedSuccessfully": "Pregunta enviada con éxito",
+    "failedToSubmitQuestion": "No se pudo enviar la pregunta",
+    "pleaseFillInAllFields": "Por favor, completa todos los campos",
+    "pleaseEnterAValidEmailAddress": "Por favor, ingresa una dirección de correo electrónico válida"
+  },
+  "reviewForm": {
+    "writeReview": "Escribir una reseña",
+    "rating": "Califica tu experiencia",
+    "placeEnterYourReview": "Cuéntanos lo que te gusta o lo que no te gusta",
+    "addTitle": "Agregar un título",
+    "yourName": "Tu nombre",
+    "emailAddress": "Dirección de correo electrónico",
+    "tip": "Te enviaremos un correo electrónico para verificar que esta reseña proviene de ti.",
+    "addPhotosVideos": "Agregar fotos/videos",
+    "indicatesRequiredFields": "indica campos requeridos",
+    "reviewSubmittedSuccessfully": "Reseña enviada con éxito, se mostrará después de la aprobación",
+    "failedToSubmitReview": "No se pudo enviar la reseña",
+    "pleaseFillInAllFields": "Por favor, completa todos los campos",
+    "pleaseEnterAValidEmailAddress": "Por favor, ingresa una dirección de correo electrónico válida",
+    "placeEnterYourNickName": "Apodo",
+    "placeEnterYourReviewTitle": "Título de la reseña",
+    "placeEnterYourEmail": "Correo electrónico"
+  },
+  "purchase": {
+    "quantity": "Cantidad",
+    "color": "Color",
+    "stockArrivalEmail": "Stock Arrival Email"
+  },
+  "common": {
+    "code": "Código",
+    "all": "Todo",
+    "loading": "Cargando",
+    "clearFilters": "Borrar filtros",
+    "copy": "Copiar",
+    "copied": "Copiado",
+    "copyCode": "Copiar código",
+    "copySuccessful": "Copiado con éxito",
+    "subscriptionThankYou": "¡Gracias por su suscripción!",
+    "inTotal": "en total",
+    "overView": "Resumen"
+  },
+  "expand": {
+    "showLess": "Mostrar menos",
+    "showMore": "Mostrar más"
+  },
+  "blog": {
+    "backToBlogPage": "Volver a la página del blog",
+    "totalView": "vistas totales",
+    "viewToday": "vistas de hoy"
+  },
+  "popup": {
+    "shopNow": "Comprar ahora",
+    "thankSubmit": "¡Gracias por su suscripción!"
+  },
+  "carousel": {
+    "explore": "Explorar el producto",
+    "bookDemo": "Solicitar un demo"
+  },
+  "tooltip": {
+    "tip": "1. Solo se envía en días hábiles; pueden ocurrir retrasos durante los fines de semana y feriados.\n 2. Las políticas de envío específicas varían según la región."
+  },
+  "productCard": {
+    "description": "Descripción",
+    "save": "Ahorras",
+    "viewDetail": "Ver detalles"
+  },
+  "shop": {
+    "saveText": "Ahorra {saveText}"
+  },
+  "ecommerce": {
+    "buyNow": "Comprar ahora",
+    "addToCart": "Añadir al carrito"
+  },
+  "freeGift": {
+    "title": "Regalo gratuito limitado en el tiempo",
+    "label": "Gratis"
+  }
+}

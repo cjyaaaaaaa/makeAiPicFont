@@ -1,0 +1,68 @@
+{
+  "common": {
+    "siteName": "LUMINA",
+    "language": "Language"
+  },
+  "auth": {
+    "emailPlaceholder": "Enter your email",
+    "sendVerificationCode": "Send verification code",
+    "loginTip": "Supports Google sign-in or email verification code login."
+  },
+  "home": {
+    "hero": {
+      "eyebrow": "AI studio / create with voice",
+      "title1": "Create stunning audio",
+      "title2": "experiences from one sentence",
+      "desc": "We help enterprises quickly build practical audio and video applications around recording, transcription, search, and knowledge management.",
+      "primaryAction": "Explore products",
+      "secondaryAction": "View solutions"
+    },
+    "features": {
+      "eyebrow": "Now supporting 3 leading AI models",
+      "title1": "Create stunning images",
+      "title2": "from a single sentence",
+      "desc": "Generate professional visuals with Stable Diffusion, DALL·E and Midjourney — all in one place. No design skills required.",
+      "panelTypeLabel": "AI Image Generation",
+      "panelTitle": "Product Swap",
+      "promptLabel": "Prompt:",
+      "prompt": "Make the person in the second image hold the bottle from the first image.",
+      "create": "Create",
+      "inputLabel": "Describe your image keywords",
+      "inputPlaceholder": "For example: a futuristic city skyline at dusk, cinematic lighting, ultra detailed…",
+      "uploadImages": "Upload images",
+      "chooseModel": "Choose a model",
+      "startGenerating": "Start generating",
+      "trusted": "Trusted by 200,000+ creators worldwide",
+      "models": [
+        { "no": "01", "tag": "Versatile", "title": "Stable Diffusion XL", "subtitle": "Stability AI", "desc": "Open and highly flexible. Great for any style and fast iteration." },
+        { "no": "02", "tag": "Precise", "title": "DALL·E 3", "subtitle": "OpenAI", "desc": "Best at following detailed prompts and rendering text accurately." },
+        { "no": "03", "tag": "Artistic", "title": "Midjourney v6", "subtitle": "Midjourney", "desc": "Cinematic, highly stylized results with a distinctive aesthetic." }
+      ]
+    },
+    "gallery": {
+      "eyebrow": "01",
+      "title": "Everything you need to create",
+      "desc": "A complete toolkit for turning ideas into production-ready visuals.",
+      "cards": [
+        { "id": "g1", "no": "01", "title": "Multiple AI models", "desc": "Switch between Stable Diffusion, DALL·E and Midjourney in one click." },
+        { "id": "g2", "no": "02", "title": "Prompt optimization", "desc": "Our AI rewrites your prompt for sharper, more detailed results." },
+        { "id": "g3", "no": "03", "title": "Full control", "desc": "Tune size, style, quantity, steps and guidance to taste." },
+        { "id": "g4", "no": "04", "title": "Organized library", "desc": "Every generation saved, searchable and ready to reuse." }
+      ]
+    },
+    "steps": {
+      "title": "From idea to image in seconds",
+      "desc": "Three simple steps.",
+      "items": [
+        { "no": "01", "title": "Describe it", "desc": "Turn your idea into a content structure quickly." },
+        { "no": "02", "title": "Pick a model", "desc": "Choose the best capability and presentation style." },
+        { "no": "03", "title": "Generate", "desc": "Generate the final page and keep refining." }
+      ]
+    },
+    "cta": {
+      "title": "Ready to bring your ideas to life?",
+      "desc": "Start now — no setup required.",
+      "action": "Create your first page"
+    }
+  }
+}
