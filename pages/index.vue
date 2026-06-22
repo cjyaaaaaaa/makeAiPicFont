@@ -1,5 +1,5 @@
 <template>
-	<div class="bg-[#f6f2ea]">
+	<div class="bg-[#f6f2ea] ">
 		<!-- <HeroSection /> -->
 		<FeaturesSection />
 		<StepsSection />
