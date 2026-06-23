@@ -43,7 +43,10 @@
 
 <script setup lang="ts">
 import LoginModal from '~/components/auth/LoginModal.vue'
+import { thirdPartyLoginController } from '~/api/user/index'
+
 const { t, locale, setLocale } = useI18n()
+const { showTipToast } = useTipToast()
 const openLang = ref(false)
 const openLogin = ref(false)
 const langIcon = 'https://www.figma.com/api/mcp/asset/9c05c4e0-221b-4086-b844-b3abcd3e742e'
@@ -62,6 +65,87 @@ const languages = [
 ] as const
 const currentLabel = computed(() => languages.find(item => item.code === locale.value)?.name ?? 'English')
 const switchLanguage = (code: 'zh' | 'en' | 'de' | 'es' | 'ja') => { setLocale(code); openLang.value = false }
-const handleGoogleLogin = (payload: { clientId: string }) => { console.log(payload) }
-const handleEmailLogin = (payload: { email: string }) => { console.log(payload) }
+const GOOGLE_CLIENT_ID = '1007188045137-69g86626b9559hr20bfg3qm7d9oprnfm.apps.googleusercontent.com'
+const googleScriptReady = ref(false)
+const googleCredential = ref('')
+
+const loadGoogleScript = () => {
+	if (process.client && window.google?.accounts?.id) {
+		googleScriptReady.value = true
+		return Promise.resolve()
+	}
+
+	return new Promise<void>((resolve, reject) => {
+		if (document.getElementById('google-identity-services')) {
+			const timer = setInterval(() => {
+				if (window.google?.accounts?.id) {
+					clearInterval(timer)
+					googleScriptReady.value = true
+					resolve()
+				}
+			}, 50)
+			return
+		}
+
+		const script = document.createElement('script')
+		script.id = 'google-identity-services'
+		script.src = 'https://accounts.google.com/gsi/client'
+		script.async = true
+		script.defer = true
+		script.onload = () => {
+			googleScriptReady.value = true
+			resolve()
+		}
+		script.onerror = reject
+		document.head.appendChild(script)
+	})
+}
+
+const initializeGoogleLogin = async () => {
+	await loadGoogleScript()
+	if (!window.google?.accounts?.id) return
+
+	window.google.accounts.id.initialize({
+		client_id: GOOGLE_CLIENT_ID,
+		callback: async (response: { credential?: string }) => {
+			if (!response.credential) return
+
+			try {
+				googleCredential.value = response.credential
+				await thirdPartyLoginController({
+					provider: 'google',
+					credential: response.credential,
+				})
+				openLogin.value = false
+				showTipToast({
+					type: 'success',
+					title: '登录成功',
+					message: '欢迎回来，已成功进入系统。',
+				})
+			} catch {
+				showTipToast({
+					type: 'error',
+					title: '登录失败',
+					message: '请稍后重试，或检查网络后重新登录。',
+				})
+			}
+		},
+	})
+}
+
+const handleGoogleLogin = async (payload: { clientId: string }) => {
+	if (payload.clientId !== GOOGLE_CLIENT_ID) return
+	await initializeGoogleLogin()
+	window.google?.accounts?.id.prompt()
+}
+
+const handleEmailLogin = (payload: { email: string }) => {
+	console.log('email login:', payload)
+}
+
+onMounted(() => {
+	if (process.client) {
+		void initializeGoogleLogin()
+	}
+})
 </script>

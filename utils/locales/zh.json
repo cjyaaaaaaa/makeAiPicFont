@@ -5,10 +5,22 @@
   },
   "auth": {
     "emailPlaceholder": "请输入邮箱",
-    "sendVerificationCode": "发送验证码",
-    "loginTip": "支持 Google 登录或邮箱验证码登录。",
+    "sendVerificationCode": "继续",
+    "loginTip": "支持 Google 登录或邮箱登录。",
     "googleLogin": "使用 Google 登录",
-    "orContinueWith": "或继续使用"
+    "orContinueWith": "或继续使用",
+    "chooseAccountState": "请选择你的账号状态，我们会切换到对应的表单。",
+    "alreadyRegistered": "我已经注册，直接登录",
+    "createNewAccount": "我要注册新账号",
+    "enterPasswordToLogin": "请输入密码登录你的账户。",
+    "passwordPlaceholder": "密码",
+    "loginAction": "登录",
+    "hidePassword": "隐藏",
+    "showPassword": "显示",
+    "registerTip": "请填写注册信息，包含用户名、密码和确认密码。",
+    "usernamePlaceholder": "用户名",
+    "confirmPasswordPlaceholder": "确认密码",
+    "registerAction": "注册"
   },
   "home": {
     "hero": {

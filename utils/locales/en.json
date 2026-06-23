@@ -5,8 +5,22 @@
   },
   "auth": {
     "emailPlaceholder": "Enter your email",
-    "sendVerificationCode": "Send verification code",
-    "loginTip": "Supports Google sign-in or email verification code login."
+    "sendVerificationCode": "Continue",
+    "loginTip": "Supports Google sign-in or email-based login.",
+    "googleLogin": "Sign in with Google",
+    "orContinueWith": "Or continue with",
+    "chooseAccountState": "Choose your account state and we’ll switch to the matching form.",
+    "alreadyRegistered": "I’m already registered, log in",
+    "createNewAccount": "Create a new account",
+    "enterPasswordToLogin": "Enter your password to sign in.",
+    "passwordPlaceholder": "Password",
+    "loginAction": "Log in",
+    "hidePassword": "Hide",
+    "showPassword": "Show",
+    "registerTip": "Fill in your registration details, including username, password and confirm password.",
+    "usernamePlaceholder": "Username",
+    "confirmPasswordPlaceholder": "Confirm password",
+    "registerAction": "Register"
   },
   "home": {
     "hero": {
