@@ -1,28 +1,310 @@
 {
   "common": {
     "siteName": "LUMINA",
-    "language": "语言"
+    "language": "语言",
+    "close": "关闭"
+  },
+  "nav": {
+    "workspace": "工作台",
+    "pricing": "价格",
+    "dashboard": "控制台"
   },
   "auth": {
     "emailPlaceholder": "请输入邮箱",
-    "sendVerificationCode": "继续",
+    "sendVerificationCode": "发送验证码",
     "loginTip": "支持 Google 登录或邮箱登录。",
+    "loginTipDetail": "请输入邮箱和密码登录。",
+    "forgotPassword": "忘记密码",
+    "noAccountRegister": "没账号去注册吧",
+    "passwordPlaceholder": "请输入密码",
+    "loginAction": "登录",
+    "hidePassword": "隐藏",
+    "showPassword": "显示",
+    "registerTip": "请填写你的注册信息。",
+    "firstNamePlaceholder": "名",
+    "lastNamePlaceholder": "姓",
+    "usernamePlaceholder": "用户名",
+    "confirmPasswordPlaceholder": "确认密码",
+    "emailCodePlaceholder": "邮箱验证码",
+    "emailCodeHint": "验证码 60 秒后可重新发送。",
+    "codeResendCountdown": "{seconds}s 后重发",
+    "backToLogin": "返回登录",
+    "registerAction": "注册",
     "googleLogin": "使用 Google 登录",
+    "googleSignup": "使用 Google 注册",
+    "loginSuccessTitle": "登录成功",
+    "loginSuccessMessage": "欢迎回来，已成功进入系统。",
+    "loginFailureTitle": "登录失败",
+    "loginFailureMessage": "请稍后重试，或检查网络后重新登录。",
     "orContinueWith": "或继续使用",
     "chooseAccountState": "请选择你的账号状态，我们会切换到对应的表单。",
     "alreadyRegistered": "我已经注册，直接登录",
     "createNewAccount": "我要注册新账号",
-    "enterPasswordToLogin": "请输入密码登录你的账户。",
-    "passwordPlaceholder": "密码",
-    "loginAction": "登录",
-    "hidePassword": "隐藏",
-    "showPassword": "显示",
-    "registerTip": "请填写注册信息，包含用户名、密码和确认密码。",
-    "usernamePlaceholder": "用户名",
-    "confirmPasswordPlaceholder": "确认密码",
-    "registerAction": "注册"
+    "enterPasswordToLogin": "请输入密码登录你的账户。"
   },
   "home": {
+    "particleHero": {
+      "title": "Free Nano Banana AI Image Generation",
+      "subtitle": "电影级 AI 视频与图片工作室 —— 让运动、光影和细节在数秒内生成。",
+      "placeholder": "Describe the image you want to generate...",
+      "imagePlaceholder": "描述你想生成的图片...",
+      "videoPlaceholder": "描述你的视频场景...",
+      "generationType": "生成类型",
+      "videoMode": "视频模式",
+      "imageMode": "图片模式",
+      "optional": "可选",
+      "removeImage": "移除图片",
+      "selectModel": "选择模型",
+      "videoEngines": "视频引擎",
+      "imageEngines": "图片引擎",
+      "private": "私密",
+      "credits": "{count} 积分",
+      "generate": "生成",
+      "imageModels": [
+        { "id": "gpt-image-2", "icon": "◎", "name": "GPT Image 2", "desc": "OpenAI 新一代图片模型，构图干净、细节清晰。", "badge": "New", "tags": ["文生图", "图生图"] },
+        { "id": "nano-pro", "icon": "G", "name": "Nano Banana Pro", "desc": "面向 4K 视觉与主体一致性的高质量模型。", "badge": "New", "tags": ["多图输入", "4K"] },
+        { "id": "nano", "icon": "G", "name": "Nano Banana", "desc": "快速生成干净稳定的图片结果。", "badge": "New", "tags": ["文生图", "快速"] },
+        { "id": "nano-2", "icon": "G", "name": "Nano Banana 2", "desc": "增强 4K 输出和多图控制能力。", "badge": "New", "tags": ["多图输入", "4K"] }
+      ],
+      "videoModels": [
+        { "id": "veo-quality", "icon": "G", "name": "Veo 3.1 Quality", "desc": "Google 高质量视频模型，擅长音画同步和电影级运动。", "badge": "Google", "tags": ["首尾帧", "音频", "4K", "8 秒"] },
+        { "id": "veo-fast", "icon": "G", "name": "Veo 3.1 Fast", "desc": "快速生成具备音频同步和稳定控制的视频。", "badge": "Google", "tags": ["首尾帧", "音频", "4K", "8 秒"] },
+        { "id": "veo-lite", "icon": "G", "name": "Veo 3.1 Lite", "desc": "适合高频批量生成的经济型视频模型。", "badge": "Google", "tags": ["首尾帧", "音频", "8 秒"] },
+        { "id": "seedance-fast", "icon": "S", "name": "Seedance 2 Fast", "desc": "快速视频生成，支持灵活参考控制。", "badge": "New", "tags": ["首尾帧", "参考图", "4-15 秒"] },
+        { "id": "seedance", "icon": "S", "name": "Seedance 2", "desc": "高质量视频生成，呈现更自然的电影运动。", "badge": "New", "tags": ["首尾帧", "参考图", "4-15 秒"] }
+      ],
+      "workModes": [
+        { "id": "text", "icon": "✧", "label": "文本" },
+        { "id": "first-last", "icon": "▦", "label": "首尾帧" },
+        { "id": "reference", "icon": "▧", "label": "参考图" }
+      ]
+    },
+    "editingCases": {
+      "eyebrow": "AI 图像编辑",
+      "title": "用 Nano Banana AI 重新想象图片",
+      "desc": "把一张图片快速转换成多种场景、风格和氛围，一次点击完成。",
+      "items": [
+        {
+          "id": "sceneSwap",
+          "badge": "石殿场景",
+          "play": "编辑玩法 #01",
+          "title": "场景替换",
+          "desc": "把主体放入全新的场景里，保持人物、光影和视觉风格一致。",
+          "cta": "立即尝试",
+          "tabs": ["原图", "石殿场景", "沙漠地平线", "海岸悬崖"],
+          "tags": ["场景编辑", "背景重混"]
+        },
+        {
+          "id": "adRemix",
+          "badge": "工艺细节",
+          "play": "编辑玩法 #02",
+          "title": "广告重混",
+          "desc": "把一张产品图扩展成不同广告风格，适合商品展示和投放素材。",
+          "cta": "立即尝试",
+          "tabs": ["原图", "腕表细节", "精品展示", "工艺细节"],
+          "tags": ["产品编辑", "广告素材"]
+        },
+        {
+          "id": "moodLight",
+          "badge": "白天",
+          "badgeTone": "yellow",
+          "play": "编辑玩法 #03",
+          "title": "光影氛围",
+          "desc": "改变照片里的光线、天气和时间，让同一张图拥有不同情绪。",
+          "cta": "立即尝试",
+          "tabs": ["白天", "夜晚", "日落", "雪景冬日"],
+          "tags": ["光线", "天气"]
+        },
+        {
+          "id": "portraitStyles",
+          "badge": "浪漫绘画",
+          "play": "编辑玩法 #04",
+          "title": "人像风格",
+          "desc": "从同一张人像生成多种肖像风格，保持人物气质和面部一致。",
+          "cta": "立即尝试",
+          "tabs": ["奢华暗调", "复古胶片", "大胆时装色彩", "浪漫绘画"],
+          "tags": ["人像", "特写"]
+        }
+      ]
+    },
+    "models": {
+      "title": "Our Models",
+      "desc": "覆盖图片与视频创作需求的高质量 AI 模型。",
+      "action": "体验模型",
+      "items": [
+        { "id": "gptImage2", "name": "GPT Image 2", "kind": "image", "kindLabel": "图片" },
+        { "id": "nanoBanana2", "name": "Nano Banana 2", "kind": "image", "kindLabel": "图片" },
+        { "id": "nanoBananaPro", "name": "Nano Banana Pro", "kind": "video", "kindLabel": "视频" },
+        { "id": "veo31", "name": "Veo 3.1", "kind": "video", "kindLabel": "视频" },
+        { "id": "seedanceFast", "name": "Seedance 2 Fast", "kind": "video", "kindLabel": "视频" },
+        { "id": "seedance2", "name": "Seedance 2", "kind": "video", "kindLabel": "视频" }
+      ]
+    },
+    "inspiration": {
+      "eyebrow": "创作者作品",
+      "title": "Get Inspired by Nano Banana AI",
+      "desc": "看看其他创作者正在用 Nano Banana AI 做什么。",
+      "toggleLabel": "灵感类型",
+      "imagesTab": "图片",
+      "videosTab": "视频",
+      "promptAction": "试用提示词",
+      "ctaTitle": "开始创作",
+      "ctaDesc": "几秒钟内生成你的第一张图片或视频。",
+      "primaryAction": "立即尝试",
+      "secondaryAction": "浏览全部",
+      "images": [
+        { "id": "veilPortrait", "alt": "湖边蒙纱人像", "code": "NB-2", "title": "海湾清晨", "prompt": "柔焦女性特写，瓷白皮肤，深色湿发向后梳，海水细小水珠清晰可见。", "size": "lg" },
+        { "id": "runwayFace", "alt": "墨镜人像与秀场造型", "code": "NB-4", "title": "秀场回声", "prompt": "超大墨镜人像，反光镜片里出现迷你时装模特，强烈时尚广告感。", "size": "md" },
+        { "id": "limeJewelry", "alt": "青柠上的珠宝项链", "code": "NB-8", "title": "青柠珠宝", "prompt": "明亮青柠切片上的精致项链，柔和棚拍光，清晰微距质感。", "size": "sm" },
+        { "id": "jellyfishLamp", "alt": "蓝色水母灯艺术摆件", "code": "NB-9", "title": "水母工坊", "prompt": "艺术工作室里的蓝色水母灯，书架、颜料和手作工具，纪录片式真实感。", "size": "md" },
+        { "id": "mirrorMakeup", "alt": "镜前补妆的复古人像", "code": "NB-3", "title": "镜前闪光", "prompt": "卧室镜前人像，正在涂口红，粉色短上衣，温暖闪光灯，复古随拍氛围。", "size": "md" },
+        { "id": "streetFashion", "alt": "街头时装造型", "code": "NB-5", "title": "巷口皮草", "prompt": "破旧墙面前的街头时装人像，仿皮草外套，自信站姿，粗粝日光。", "size": "md" },
+        { "id": "poodleStyle", "alt": "粉色背景下的时髦宠物肖像", "code": "NB-10", "title": "珍珠贵宾", "prompt": "戴珍珠和缎面头巾的宠物肖像，粉色棚拍背景，幽默奢华风格。", "size": "sm" },
+        { "id": "winterFriends", "alt": "冬季街拍三人组合", "code": "NB-11", "title": "冬日三人组", "prompt": "三位朋友穿叠搭大衣和墨镜，时尚大片姿态，干净棚拍背景。", "size": "sm" },
+        { "id": "botanicalFace", "alt": "植物花瓣贴近脸部的人像", "code": "NB-12", "title": "压花面庞", "prompt": "透明花瓣贴近脸部的安静人像，自然暗光，柔和绘画质感。", "size": "md" },
+        { "id": "forestPanther", "alt": "森林里人与黑豹贴近的电影画面", "code": "NB-13", "title": "森林契约", "prompt": "女性与黑豹在茂密森林里靠近，电影级自然光，安静而紧张。", "size": "md" },
+        { "id": "breakfastStill", "alt": "窗边早餐静物", "code": "NB-6", "title": "晨间餐桌", "prompt": "窗边格纹桌布上的吐司和茶，怀旧早餐静物，生活方式杂志质感。", "size": "md" },
+        { "id": "flowerPortrait", "alt": "花瓣造型人像", "code": "NB-14", "title": "花瓣漂浮", "prompt": "柔和花瓣与粉色雾感人像，精致时尚美妆氛围。", "size": "sm" },
+        { "id": "martiniHand", "alt": "深蓝幕布前的鸡尾酒", "code": "NB-15", "title": "天鹅绒马天尼", "prompt": "深蓝天鹅绒背景前手持马天尼杯，珠宝细节，电影感鸡尾酒广告。", "size": "lg" },
+        { "id": "neonCocktail", "alt": "霓虹光影鸡尾酒", "code": "NB-16", "title": "霓虹微醺", "prompt": "彩色鸡尾酒放在高光吧台上，霓虹几何光影，高端夜生活广告。", "size": "md" },
+        { "id": "lipstickStill", "alt": "花瓣旁的口红静物", "code": "NB-17", "title": "玫瑰妆效", "prompt": "奢华口红与带露水的粉色花瓣，柔和微距，高级美妆产品图。", "size": "sm" },
+        { "id": "stoneFashion", "alt": "石柱建筑前的黑色礼服", "code": "NB-7", "title": "石柱戏剧", "prompt": "纪念碑式石阶上的黑色高定礼服，面料动态强烈，建筑时装大片。", "size": "xl" },
+        { "id": "blueDoor", "alt": "浅色墙面与蓝色门", "code": "NB-18", "title": "蓝门正午", "prompt": "浅色墙面和明亮蓝门，硬朗日光，安静旅行明信片构图。", "size": "sm" },
+        { "id": "poppyMacro", "alt": "粉色罂粟花微距", "code": "NB-19", "title": "罂粟微距", "prompt": "粉色罂粟花特写，深色花心，丰富植物纹理，浅景深。", "size": "sm" },
+        { "id": "gardenBike", "alt": "花园门前的粉色自行车", "code": "NB-20", "title": "花园单车", "prompt": "花朵覆盖的小屋外停着粉色自行车，浪漫乡村生活方式场景。", "size": "md" },
+        { "id": "sidewalkScene", "alt": "城市街道上的电影感场景", "code": "NB-21", "title": "街边片段", "prompt": "宽阔城市人行道上的小型电影动作瞬间，柔和日光，纪录片构图。", "size": "md" }
+      ],
+      "videos": [
+        { "id": "stoneFashion", "alt": "视频灵感：建筑台阶上的时装镜头", "code": "NV-1", "title": "面料上行", "prompt": "黑色礼服缓慢穿过石质建筑，风吹面料，镜头轻微漂移。", "size": "xl" },
+        { "id": "martiniHand", "alt": "视频灵感：鸡尾酒手部特写", "code": "NV-2", "title": "天鹅绒倒影", "prompt": "蓝色天鹅绒前的鸡尾酒手部特写，珠宝闪光，奢华广告慢动作。", "size": "lg" },
+        { "id": "forestPanther", "alt": "视频灵感：森林电影画面", "code": "NV-3", "title": "森林呼吸", "prompt": "苔藓森林中的微妙呼吸特写，女性与黑豹安静对视。", "size": "md" },
+        { "id": "neonCocktail", "alt": "视频灵感：霓虹饮品镜头", "code": "NV-4", "title": "霓虹推近", "prompt": "镜头推向彩色鸡尾酒，霓虹反射在玻璃上滑动。", "size": "md" },
+        { "id": "mirrorMakeup", "alt": "视频灵感：复古自拍妆容", "code": "NV-5", "title": "口红闪光", "prompt": "镜前涂口红的随拍视频，温暖房间灯光，手持时尚运动感。", "size": "md" },
+        { "id": "gardenBike", "alt": "视频灵感：花园自行车场景", "code": "NV-6", "title": "花园漂移", "prompt": "镜头轻轻掠过粉色自行车和小屋花园，花朵随风摆动。", "size": "md" },
+        { "id": "veilPortrait", "alt": "视频灵感：湖边风吹纱巾人像", "code": "NV-7", "title": "风中薄纱", "prompt": "水边特写人像，半透明纱巾在慢风里划过脸庞。", "size": "lg" },
+        { "id": "winterFriends", "alt": "视频灵感：冬季街拍造型", "code": "NV-8", "title": "街拍三人行", "prompt": "三位模特穿冬季大衣向镜头走来，清晰棚拍光，广告片能量。", "size": "sm" }
+      ]
+    },
+    "creation": {
+      "startTitle": "开始创作",
+      "startDesc": "几秒内完成你的一张图片或一段视频。",
+      "primaryAction": "立即体验",
+      "secondaryAction": "浏览全部",
+      "title": "你可以创作什么",
+      "desc": "只需几个词，把想法变成惊艳画面。",
+      "kicker": "Nano Banana AI",
+      "itemAction": "立即体验",
+      "templatesEyebrow": "Nano Banana AI 提示词模板",
+      "templatesTitle": "从模板开始",
+      "templatesDesc": "选择模板、调整提示词，一键开始创作。",
+      "items": [
+        { "id": "scenes", "title": "全景场景", "desc": "创建 4:1 和 8:1 宽幅全景，适合风景、建筑、空间设计与电影分镜。", "imageAlts": ["日落海岸全景", "黄昏城市天际线", "现代室内大堂"], "layout": "wide" },
+        { "id": "portraits", "title": "时尚与人像", "desc": "生成更自然的肤质、服装、姿态和情绪，适合时尚大片、角色设定与人像拍摄。", "imageAlts": ["拼贴风格时尚海报"], "layout": "poster" },
+        { "id": "products", "title": "产品视觉", "desc": "用干净光线、真实材质和高级构图生成产品图，适合电商、广告和品牌展示。", "imageAlts": ["极简音箱产品图", "光影中的极简产品", "暗色桌面的产品细节", "展台上的产品陈列"], "layout": "grid" },
+        { "id": "consistency", "title": "视觉一致性", "desc": "在多张图片之间保持统一风格、人物、色彩和叙事，让内容更像完整系列。", "imageAlts": ["统一风格的旅行社交拼图"], "layout": "mosaic" }
+      ]
+    },
+    "promptTemplates": {
+      "eyebrow": "Nano Banana AI 提示词模板",
+      "title": "从模板开始",
+      "desc": "选择模板、调整提示词，一键开始创作。",
+      "tabsLabel": "模板分类",
+      "useAction": "使用模板",
+      "tabs": [
+        {
+          "id": "people",
+          "label": "人物",
+          "cards": [
+            { "id": "monoPortrait", "title": "黑白人像", "alt": "车窗里的黑白人像" },
+            { "id": "groupPortrait", "title": "群像合照", "alt": "城市街道上的三人合照" },
+            { "id": "beautyCloseup", "title": "美妆特写", "alt": "闪粉眼妆特写" },
+            { "id": "candidShot", "title": "自然抓拍", "alt": "咖啡桌旁的自然抓拍" },
+            { "id": "streetStyle", "title": "街头风人像", "alt": "黄色墨镜街头人像" }
+          ]
+        },
+        {
+          "id": "fashion",
+          "label": "时尚",
+          "cards": [
+            { "id": "editorialCoat", "title": "编辑感外套", "alt": "时装外套编辑大片" },
+            { "id": "runwayFrame", "title": "秀场画面", "alt": "秀场风格人像" },
+            { "id": "urbanLook", "title": "城市造型册", "alt": "城市时装造型" },
+            { "id": "silkPortrait", "title": "丝缎人像", "alt": "柔和丝质人像" },
+            { "id": "studioPose", "title": "棚拍姿态", "alt": "棚拍时装姿态" }
+          ]
+        },
+        {
+          "id": "scenery",
+          "label": "风景",
+          "cards": [
+            { "id": "coastalDream", "title": "海岸梦境", "alt": "日落海岸风景" },
+            { "id": "cityTerrace", "title": "城市露台", "alt": "城市露台黄昏" },
+            { "id": "desertLight", "title": "沙漠光线", "alt": "沙漠自然光风景" },
+            { "id": "forestPath", "title": "森林小路", "alt": "森林小路风景" },
+            { "id": "blueDoor", "title": "粉彩蓝门", "alt": "蓝色门与浅色墙面" }
+          ]
+        },
+        {
+          "id": "product",
+          "label": "产品",
+          "cards": [
+            { "id": "watchStill", "title": "腕表静物", "alt": "腕表产品静物" },
+            { "id": "minimalSpeaker", "title": "极简音箱", "alt": "极简音箱产品图" },
+            { "id": "cosmeticSet", "title": "美妆套装", "alt": "美妆产品组合" },
+            { "id": "drinkAd", "title": "饮品广告", "alt": "饮品广告图" },
+            { "id": "deskObject", "title": "桌面物件", "alt": "桌面产品静物" }
+          ]
+        },
+        {
+          "id": "whimsical",
+          "label": "奇想",
+          "cards": [
+            { "id": "poodleStyle", "title": "珍珠贵宾", "alt": "珍珠宠物肖像" },
+            { "id": "jellyfishLamp", "title": "水母灯", "alt": "水母灯艺术品" },
+            { "id": "limeJewelry", "title": "青柠珠宝", "alt": "青柠珠宝静物" },
+            { "id": "flowerFace", "title": "压花面庞", "alt": "花瓣人像" },
+            { "id": "neonGlass", "title": "霓虹酒杯", "alt": "霓虹鸡尾酒杯" }
+          ]
+        }
+      ]
+    },
+    "audience": {
+      "title": "适合谁使用",
+      "desc": "任何需要快速产出高质量视觉内容的人都可以使用 Nano Banana AI。",
+      "items": [
+        { "id": "creators", "icon": "palette", "title": "适合创作者", "desc": "把想法直接变成视觉作品，无需设计基础。", "accent": true },
+        { "id": "designers", "icon": "camera", "title": "适合设计师", "desc": "快速生成情绪板、UI 与品牌素材，不用离开工作位。" },
+        { "id": "marketing", "icon": "briefcase", "title": "适合营销团队", "desc": "几秒内生成广告视觉与活动素材。" },
+        { "id": "commerce", "icon": "cart", "title": "适合电商", "desc": "无需摄影棚也能产出专业产品图，节省时间和成本。" },
+        { "id": "social", "icon": "share", "title": "适合社媒内容", "desc": "为任意平台生成吸睛、易传播的内容。" },
+        { "id": "storytelling", "icon": "book", "title": "适合叙事创作", "desc": "为你的下一部故事或项目快速构建角色与场景。" }
+      ]
+    },
+    "finalPrompt": {
+      "title": "准备开始创作了吗？",
+      "desc": "输入一句提示词，几秒内得到你的第一张图片。含免费额度。",
+      "tagsLabel": "创作能力标签",
+      "inputLabel": "描述你想创作的内容",
+      "placeholder": "描述你想创作的内容...",
+      "action": "开始生成",
+      "tags": ["4K 分辨率", "多种 AI 模型", "现成模板", "图像编辑", "快速生成", "支持全景", "产品图", "视频生成", "免费额度", "可商用", "无需设计经验"]
+    },
+    "footer": {
+      "brandName": "Nano Banana AI",
+      "desc": "AI 驱动的图像生成，细节精美，光影真实，创意风格无限。",
+      "companyTitle": "公司",
+      "productsTitle": "产品",
+      "resourcesTitle": "资源",
+      "contact": "联系我们",
+      "home": "首页",
+      "pricing": "价格",
+      "terms": "服务条款",
+      "privacy": "隐私政策",
+      "refund": "退款政策",
+      "languageLabel": "语言",
+      "copyright": "© {year} Nano Banana AI. 保留所有权利。",
+      "slogan": "为创作者而生"
+    },
     "hero": {
       "eyebrow": "AI studio / create with voice",
       "title1": "Create stunning audio",

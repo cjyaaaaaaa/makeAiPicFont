@@ -5,8 +5,8 @@
 				<div class="tip-toast" :class="variantClass" role="status" aria-live="polite">
 					<div class="tip-toast__icon" :class="iconClass">{{ icon }}</div>
 					<div class="min-w-0 flex-1">
-						<p class="text-[14px] font-semibold leading-5 text-[#111111]">{{ title }}</p>
-						<p v-if="message" class="mt-0.5 text-[13px] leading-5 text-[#5e5b54]">{{ message }}</p>
+						<p class="text-[14px] font-semibold leading-5 text-[#f8fafc]">{{ title }}</p>
+						<p v-if="message" class="mt-0.5 text-[13px] leading-5 text-[#a8b3c7]">{{ message }}</p>
 					</div>
 				</div>
 			</div>
@@ -83,8 +83,8 @@ onBeforeUnmount(() => close())
 	gap: 12px;
 	width: min(420px, 100%);
 	border-radius: 18px;
-	border: 1px solid rgba(17, 17, 17, 0.08);
-	background: rgba(255, 255, 255, 0.94);
+	border: 1px solid rgba(255, 255, 255, 0.1);
+	background: rgba(16, 22, 34, 0.94);
 	padding: 14px 16px;
 	box-shadow: 0 20px 60px rgba(0, 0, 0, 0.14);
 	backdrop-filter: blur(16px);
@@ -103,20 +103,20 @@ onBeforeUnmount(() => close())
 
 .tip-toast--success .tip-toast__icon,
 .tip-toast__icon--success {
-	background: #e7f8ef;
-	color: #1d7a43;
+	background: rgba(34, 197, 94, 0.16);
+	color: #86efac;
 }
 
 .tip-toast--error .tip-toast__icon,
 .tip-toast__icon--error {
-	background: #fdecec;
-	color: #c43b3b;
+	background: rgba(239, 68, 68, 0.16);
+	color: #fca5a5;
 }
 
 .tip-toast--info .tip-toast__icon,
 .tip-toast__icon--info {
-	background: #edf3ff;
-	color: #355dcb;
+	background: rgba(239, 77, 44, 0.16);
+	color: #ff9a7a;
 }
 
 .tip-toast--success {

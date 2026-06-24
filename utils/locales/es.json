@@ -113,6 +113,36 @@
     "buyNow": "Comprar ahora",
     "addToCart": "Añadir al carrito"
   },
+  "home": {
+    "inspiration": {
+      "promptAction": "Probar este prompt"
+    },
+    "finalPrompt": {
+      "title": "¿Listo para empezar a crear?",
+      "desc": "Escribe un prompt y obtén tu primera imagen en segundos. Incluye créditos gratis.",
+      "tagsLabel": "Etiquetas de capacidades creativas",
+      "inputLabel": "Describe lo que quieres crear",
+      "placeholder": "Describe lo que quieres crear...",
+      "action": "Generar ahora",
+      "tags": ["Resolución 4K", "Varios modelos de IA", "Plantillas listas", "Edición de imagen", "Generación rápida", "Soporte panorámico", "Imágenes de producto", "Generación de video", "Créditos gratis", "Uso comercial", "Sin experiencia en diseño"]
+    },
+    "footer": {
+      "brandName": "Nano Banana AI",
+      "desc": "Generación de imágenes con IA, detalles refinados, luz realista y estilos creativos ilimitados.",
+      "companyTitle": "Empresa",
+      "productsTitle": "Productos",
+      "resourcesTitle": "Recursos",
+      "contact": "Contacto",
+      "home": "Inicio",
+      "pricing": "Precios",
+      "terms": "Términos de servicio",
+      "privacy": "Política de privacidad",
+      "refund": "Política de reembolso",
+      "languageLabel": "Idiomas",
+      "copyright": "© {year} Nano Banana AI. Todos los derechos reservados.",
+      "slogan": "Creado para creadores"
+    }
+  },
   "freeGift": {
     "title": "Regalo gratuito limitado en el tiempo",
     "label": "Gratis"

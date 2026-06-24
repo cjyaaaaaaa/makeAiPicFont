@@ -128,7 +128,7 @@
               type="button"
               class="absolute right-4 top-4 grid h-9 w-9 place-items-center rounded-full text-white/70 transition hover:bg-white/5 hover:text-white"
               @click="emit('close')"
-              aria-label="Close"
+              :aria-label="t('common.close')"
             >
               <span class="text-[28px] leading-none">×</span>
             </button>
@@ -166,7 +166,7 @@
                       d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
                     />
                   </svg>
-                  <span>Sign-up with Google</span>
+                  <span>{{ t("auth.googleSignup") }}</span>
                 </span>
               </button>
 
@@ -174,59 +174,26 @@
                 <span>{{ t("auth.orContinueWith") }}</span>
               </div>
 
-              <form class="mt-6 grid gap-4" @submit.prevent="handleSubmit">
-                <label class="grid gap-2 text-[14px] font-medium text-white/90">
-                  <span class="sr-only">Email</span>
-                  <input
-                    ref="emailInput"
-                    v-model.trim="email"
-                    type="email"
-                    placeholder="your@email.com"
-                    class="field-input"
-                    autocomplete="email"
-                    @focus="handleEmailFocus"
-                    @blur="handleEmailBlur"
-                    @input="onEmailInput"
-                  />
-                </label>
-
-                <button type="submit" class="primary-btn" :disabled="!email">
-                  {{ t("auth.sendVerificationCode") }}
-                </button>
-
-                <Transition name="slide-fade">
-                  <div
-                    v-if="step === 'choose'"
-                    class="grid gap-3 rounded-[16px] border border-white/8 bg-white/4 p-4"
-                  >
-                    <div class="text-[13px] text-white/65">
-                      {{ t("auth.chooseAccountState") }}
-                    </div>
-                    <button
-                      type="button"
-                      class="secondary-btn"
-                      @click="selectExistingAccount"
-                    >
-                      {{ t("auth.alreadyRegistered") }}
-                    </button>
-                    <button
-                      type="button"
-                      class="secondary-btn"
-                      @click="selectRegisterAccount"
-                    >
-                      {{ t("auth.createNewAccount") }}
-                    </button>
-                  </div>
-                </Transition>
-
-                <Transition name="slide-fade">
+              <form class="mt-6 grid gap-4" @submit.prevent="handleLoginSubmit">
+                <Transition name="slide-fade" mode="out-in">
                   <div
                     v-if="step === 'login'"
                     class="grid gap-3 rounded-[16px] border border-white/8 bg-white/4 p-4"
                   >
                     <div class="text-[13px] text-white/65">
-                      {{ t("auth.enterPasswordToLogin") }}
+                      {{ t("auth.loginTipDetail") }}
                     </div>
+                    <input
+                      ref="emailInput"
+                      v-model.trim="email"
+                      type="email"
+                      :placeholder="t('auth.emailPlaceholder')"
+                      class="field-input"
+                      autocomplete="email"
+                      @focus="handleEmailFocus"
+                      @blur="handleEmailBlur"
+                      @input="onEmailInput"
+                    />
                     <div class="relative">
                       <input
                         ref="passwordInput"
@@ -251,19 +218,31 @@
                         }}
                       </button>
                     </div>
-                    <button
-                      type="button"
-                      class="primary-btn"
-                      @click="submitLogin"
+                    <div
+                      class="flex items-center justify-between gap-4 text-[12px] text-white/55"
                     >
+                      <button
+                        type="button"
+                        class="transition hover:text-white"
+                        @click="handleForgotPassword"
+                      >
+                        {{ t("auth.forgotPassword") }}
+                      </button>
+                      <button
+                        type="button"
+                        class="transition hover:text-white"
+                        @click="selectRegisterAccount"
+                      >
+                        {{ t("auth.noAccountRegister") }}
+                      </button>
+                    </div>
+                    <button type="submit" class="primary-btn">
                       {{ t("auth.loginAction") }}
                     </button>
                   </div>
-                </Transition>
 
-                <Transition name="slide-fade">
                   <div
-                    v-if="step === 'register'"
+                    v-else
                     class="grid gap-3 rounded-[16px] border border-white/8 bg-white/4 p-4"
                   >
                     <div class="text-[13px] text-white/65">
@@ -276,43 +255,87 @@
                       class="field-input"
                       autocomplete="nickname"
                       @focus="handleEmailFocus"
-                      @input="handleUsernameInput"
+                      @input="handleRegisterInput"
                     />
-                    <div class="relative">
-                      <input
-                        id="register-password-input"
-                        v-model.trim="password"
-                        :type="showPassword ? 'text' : 'password'"
-                        :placeholder="t('auth.passwordPlaceholder')"
-                        class="field-input pr-12"
-                        autocomplete="new-password"
-                        @focus="handlePasswordFocus"
-                        @blur="handlePasswordBlur"
-                        @input="handlePasswordInput"
-                      />
-                      <button
-                        type="button"
-                        class="absolute right-3 top-1/2 -translate-y-1/2 text-[12px] font-semibold text-white/55"
-                        @click="togglePassword"
+                    <input
+                      v-model.trim="email"
+                      type="email"
+                      :placeholder="t('auth.emailPlaceholder')"
+                      class="field-input"
+                      autocomplete="email"
+                      @focus="handleEmailFocus"
+                      @input="handleRegisterInput"
+                    />
+                    <div class="grid gap-2">
+                      <div
+                        class="grid gap-2 sm:grid-cols-[1fr_auto] sm:items-start"
                       >
-                        {{
-                          showPassword
-                            ? t("auth.hidePassword")
-                            : t("auth.showPassword")
-                        }}
-                      </button>
+                        <input
+                          v-model.trim="emailCode"
+                          type="text"
+                          inputmode="numeric"
+                          maxlength="6"
+                          :placeholder="t('auth.emailCodePlaceholder')"
+                          class="field-input min-w-0"
+                          autocomplete="one-time-code"
+                          @focus="handlePasswordFocus"
+                          @input="handleRegisterInput"
+                        />
+                        <button
+                          type="button"
+                          class="secondary-btn min-h-[48px] whitespace-normal px-3 text-[13px] leading-tight sm:w-[110px]"
+                          :disabled="codeSeconds > 0 || !email"
+                          @click="sendEmailCode"
+                        >
+                          <span class="block text-center">
+                            {{
+                              codeSeconds > 0
+                                ? t("auth.codeResendCountdown", {
+                                    seconds: codeSeconds,
+                                  })
+                                : t("auth.sendVerificationCode")
+                            }}
+                          </span>
+                        </button>
+                      </div>
                     </div>
-                    <div class="relative">
-                      <input
-                        id="register-confirm-password-input"
-                        v-model.trim="confirmPassword"
-                        :type="showPassword ? 'text' : 'password'"
-                        :placeholder="t('auth.confirmPasswordPlaceholder')"
-                        class="field-input pr-12"
-                        autocomplete="new-password"
-                        @focus="handleConfirmPasswordFocus"
-                        @input="handleConfirmPasswordInput"
-                      />
+                    <div class="grid gap-3">
+                      <div class="relative">
+                        <input
+                          id="register-password-input"
+                          v-model.trim="password"
+                          :type="showPassword ? 'text' : 'password'"
+                          :placeholder="t('auth.passwordPlaceholder')"
+                          class="field-input pr-12"
+                          autocomplete="new-password"
+                          @focus="handlePasswordFocus"
+                          @blur="handlePasswordBlur"
+                          @input="handlePasswordInput"
+                        />
+                        <button
+                          type="button"
+                          class="absolute right-3 top-1/2 -translate-y-1/2 text-[12px] font-semibold text-white/55"
+                          @click="togglePassword"
+                        >
+                          {{
+                            showPassword
+                              ? t("auth.hidePassword")
+                              : t("auth.showPassword")
+                          }}
+                        </button>
+                      </div>
+                      <div class="relative">
+                        <input
+                          id="register-confirm-password-input"
+                          v-model.trim="confirmPassword"
+                          :type="showPassword ? 'text' : 'password'"
+                          :placeholder="t('auth.confirmPasswordPlaceholder')"
+                          class="field-input pr-12"
+                          autocomplete="new-password"
+                          @focus="handleConfirmPasswordFocus"
+                          @input="handleConfirmPasswordInput"
+                        />
+                      </div>
                     </div>
                     <button
                       type="button"
@@ -320,6 +343,12 @@
                       @click="submitRegister"
                     >
                       {{ t("auth.registerAction") }}
+                    </button>
+                    <button
+                      type="button"
+                      class="text-[12px] text-white/55 transition hover:text-white"
+                    >
+                      {{ t("auth.backToLogin") }}
                     </button>
                   </div>
                 </Transition>
@@ -354,10 +383,14 @@ const emailInput = ref<HTMLInputElement | null>(null);
 const passwordInput = ref<HTMLInputElement | null>(null);
 
 const email = ref("");
+const firstName = ref("");
+const lastName = ref("");
 const username = ref("");
 const password = ref("");
 const confirmPassword = ref("");
-const step = ref<"email" | "choose" | "login" | "register">("email");
+const emailCode = ref("");
+const codeSeconds = ref(0);
+const step = ref<"login" | "register">("login");
 const showPassword = ref(false);
 
 const mouseX = ref(0);
@@ -379,6 +412,8 @@ let blinkPurpleTimer: ReturnType<typeof setTimeout> | null = null;
 let blinkBlackTimer: ReturnType<typeof setTimeout> | null = null;
 let blinkYellowTimer: ReturnType<typeof setTimeout> | null = null;
 let peekTimer: ReturnType<typeof setTimeout> | null = null;
+let codeTimer: ReturnType<typeof setInterval> | null = null;
+let resendHintTimer: ReturnType<typeof setTimeout> | null = null;
 
 const clamp = (value: number, min: number, max: number) =>
   Math.min(max, Math.max(min, value));
@@ -399,14 +434,30 @@ const clearAllTimers = () => {
     blinkYellowTimer =
     peekTimer =
       null;
+  if (codeTimer) {
+    clearInterval(codeTimer);
+    codeTimer = null;
+  }
+  if (resendHintTimer) {
+    clearTimeout(resendHintTimer);
+    resendHintTimer = null;
+  }
+  if (codeTimer) {
+    clearInterval(codeTimer);
+    codeTimer = null;
+  }
 };
 
 const resetFormState = () => {
   email.value = "";
+  firstName.value = "";
+  lastName.value = "";
   username.value = "";
   password.value = "";
   confirmPassword.value = "";
-  step.value = "email";
+  emailCode.value = "";
+  codeSeconds.value = 0;
+  step.value = "login";
   showPassword.value = false;
 };
 
@@ -443,17 +494,17 @@ const updateCharacters = () => {
   const yellow = document.getElementById("char-yellow") as HTMLElement | null;
   if (!purple || !black || !orange || !yellow) return;
 
-  if (!hasInteracted.value && !isLoginError.value) {
-    purple.style.transform = "skewX(0deg)";
-    black.style.transform = "skewX(0deg)";
-    orange.style.transform = "skewX(0deg)";
-    yellow.style.transform = "skewX(0deg)";
-    purple.style.height = "160px";
-    black.style.height = "180px";
-    orange.style.height = "150px";
-    yellow.style.height = "210px";
-    return;
-  }
+  // if (!hasInteracted.value && !isLoginError.value) {
+  //   purple.style.transform = "skewX(0deg)";
+  //   black.style.transform = "skewX(0deg)";
+  //   orange.style.transform = "skewX(0deg)";
+  //   yellow.style.transform = "skewX(0deg)";
+  //   purple.style.height = "160px";
+  //   black.style.height = "180px";
+  //   orange.style.height = "150px";
+  //   yellow.style.height = "210px";
+  //   return;
+  // }
 
   const purplePos = calcPosition(purple);
   const blackPos = calcPosition(black);
@@ -473,7 +524,7 @@ const updateCharacters = () => {
   purple.style.transform = isLookingAway
     ? "skewX(-14deg) translateX(-20px)"
     : isPasswordMode
-      ? ``
+      ? `skewX(${blackPos.bodySkew * 1.5}deg)`
       : `skewX(${purplePos.bodySkew}deg)`;
   purple.style.height = isPasswordMode
     ? isShowingPwd
@@ -486,11 +537,11 @@ const updateCharacters = () => {
   black.style.transform = isLookingAway
     ? "translateX(20px) skewX(10deg)"
     : isPasswordMode
-      ? `skewX(${blackPos.bodySkew * 1.5}deg) translateX(${passwordBodyOffset}px)`
+      ? `skewX(${blackPos.bodySkew * 3}deg) translateX(${passwordBodyOffset}px)`
       : `skewX(${blackPos.bodySkew}deg)`;
   black.style.height = isPasswordMode
     ? isShowingPwd
-      ? "180px"
+      ? "210px"
       : "188px"
     : isLookingAway
       ? "172px"
@@ -503,7 +554,11 @@ const updateCharacters = () => {
   yellow.style.transform = isLookingAway
     ? "skewX(-12deg)"
     : `skewX(${yellowPos.bodySkew}deg)`;
-  yellow.style.height = isLookingAway ? "240px" : "210px";
+  yellow.style.height = isPasswordMode
+    ? "250px"
+    : isLookingAway
+      ? "240px"
+      : "210px";
 
   const blackEyes = document.getElementById("black-eyes") as HTMLElement | null;
   const blackEyeL = document.getElementById(
@@ -520,8 +575,8 @@ const updateCharacters = () => {
   if (blackEyes && blackEyeL && blackEyeR && blackPupilL && blackPupilR) {
     const bo = calcPupilOffset(blackEyeL, 4);
     if (isShowingPwd) {
-      blackPupilL.style.transform = `translate(${bo.x - 6}px, ${bo.y - 3}px)`;
-      blackPupilR.style.transform = `translate(${bo.x - 6}px, ${bo.y - 3}px)`;
+      blackPupilL.style.transform = `translate(${-3}px, ${-3}px)`;
+      blackPupilR.style.transform = `translate(${-3}px, ${-3}px)`;
       blackEyes.style.left = `${10}px`;
       blackEyes.style.top = `${20}px`;
     } else {
@@ -559,8 +614,8 @@ const updateCharacters = () => {
     if (isShowingPwd) {
       purpleEyeL.style.transform = `translate(${po.x - 6}px, ${po.y - 3}px)`;
       purpleEyeR.style.transform = `translate(${po.x - 6}px, ${po.y - 3}px)`;
-      purpleEyes.style.left = `${5 + purplePos.faceX}px`;
-      purpleEyes.style.top = `${20 + purplePos.faceY}px`;
+      purpleEyes.style.left = `${25}px`;
+      purpleEyes.style.top = `${20}px`;
     } else {
       purpleEyeL.style.transform = `translate(${po.x}px, ${po.y}px)`;
       purpleEyeR.style.transform = `translate(${po.x}px, ${po.y}px)`;
@@ -629,8 +684,8 @@ const updateCharacters = () => {
     if (isShowingPwd) {
       orangePupilL.style.transform = `translate(${oo.x - 6}px, ${oo.y - 3}px)`;
       orangePupilR.style.transform = `translate(${oo.x - 6}px, ${oo.y - 3}px)`;
-      orangeEyes.style.left = `${20 + orangePos.faceX}px`;
-      orangeEyes.style.top = `${40 + orangePos.faceY}px`;
+      orangeEyes.style.left = `${40}px`;
+      orangeEyes.style.top = `${25}px`;
     } else {
       orangePupilL.style.transform = `translate(${oo.x}px, ${oo.y}px)`;
       orangePupilR.style.transform = `translate(${oo.x}px, ${oo.y}px)`;
@@ -650,11 +705,12 @@ const updateCharacters = () => {
   ) as HTMLElement | null;
   if (yellowEyes && yellowPupilL && yellowPupilR) {
     const yo = calcPupilOffset(yellowPupilL, 5);
+
     if (isShowingPwd) {
-      yellowPupilL.style.transform = `translate(${yo.x - 6}px, ${yo.y - 3}px)`;
-      yellowPupilR.style.transform = `translate(${yo.x - 6}px, ${yo.y - 3}px)`;
-      yellowEyes.style.left = `${0 + yellowPos.faceX}px`;
-      yellowEyes.style.top = `${30 + yellowPos.faceY}px`;
+      yellowPupilL.style.transform = `translate(${-3}px, ${-3}px)`;
+      yellowPupilR.style.transform = `translate(${-3}px, ${-3}px)`;
+      yellowEyes.style.left = `${10}px`;
+      yellowEyes.style.top = `${20}px`;
     } else {
       yellowPupilL.style.transform = `translate(${yo.x}px, ${yo.y}px)`;
       yellowPupilR.style.transform = `translate(${yo.x}px, ${yo.y}px)`;
@@ -818,17 +874,12 @@ const handleLoginError = () => {
   }, 2500);
 };
 
-const handleSubmit = () => {
-  if (!email.value || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) return;
-  step.value = "choose";
-  updateCharacters();
-};
+const validateEmail = (value: string) =>
+  /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 
-const selectExistingAccount = () => {
-  step.value = "login";
-  hasInteracted.value = true;
-  focusedField.value = "password";
-  updateCharacters();
+const handleLoginSubmit = () => {
+  if (!validateEmail(email.value) || !password.value) return;
+  emit("email", { email: email.value });
 };
 
 const selectRegisterAccount = () => {
@@ -838,24 +889,53 @@ const selectRegisterAccount = () => {
   updateCharacters();
 };
 
-const submitLogin = () => {
-  if (!password.value) return;
-  emit("email", { email: email.value });
-};
-
-const updatePasswordAnimation = () => {
+const backToLogin = () => {
+  step.value = "login";
   hasInteracted.value = true;
   focusedField.value = "password";
   updateCharacters();
 };
 
+const handleRegisterInput = () => {
+  hasInteracted.value = true;
+  updateCharacters();
+};
+
+const handleForgotPassword = () => {
+  hasInteracted.value = true;
+  isLoginError.value = true;
+  updateCharacters();
+  clearTimeout(errorRecoverTimer as any);
+  errorRecoverTimer = setTimeout(() => {
+    isLoginError.value = false;
+    updateCharacters();
+  }, 2200);
+};
+
+const sendEmailCode = () => {
+  if (!validateEmail(email.value) || codeSeconds.value > 0) return;
+  codeSeconds.value = 60;
+  if (resendHintTimer) clearTimeout(resendHintTimer);
+  if (codeTimer) clearInterval(codeTimer);
+  codeTimer = setInterval(() => {
+    codeSeconds.value = Math.max(0, codeSeconds.value - 1);
+    if (codeSeconds.value <= 0 && codeTimer) {
+      clearInterval(codeTimer);
+      codeTimer = null;
+    }
+  }, 1000);
+  resendHintTimer = setTimeout(() => {
+    if (codeSeconds.value > 0) {
+      codeSeconds.value = 59;
+    }
+  }, 50);
+};
+
 const submitRegister = () => {
-  if (
-    !username.value ||
-    !password.value ||
-    password.value !== confirmPassword.value
-  )
+  if (!firstName.value || !lastName.value || !username.value) return;
+  if (!validateEmail(email.value) || !emailCode.value || !password.value)
     return;
+  if (password.value !== confirmPassword.value) return;
   emit("email", { email: email.value });
 };
 
@@ -864,9 +944,12 @@ const onMouseMove = (e: MouseEvent) => {
   mouseY.value = e.clientY;
   pointer.x = e.clientX;
   pointer.y = e.clientY;
-  pointer.active =
-    hasInteracted.value || focusedField.value !== null || isLoginError.value;
-  if (pointer.active) updateCharacters();
+  // pointer.active =
+  //   hasInteracted.value || focusedField.value !== null || isLoginError.value;
+  //   console.log(pointer.active,'ointer.active');
+
+  // if (pointer.active)
+  updateCharacters();
 };
 
 watch(
@@ -888,8 +971,8 @@ watch(
     }
 
     nextTick(() => {
-      console.log(process.client,'process.client++');
-      
+      console.log(process.client, "process.client++");
+
       if (!process.client) return;
       updateCharacters();
       scheduleBlinkPurple();
@@ -962,9 +1045,9 @@ onBeforeUnmount(() => {
 
 .primary-btn {
   min-height: 48px;
-  border: 1px solid #ece8e1;
-  background: #f6f4ef;
-  color: #16161a;
+  border: 1px solid rgba(239, 77, 44, 0.55);
+  background: #ef4d2c;
+  color: #fff;
   font-size: 15px;
   font-weight: 600;
 }

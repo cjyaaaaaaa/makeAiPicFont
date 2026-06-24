@@ -1,28 +1,310 @@
 {
   "common": {
     "siteName": "LUMINA",
-    "language": "Language"
+    "language": "Language",
+    "close": "Close"
+  },
+  "nav": {
+    "workspace": "Workspace",
+    "pricing": "Pricing",
+    "dashboard": "Dashboard"
   },
   "auth": {
     "emailPlaceholder": "Enter your email",
-    "sendVerificationCode": "Continue",
-    "loginTip": "Supports Google sign-in or email-based login.",
-    "googleLogin": "Sign in with Google",
-    "orContinueWith": "Or continue with",
-    "chooseAccountState": "Choose your account state and we’ll switch to the matching form.",
-    "alreadyRegistered": "I’m already registered, log in",
-    "createNewAccount": "Create a new account",
-    "enterPasswordToLogin": "Enter your password to sign in.",
+    "sendVerificationCode": "Send verification code",
+    "loginTip": "Supports Google sign-in or email login.",
+    "loginTipDetail": "Enter your email and password to log in.",
+    "forgotPassword": "Forgot password",
+    "noAccountRegister": "No account? Register here",
     "passwordPlaceholder": "Password",
     "loginAction": "Log in",
     "hidePassword": "Hide",
     "showPassword": "Show",
-    "registerTip": "Fill in your registration details, including username, password and confirm password.",
+    "registerTip": "Fill in your registration details.",
+    "firstNamePlaceholder": "First name",
+    "lastNamePlaceholder": "Last name",
     "usernamePlaceholder": "Username",
     "confirmPasswordPlaceholder": "Confirm password",
-    "registerAction": "Register"
+    "emailCodePlaceholder": "Email verification code",
+    "emailCodeHint": "The code can be resent after 60 seconds.",
+    "codeResendCountdown": "Resend in {seconds}s",
+    "backToLogin": "Back to login",
+    "registerAction": "Register",
+    "googleLogin": "Sign in with Google",
+    "googleSignup": "Sign up with Google",
+    "loginSuccessTitle": "Login successful",
+    "loginSuccessMessage": "Welcome back. You are now signed in.",
+    "loginFailureTitle": "Login failed",
+    "loginFailureMessage": "Please try again later, or check your network and sign in again.",
+    "orContinueWith": "Or continue with",
+    "chooseAccountState": "Choose your account state and we’ll switch to the matching form.",
+    "alreadyRegistered": "I’m already registered, log in",
+    "createNewAccount": "Create a new account",
+    "enterPasswordToLogin": "Enter your password to sign in."
   },
   "home": {
+    "particleHero": {
+      "title": "Free Nano Banana AI Image Generation",
+      "subtitle": "Cinema-grade AI video & image studio - motion, light, detail in seconds.",
+      "placeholder": "Describe the image you want to generate...",
+      "imagePlaceholder": "Describe the image you want to generate...",
+      "videoPlaceholder": "Describe your video scene...",
+      "generationType": "Generation type",
+      "videoMode": "Video mode",
+      "imageMode": "Image mode",
+      "optional": "Optional",
+      "removeImage": "Remove image",
+      "selectModel": "Select Model",
+      "videoEngines": "Video Engines",
+      "imageEngines": "Image Engines",
+      "private": "Private",
+      "credits": "{count} credits",
+      "generate": "Generate",
+      "imageModels": [
+        { "id": "gpt-image-2", "icon": "◎", "name": "GPT Image 2", "desc": "OpenAI next-gen image model with clean composition and sharp detail.", "badge": "New", "tags": ["Text-to-Image", "Image-to-Image"] },
+        { "id": "nano-pro", "icon": "G", "name": "Nano Banana Pro", "desc": "State-of-the-art 4K visuals with flawless subject consistency.", "badge": "New", "tags": ["Multi-Image Input", "4K"] },
+        { "id": "nano", "icon": "G", "name": "Nano Banana", "desc": "Fast image generation with clean outputs and stable prompts.", "badge": "New", "tags": ["Text-to-Image", "Fast"] },
+        { "id": "nano-2", "icon": "G", "name": "Nano Banana 2", "desc": "Enhanced model with 4K output and multi-image control.", "badge": "New", "tags": ["Multi-Image Input", "4K"] }
+      ],
+      "videoModels": [
+        { "id": "veo-quality", "icon": "G", "name": "Veo 3.1 Quality", "desc": "Google leading model with precise audio sync and cinematic motion.", "badge": "Google", "tags": ["Start/End Frame", "Audio", "4K", "8 sec"] },
+        { "id": "veo-fast", "icon": "G", "name": "Veo 3.1 Fast", "desc": "Fast storytelling with synced audio and reliable prompt control.", "badge": "Google", "tags": ["Start/End Frame", "Audio", "4K", "8 sec"] },
+        { "id": "veo-lite", "icon": "G", "name": "Veo 3.1 Lite", "desc": "Most economical option for high-volume video creation.", "badge": "Google", "tags": ["Start/End Frame", "Audio", "8 sec"] },
+        { "id": "seedance-fast", "icon": "S", "name": "Seedance 2 Fast", "desc": "Fast video generation with flexible reference control.", "badge": "New", "tags": ["First/Last Frame", "Reference", "4-15s"] },
+        { "id": "seedance", "icon": "S", "name": "Seedance 2", "desc": "High-quality video generation with cinema-grade movement.", "badge": "New", "tags": ["First/Last Frame", "Reference", "4-15s"] }
+      ],
+      "workModes": [
+        { "id": "text", "icon": "✧", "label": "Text" },
+        { "id": "first-last", "icon": "▦", "label": "First & Last" },
+        { "id": "reference", "icon": "▧", "label": "Reference" }
+      ]
+    },
+    "editingCases": {
+      "eyebrow": "AI IMAGE EDITING",
+      "title": "Reimagine with Nano Banana AI",
+      "desc": "Transform a single image into multiple scenes, styles, and moods with one click.",
+      "items": [
+        {
+          "id": "sceneSwap",
+          "badge": "Stone Hall",
+          "play": "Edit Play #01",
+          "title": "Scene Swap",
+          "desc": "Put your subject in any scene while preserving identity, light, and visual consistency.",
+          "cta": "Try it now",
+          "tabs": ["Original", "Stone Hall", "Desert Horizon", "Coastal Cliff"],
+          "tags": ["Scene edit", "Background remix"]
+        },
+        {
+          "id": "adRemix",
+          "badge": "Craftsmanship",
+          "play": "Edit Play #02",
+          "title": "Ad Remix",
+          "desc": "Turn one product photo into multiple ad styles for product pages and campaigns.",
+          "cta": "Try it now",
+          "tabs": ["Original", "Wrist Detail", "Boutique Display", "Craftsmanship"],
+          "tags": ["Product edit", "Campaign"]
+        },
+        {
+          "id": "moodLight",
+          "badge": "Day",
+          "badgeTone": "yellow",
+          "play": "Edit Play #03",
+          "title": "Mood & Light",
+          "desc": "Change the light, weather, and time of day in any photo.",
+          "cta": "Try it now",
+          "tabs": ["Day", "Night", "Sunset", "Snowy Winter"],
+          "tags": ["Lighting", "Weather"]
+        },
+        {
+          "id": "portraitStyles",
+          "badge": "Romantic Painterly",
+          "play": "Edit Play #04",
+          "title": "Portrait Styles",
+          "desc": "Get different portrait styles from one photo while keeping the same face and character.",
+          "cta": "Try it now",
+          "tabs": ["Luxury Dark", "Vintage Film", "Bold Fashion Color", "Romantic Painterly"],
+          "tags": ["Portrait", "Close-up"]
+        }
+      ]
+    },
+    "models": {
+      "title": "Our Models",
+      "desc": "Image and video models built for every creative need.",
+      "action": "Try Models",
+      "items": [
+        { "id": "gptImage2", "name": "GPT Image 2", "kind": "image", "kindLabel": "Image" },
+        { "id": "nanoBanana2", "name": "Nano Banana 2", "kind": "image", "kindLabel": "Image" },
+        { "id": "nanoBananaPro", "name": "Nano Banana Pro", "kind": "video", "kindLabel": "Video" },
+        { "id": "veo31", "name": "Veo 3.1", "kind": "video", "kindLabel": "Video" },
+        { "id": "seedanceFast", "name": "Seedance 2 Fast", "kind": "video", "kindLabel": "Video" },
+        { "id": "seedance2", "name": "Seedance 2", "kind": "video", "kindLabel": "Video" }
+      ]
+    },
+    "inspiration": {
+      "eyebrow": "Made by creators",
+      "title": "Get Inspired by Nano Banana AI",
+      "desc": "See what others are creating with Nano Banana AI.",
+      "toggleLabel": "Inspiration type",
+      "imagesTab": "Images",
+      "videosTab": "Videos",
+      "promptAction": "Try this prompt",
+      "ctaTitle": "Start Creating",
+      "ctaDesc": "Make your first image or video in seconds.",
+      "primaryAction": "Try it now",
+      "secondaryAction": "Browse All",
+      "images": [
+        { "id": "veilPortrait", "alt": "Veiled portrait by a lake", "code": "NB-2", "title": "La Concha Dawn", "prompt": "Soft-focus close-up of a woman with porcelain skin, dark wet hair slicked back, fine droplets of seawater visible.", "size": "lg" },
+        { "id": "runwayFace", "alt": "Sunglasses portrait with runway styling", "code": "NB-4", "title": "Runway Echo", "prompt": "Oversized sunglasses portrait with a miniature fashion model emerging from the reflective frame.", "size": "md" },
+        { "id": "limeJewelry", "alt": "Jewelry necklace on lime slices", "code": "NB-8", "title": "Citrus Jewel", "prompt": "Product still life with bright lime slices, delicate jewelry, soft studio light, crisp macro texture.", "size": "sm" },
+        { "id": "jellyfishLamp", "alt": "Blue jellyfish lamp artwork", "code": "NB-9", "title": "Aquatic Atelier", "prompt": "Handmade jellyfish lamp in a cluttered artist studio, teal glass, books, paint tools, documentary realism.", "size": "md" },
+        { "id": "mirrorMakeup", "alt": "Vintage mirror makeup portrait", "code": "NB-3", "title": "Mirror Flash", "prompt": "Bedroom mirror portrait, lipstick gesture, pink crop top, warm flash, candid editorial energy.", "size": "md" },
+        { "id": "streetFashion", "alt": "Street fashion portrait", "code": "NB-5", "title": "Alley Fur", "prompt": "Street fashion portrait against cracked plaster, faux fur coat, confident stance, gritty daylight.", "size": "md" },
+        { "id": "poodleStyle", "alt": "Stylish pet portrait on pink background", "code": "NB-10", "title": "Pearl Poodle", "prompt": "Pampered poodle portrait with pearls and satin turban, pastel studio backdrop, humorous luxury styling.", "size": "sm" },
+        { "id": "winterFriends", "alt": "Three friends in winter fashion", "code": "NB-11", "title": "Winter Trio", "prompt": "Three friends in layered coats and sunglasses, fashion campaign pose, clean studio background.", "size": "sm" },
+        { "id": "botanicalFace", "alt": "Botanical portrait with petals near the face", "code": "NB-12", "title": "Pressed Flowers", "prompt": "Quiet portrait with translucent flowers across the face, moody natural light, painterly softness.", "size": "md" },
+        { "id": "forestPanther", "alt": "Cinematic forest scene with a black panther", "code": "NB-13", "title": "Forest Pact", "prompt": "Cinematic woman and black panther close together in lush green forest, dramatic natural light.", "size": "md" },
+        { "id": "breakfastStill", "alt": "Breakfast still life by a window", "code": "NB-6", "title": "Morning Table", "prompt": "Toast and tea still life on patterned cloth beside a window, nostalgic breakfast editorial.", "size": "md" },
+        { "id": "flowerPortrait", "alt": "Portrait styled with flower petals", "code": "NB-14", "title": "Petal Drift", "prompt": "Dreamy portrait with soft flower petals and pastel haze, delicate fashion beauty mood.", "size": "sm" },
+        { "id": "martiniHand", "alt": "Martini glass against blue drapery", "code": "NB-15", "title": "Velvet Martini", "prompt": "Hand holding a martini glass against deep blue velvet, jewelry detail, cinematic cocktail ad.", "size": "lg" },
+        { "id": "neonCocktail", "alt": "Neon cocktail with colorful light", "code": "NB-16", "title": "Neon Sip", "prompt": "Colorful cocktail on a glossy bar with neon geometric lighting, high-end nightlife campaign.", "size": "md" },
+        { "id": "lipstickStill", "alt": "Lipstick still life with flower petals", "code": "NB-17", "title": "Rose Finish", "prompt": "Luxury lipstick still life with dewy pink petals, soft macro focus, premium beauty product ad.", "size": "sm" },
+        { "id": "stoneFashion", "alt": "Black gown on stone architecture steps", "code": "NB-7", "title": "Column Drama", "prompt": "Black couture gown on monumental stone steps, dramatic fabric movement, editorial architecture.", "size": "xl" },
+        { "id": "blueDoor", "alt": "Minimal blue door on a pastel wall", "code": "NB-18", "title": "Blue Door Noon", "prompt": "Minimal pastel facade with a bright blue door, hard sun, quiet travel postcard composition.", "size": "sm" },
+        { "id": "poppyMacro", "alt": "Pink poppy flower macro", "code": "NB-19", "title": "Poppy Macro", "prompt": "Close-up pink poppy with dark center, rich botanical texture, shallow depth of field.", "size": "sm" },
+        { "id": "gardenBike", "alt": "Pink bicycle outside a garden cottage", "code": "NB-20", "title": "Garden Ride", "prompt": "Pastel bicycle leaning outside a flower-covered cottage, romantic countryside lifestyle scene.", "size": "md" },
+        { "id": "sidewalkScene", "alt": "Cinematic city sidewalk scene", "code": "NB-21", "title": "Sidewalk Cut", "prompt": "Wide city sidewalk with a small cinematic action moment, muted daylight, documentary framing.", "size": "md" }
+      ],
+      "videos": [
+        { "id": "stoneFashion", "alt": "Video inspiration: fashion shot on architectural steps", "code": "NV-1", "title": "Fabric Ascend", "prompt": "Slow cinematic fashion shot, black gown moving across stone architecture, wind and soft camera drift.", "size": "xl" },
+        { "id": "martiniHand", "alt": "Video inspiration: cocktail hand close-up", "code": "NV-2", "title": "Velvet Pour", "prompt": "Close-up cocktail hand movement against blue velvet, jewelry sparkle, slow luxury commercial motion.", "size": "lg" },
+        { "id": "forestPanther", "alt": "Video inspiration: cinematic forest frame", "code": "NV-3", "title": "Forest Breath", "prompt": "Subtle breathing close-up in a mossy forest, woman and black panther holding still eye contact.", "size": "md" },
+        { "id": "neonCocktail", "alt": "Video inspiration: neon cocktail scene", "code": "NV-4", "title": "Neon Tilt", "prompt": "Camera pushes toward a colorful cocktail while neon reflections glide across the glass.", "size": "md" },
+        { "id": "mirrorMakeup", "alt": "Video inspiration: vintage selfie makeup", "code": "NV-5", "title": "Lipstick Flash", "prompt": "Candid mirror video of lipstick application, warm room light, handheld editorial motion.", "size": "md" },
+        { "id": "gardenBike", "alt": "Video inspiration: garden bicycle scene", "code": "NV-6", "title": "Garden Drift", "prompt": "Soft tracking shot past a pastel bicycle and cottage garden, flowers moving in the breeze.", "size": "md" },
+        { "id": "veilPortrait", "alt": "Video inspiration: windy veil portrait by water", "code": "NV-7", "title": "Veil Wind", "prompt": "Close portrait by the water, translucent fabric moving across the face in slow wind.", "size": "lg" },
+        { "id": "winterFriends", "alt": "Video inspiration: winter streetwear group", "code": "NV-8", "title": "Streetwalk Trio", "prompt": "Three models walk toward camera in winter coats, crisp studio lighting, campaign energy.", "size": "sm" }
+      ]
+    },
+    "creation": {
+      "startTitle": "Start Creating",
+      "startDesc": "Make your first image or video in seconds.",
+      "primaryAction": "Try it now",
+      "secondaryAction": "Browse All",
+      "title": "What can you create",
+      "desc": "Use a few words to turn ideas into striking visual stories.",
+      "kicker": "Nano Banana AI",
+      "itemAction": "Try it now",
+      "templatesEyebrow": "Nano Banana AI Prompt Templates",
+      "templatesTitle": "Start with templates",
+      "templatesDesc": "Choose a template, tune the prompt, and start creating in one click.",
+      "items": [
+        { "id": "scenes", "title": "Panoramic Scenes", "desc": "Create 4:1 and 8:1 wide scenes for landscapes, architecture, interiors, and cinematic storyboards.", "layout": "wide" },
+        { "id": "portraits", "title": "Fashion & Portraits", "desc": "Generate natural skin, styling, poses, and atmosphere for fashion editorials, character concepts, and portrait shoots.", "layout": "poster" },
+        { "id": "products", "title": "Product Visuals", "desc": "Build clean product imagery with realistic materials, controlled light, and premium compositions for commerce and campaigns.", "layout": "grid" },
+        { "id": "consistency", "title": "Visual Consistency", "desc": "Keep style, identity, color, and story consistent across multiple images so every output feels like one coherent series.", "layout": "mosaic" }
+      ]
+    },
+    "promptTemplates": {
+      "eyebrow": "Nano Banana AI Prompt Templates",
+      "title": "Start with templates",
+      "desc": "Choose a template, tune the prompt, and start creating in one click.",
+      "tabsLabel": "Template categories",
+      "useAction": "Use template",
+      "tabs": [
+        {
+          "id": "people",
+          "label": "People",
+          "cards": [
+            { "id": "monoPortrait", "title": "Monochrome Portrait", "alt": "Black and white portrait in a car window" },
+            { "id": "groupPortrait", "title": "Group Portrait", "alt": "Three people standing in a city street" },
+            { "id": "beautyCloseup", "title": "Beauty Close-up", "alt": "Glitter makeup close-up" },
+            { "id": "candidShot", "title": "Candid Shot", "alt": "Candid friends at a cafe table" },
+            { "id": "streetStyle", "title": "Street Style Portrait", "alt": "Street style portrait with yellow sunglasses" }
+          ]
+        },
+        {
+          "id": "fashion",
+          "label": "Fashion",
+          "cards": [
+            { "id": "editorialCoat", "title": "Editorial Coat", "alt": "Editorial fashion coat portrait" },
+            { "id": "runwayFrame", "title": "Runway Frame", "alt": "Runway-style portrait" },
+            { "id": "urbanLook", "title": "Urban Lookbook", "alt": "Urban fashion lookbook" },
+            { "id": "silkPortrait", "title": "Silk Portrait", "alt": "Soft silk fashion portrait" },
+            { "id": "studioPose", "title": "Studio Pose", "alt": "Studio fashion pose" }
+          ]
+        },
+        {
+          "id": "scenery",
+          "label": "Scenery",
+          "cards": [
+            { "id": "coastalDream", "title": "Coastal Dream", "alt": "Coastal sunset landscape" },
+            { "id": "cityTerrace", "title": "City Terrace", "alt": "City terrace at sunset" },
+            { "id": "desertLight", "title": "Desert Light", "alt": "Desert landscape in natural light" },
+            { "id": "forestPath", "title": "Forest Path", "alt": "Forest path scenery" },
+            { "id": "blueDoor", "title": "Pastel Door", "alt": "Pastel wall with blue door" }
+          ]
+        },
+        {
+          "id": "product",
+          "label": "Product",
+          "cards": [
+            { "id": "watchStill", "title": "Watch Still Life", "alt": "Watch product still life" },
+            { "id": "minimalSpeaker", "title": "Minimal Speaker", "alt": "Minimal speaker product visual" },
+            { "id": "cosmeticSet", "title": "Cosmetic Set", "alt": "Cosmetic product set" },
+            { "id": "drinkAd", "title": "Drink Campaign", "alt": "Drink advertising visual" },
+            { "id": "deskObject", "title": "Desk Object", "alt": "Desk object product still life" }
+          ]
+        },
+        {
+          "id": "whimsical",
+          "label": "Whimsical",
+          "cards": [
+            { "id": "poodleStyle", "title": "Pearl Poodle", "alt": "Stylish poodle portrait" },
+            { "id": "jellyfishLamp", "title": "Jellyfish Lamp", "alt": "Jellyfish lamp artwork" },
+            { "id": "limeJewelry", "title": "Citrus Jewel", "alt": "Jewelry on lime slices" },
+            { "id": "flowerFace", "title": "Pressed Flowers", "alt": "Portrait with flowers" },
+            { "id": "neonGlass", "title": "Neon Glass", "alt": "Neon cocktail glass" }
+          ]
+        }
+      ]
+    },
+    "audience": {
+      "title": "Who is it for",
+      "desc": "Anyone who needs to quickly produce high-quality visual content can use Nano Banana AI.",
+      "items": [
+        { "id": "creators", "icon": "palette", "title": "For creators", "desc": "Turn ideas directly into visual work without design experience.", "accent": true },
+        { "id": "designers", "icon": "camera", "title": "For designers", "desc": "Quickly generate moodboards, UI assets, and brand materials without leaving your workflow." },
+        { "id": "marketing", "icon": "briefcase", "title": "For marketing teams", "desc": "Create ad visuals and campaign assets in seconds." },
+        { "id": "commerce", "icon": "cart", "title": "For ecommerce", "desc": "Produce professional product images without a photoshoot, saving time and cost." },
+        { "id": "social", "icon": "share", "title": "For social content", "desc": "Create eye-catching, easy-to-share content for any platform." },
+        { "id": "storytelling", "icon": "book", "title": "For storytelling", "desc": "Rapidly build characters and scenes for your next story or project." }
+      ]
+    },
+    "finalPrompt": {
+      "title": "Ready to start creating?",
+      "desc": "Enter one prompt and get your first image in seconds. Free credits included.",
+      "tagsLabel": "Creation capability tags",
+      "inputLabel": "Describe what you want to create",
+      "placeholder": "Describe what you want to create...",
+      "action": "Start generating",
+      "tags": ["4K resolution", "Multiple AI models", "Ready templates", "Image editing", "Fast generation", "Panorama support", "Product images", "Video generation", "Free credits", "Commercial use", "No design experience"]
+    },
+    "footer": {
+      "brandName": "Nano Banana AI",
+      "desc": "AI-powered image generation with refined detail, realistic lighting, and limitless creative styles.",
+      "companyTitle": "Company",
+      "productsTitle": "Products",
+      "resourcesTitle": "Resources",
+      "contact": "Contact",
+      "home": "Home",
+      "pricing": "Pricing",
+      "terms": "Terms of Service",
+      "privacy": "Privacy Policy",
+      "refund": "Refund Policy",
+      "languageLabel": "Languages",
+      "copyright": "© {year} Nano Banana AI. All rights reserved.",
+      "slogan": "Built for creators"
+    },
     "hero": {
       "eyebrow": "AI studio / create with voice",
       "title1": "Create stunning audio",

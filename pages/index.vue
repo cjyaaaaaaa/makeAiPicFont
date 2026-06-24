@@ -1,16 +1,25 @@
 <template>
-	<div class="bg-[#f6f2ea] ">
-		<!-- <HeroSection /> -->
-		<FeaturesSection />
-		<StepsSection />
-		<GallerySection />
-		<CtaSection />
+	<div class="bg-[#15161a]">
+		<ParticleHero />
+		<EditingCasesSection />
+		<ModelsSection />
+		<InspirationSection />
+		<CreationPossibilitiesSection />
+		<PromptTemplatesSection />
+		<AudienceSection />
+		<FinalPromptSection />
+		<!-- <SiteFooterSection /> -->
 	</div>
 </template>
 
 <script setup lang="ts">
-import FeaturesSection from '~/components/home/FeaturesSection.vue'
-import StepsSection from '~/components/home/StepsSection.vue'
-import GallerySection from '~/components/home/GallerySection.vue'
-import CtaSection from '~/components/home/CtaSection.vue'
+import ParticleHero from '~/components/home/ParticleHero.vue'
+import EditingCasesSection from '~/components/home/EditingCasesSection.vue'
+import ModelsSection from '~/components/home/ModelsSection.vue'
+import InspirationSection from '~/components/home/InspirationSection.vue'
+import CreationPossibilitiesSection from '~/components/home/CreationPossibilitiesSection.vue'
+import PromptTemplatesSection from '~/components/home/PromptTemplatesSection.vue'
+import AudienceSection from '~/components/home/AudienceSection.vue'
+import FinalPromptSection from '~/components/home/FinalPromptSection.vue'
+// import SiteFooterSection from '~/components/home/SiteFooterSection.vue'
 </script>

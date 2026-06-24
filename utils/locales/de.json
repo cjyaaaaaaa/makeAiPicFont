@@ -125,6 +125,36 @@
       "buyNow": "Jetzt kaufen",
       "addToCart": "Zum Warenkorb hinzufügen"
     },
+    "home": {
+      "inspiration": {
+        "promptAction": "Prompt testen"
+      },
+      "finalPrompt": {
+        "title": "Bereit zum Erstellen?",
+        "desc": "Gib einen Prompt ein und erhalte in wenigen Sekunden dein erstes Bild. Kostenlose Credits inklusive.",
+        "tagsLabel": "Kreativfunktionen",
+        "inputLabel": "Beschreibe, was du erstellen möchtest",
+        "placeholder": "Beschreibe, was du erstellen möchtest...",
+        "action": "Generieren",
+        "tags": ["4K-Auflösung", "Mehrere KI-Modelle", "Fertige Vorlagen", "Bildbearbeitung", "Schnelle Generierung", "Panorama-Support", "Produktbilder", "Videogenerierung", "Kostenlose Credits", "Kommerziell nutzbar", "Keine Designerfahrung"]
+      },
+      "footer": {
+        "brandName": "Nano Banana AI",
+        "desc": "KI-gestützte Bildgenerierung mit feinen Details, realistischer Beleuchtung und grenzenlosen Kreativstilen.",
+        "companyTitle": "Unternehmen",
+        "productsTitle": "Produkte",
+        "resourcesTitle": "Ressourcen",
+        "contact": "Kontakt",
+        "home": "Startseite",
+        "pricing": "Preise",
+        "terms": "Nutzungsbedingungen",
+        "privacy": "Datenschutzrichtlinie",
+        "refund": "Rückerstattungsrichtlinie",
+        "languageLabel": "Sprachen",
+        "copyright": "© {year} Nano Banana AI. Alle Rechte vorbehalten.",
+        "slogan": "Für Kreative gemacht"
+      }
+    },
     "freeGift": {
       "title": "Zeitbegrenzte kostenlose Geschenke",
       "label": "Kostenlos"

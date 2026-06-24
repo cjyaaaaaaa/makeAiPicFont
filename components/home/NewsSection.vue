@@ -30,18 +30,18 @@ const items = computed(() => t('home.news.items') as Array<{ title: string; date
 </script>
 
 <style scoped lang="scss">
-.section-white { padding: 84px 0; background: #fff; }
+.section-white { padding: 84px 0; background: #0b0f19; color: #f8fafc; }
 .section-header { display: flex; justify-content: space-between; gap: 24px; align-items: end; margin-bottom: 30px; }
-.eyebrow { font-size: 12px; letter-spacing: .24em; text-transform: uppercase; color: #ff5a3d; margin-bottom: 16px; }
+.eyebrow { font-size: 12px; letter-spacing: .24em; text-transform: uppercase; color: #ef4d2c; margin-bottom: 16px; }
 .section-heading { font-size: clamp(30px, 3vw, 48px); line-height: 1.05; margin: 0; }
-.section-desc { color: #7b7f87; margin-top: 18px; max-width: 560px; font-size: 16px; line-height: 1.7; }
+.section-desc { color: #a8b3c7; margin-top: 18px; max-width: 560px; font-size: 16px; line-height: 1.7; }
 .compact { max-width: 420px; }
 .news-layout { display: grid; grid-template-columns: 1.1fr .9fr; gap: 28px; align-items: start; }
-.news-feature { min-height: 340px; border-radius: 22px; background: linear-gradient(135deg,#dce6f7,#8fb1ff); }
+.news-feature { min-height: 340px; border-radius: 22px; background: linear-gradient(135deg,#4a160f,#ef4d2c); }
 .news-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 18px; }
-.news-list li { display: flex; gap: 14px; align-items: flex-start; padding-bottom: 18px; border-bottom: 1px solid #ece7df; }
-.news-index { display: inline-flex; min-width: 48px; justify-content: center; padding: 6px 10px; border-radius: 6px; background: #f54a2a; color: #fff; font-weight: 700; }
+.news-list li { display: flex; gap: 14px; align-items: flex-start; padding-bottom: 18px; border-bottom: 1px solid rgba(255,255,255,.1); }
+.news-index { display: inline-flex; min-width: 48px; justify-content: center; padding: 6px 10px; border-radius: 6px; background: #ef4d2c; color: #fff; font-weight: 700; }
 .news-content h3 { margin: 0 0 8px; font-size: 18px; }
-.news-content time { color: #9b9ea6; font-size: 14px; }
+.news-content time { color: #7f8da5; font-size: 14px; }
 @media (max-width: 1024px) { .section-header { grid-template-columns: 1fr; display: grid; } .news-layout { grid-template-columns: 1fr; } }
 </style>

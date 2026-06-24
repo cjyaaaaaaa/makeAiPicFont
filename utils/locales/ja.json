@@ -125,6 +125,36 @@
     "buyNow": "今すぐ購入",
     "addToCart": "カートに追加"
   },
+  "home": {
+    "inspiration": {
+      "promptAction": "このプロンプトを試す"
+    },
+    "finalPrompt": {
+      "title": "創作を始める準備はできましたか？",
+      "desc": "プロンプトを1つ入力するだけで、数秒で最初の画像を生成できます。無料クレジット付き。",
+      "tagsLabel": "作成機能タグ",
+      "inputLabel": "作成したい内容を説明",
+      "placeholder": "作成したい内容を説明...",
+      "action": "生成を開始",
+      "tags": ["4K解像度", "複数のAIモデル", "テンプレート", "画像編集", "高速生成", "パノラマ対応", "商品画像", "動画生成", "無料クレジット", "商用利用可", "デザイン経験不要"]
+    },
+    "footer": {
+      "brandName": "Nano Banana AI",
+      "desc": "精細なディテール、リアルな光、無限の創造スタイルを備えたAI画像生成。",
+      "companyTitle": "会社",
+      "productsTitle": "製品",
+      "resourcesTitle": "リソース",
+      "contact": "お問い合わせ",
+      "home": "ホーム",
+      "pricing": "料金",
+      "terms": "利用規約",
+      "privacy": "プライバシーポリシー",
+      "refund": "返金ポリシー",
+      "languageLabel": "言語",
+      "copyright": "© {year} Nano Banana AI. All rights reserved.",
+      "slogan": "クリエイターのために"
+    }
+  },
   "freeGift": {
     "title": "限定時間の無料ギフト",
     "label": "無料"
