@@ -5,7 +5,7 @@ export interface ThirdPartyLoginPayload {
 
 export interface SendEmailCodePayload {
 	email: string
-	purpose: 'register' | 'reset_password' | 'set_password'
+	purpose: 'user_register' | 'reset_password' | 'set_password'
 }
 
 export interface ApiResponse<T> {
@@ -47,7 +47,7 @@ export const thirdPartyLoginController = (data: ThirdPartyLoginPayload) => {
 
 export const sendEmailCodeController = async (
 	email: string,
-	purpose: SendEmailCodePayload['purpose'] = 'register',
+	purpose: SendEmailCodePayload['purpose'] = 'user_register',
 ) => {
 	const request = useRequest()
 	try {
@@ -61,3 +61,25 @@ export const sendEmailCodeController = async (
 		return false
 	}
 }
+
+export interface RegisterUserPayload {
+	email: string
+	password: string
+	code: string
+	nickName: string
+}
+
+export interface RegisterUserResponse {
+	token: string
+}
+
+// 注册账号
+export const registerUserController = async (data: RegisterUserPayload) => {
+	const request = useRequest()
+	return request<ApiResponse<RegisterUserResponse>>('/user/auth/email/register', {
+		method: 'POST',
+		body: data,
+	})
+}
+
+// 登录
