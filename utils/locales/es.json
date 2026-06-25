@@ -81,6 +81,12 @@
     "inTotal": "en total",
     "overView": "Resumen"
   },
+  "auth": {
+    "emailCodeSentTitle": "Código enviado",
+    "emailCodeSentMessage": "Revisa tu correo e introduce el código de verificación.",
+    "emailCodeFailedTitle": "No se pudo enviar el código",
+    "emailCodeFailedMessage": "Revisa la dirección de correo o inténtalo más tarde."
+  },
   "expand": {
     "showLess": "Mostrar menos",
     "showMore": "Mostrar más"

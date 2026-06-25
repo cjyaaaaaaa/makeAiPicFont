@@ -47,6 +47,7 @@ import { thirdPartyLoginController } from '~/api/user/index'
 
 const { t, locale, setLocale } = useI18n()
 const { showTipToast } = useTipToast()
+const { setToken, loadUser, initUser } = useUser()
 const openLang = ref(false)
 const openLogin = ref(false)
 const langIcon = 'https://www.figma.com/api/mcp/asset/9c05c4e0-221b-4086-b844-b3abcd3e742e'
@@ -68,6 +69,25 @@ const switchLanguage = (code: 'zh' | 'en' | 'de' | 'es' | 'ja') => { setLocale(c
 const GOOGLE_CLIENT_ID = '1007188045137-69g86626b9559hr20bfg3qm7d9oprnfm.apps.googleusercontent.com'
 const googleScriptReady = ref(false)
 const googleCredential = ref('')
+
+const resolveLoginToken = (response: unknown) => {
+	if (typeof response === 'string') return response
+	if (!response || typeof response !== 'object') return ''
+
+	const payload = response as {
+		data?: string | {
+			token?: string
+			accessToken?: string
+			access_token?: string
+		}
+		token?: string
+		accessToken?: string
+		access_token?: string
+	}
+
+	if (typeof payload.data === 'string') return payload.data
+	return payload.data?.token ?? payload.data?.accessToken ?? payload.data?.access_token ?? payload.token ?? payload.accessToken ?? payload.access_token ?? ''
+}
 
 const loadGoogleScript = () => {
 	if (process.client && window.google?.accounts?.id) {
@@ -109,13 +129,19 @@ const initializeGoogleLogin = async () => {
 		client_id: GOOGLE_CLIENT_ID,
 		callback: async (response: { credential?: string }) => {
 			if (!response.credential) return
-
+            console.log(response.credential,'response.credential++++');
+			
 			try {
 				googleCredential.value = response.credential
-				await thirdPartyLoginController({
+				const loginResponse = await thirdPartyLoginController({
 					provider: 'google',
 					credential: response.credential,
 				})
+				const token = resolveLoginToken(loginResponse)
+				if (token) {
+					setToken(token)
+					await loadUser()
+				}
 				openLogin.value = false
 				showTipToast({
 					type: 'success',
@@ -145,6 +171,7 @@ const handleEmailLogin = (payload: { email: string }) => {
 
 onMounted(() => {
 	if (process.client) {
+		void initUser()
 		void initializeGoogleLogin()
 	}
 })

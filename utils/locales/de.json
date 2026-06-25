@@ -93,6 +93,12 @@
       "inTotal": "insgesamt",
       "overView": "Übersicht"
     },
+    "auth": {
+      "emailCodeSentTitle": "Bestätigungscode gesendet",
+      "emailCodeSentMessage": "Bitte prüfe dein Postfach und gib den Code ein.",
+      "emailCodeFailedTitle": "Code konnte nicht gesendet werden",
+      "emailCodeFailedMessage": "Bitte prüfe die E-Mail-Adresse oder versuche es später erneut."
+    },
     "expand": {
       "showLess": "Weniger anzeigen",
       "showMore": "Mehr anzeigen"

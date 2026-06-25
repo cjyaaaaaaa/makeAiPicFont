@@ -93,6 +93,12 @@
     "inTotal": "合計",
     "overView": "概要"
   },
+  "auth": {
+    "emailCodeSentTitle": "認証コードを送信しました",
+    "emailCodeSentMessage": "メールを確認し、認証コードを入力してください。",
+    "emailCodeFailedTitle": "コードを送信できませんでした",
+    "emailCodeFailedMessage": "メールアドレスを確認するか、後でもう一度お試しください。"
+  },
   "expand": {
     "showLess": "簡略表示",
     "showMore": "もっと見る"

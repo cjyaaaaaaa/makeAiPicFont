@@ -2,7 +2,9 @@
   "common": {
     "siteName": "LUMINA",
     "language": "语言",
-    "close": "关闭"
+    "close": "关闭",
+    "requestErrorTitle": "请求失败",
+    "requestErrorMessage": "服务返回异常，请稍后重试。"
   },
   "nav": {
     "workspace": "工作台",
@@ -28,6 +30,10 @@
     "emailCodePlaceholder": "邮箱验证码",
     "emailCodeHint": "验证码 60 秒后可重新发送。",
     "codeResendCountdown": "{seconds}s 后重发",
+    "emailCodeSentTitle": "验证码已发送",
+    "emailCodeSentMessage": "请查看邮箱并输入验证码。",
+    "emailCodeFailedTitle": "验证码发送失败",
+    "emailCodeFailedMessage": "请检查邮箱地址或稍后重试。",
     "backToLogin": "返回登录",
     "registerAction": "注册",
     "googleLogin": "使用 Google 登录",

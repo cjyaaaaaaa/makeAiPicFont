@@ -1,8 +1,9 @@
 import { getUser } from '../api/user'
 
 export const useUserService = () => {
-	const fetchUser = () => {
-		return getUser()
+	const fetchUser = async () => {
+		const response = await getUser()
+		return response.data
 	}
 
 	return {

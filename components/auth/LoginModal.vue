@@ -284,7 +284,11 @@
                         <button
                           type="button"
                           class="secondary-btn min-h-[48px] whitespace-normal px-3 text-[13px] leading-tight sm:w-[110px]"
-                          :disabled="codeSeconds > 0 || !email"
+                          :disabled="
+                            sendingEmailCode ||
+                            codeSeconds > 0 ||
+                            !validateEmail(email)
+                          "
                           @click="sendEmailCode"
                         >
                           <span class="block text-center">
@@ -347,6 +351,7 @@
                     <button
                       type="button"
                       class="text-[12px] text-white/55 transition hover:text-white"
+                      @click="backToLogin"
                     >
                       {{ t("auth.backToLogin") }}
                     </button>
@@ -371,6 +376,7 @@ import {
   nextTick,
 } from "vue";
 import { useI18n } from "~/composables/useI18n";
+import { sendEmailCodeController } from "~/api/user";
 const props = defineProps<{ open: boolean }>();
 const emit = defineEmits<{
   (e: "close"): void;
@@ -378,18 +384,18 @@ const emit = defineEmits<{
   (e: "email", payload: { email: string }): void;
 }>();
 const { t } = useI18n();
+const { showTipToast } = useTipToast();
 
 const emailInput = ref<HTMLInputElement | null>(null);
 const passwordInput = ref<HTMLInputElement | null>(null);
 
 const email = ref("");
-const firstName = ref("");
-const lastName = ref("");
 const username = ref("");
 const password = ref("");
 const confirmPassword = ref("");
 const emailCode = ref("");
 const codeSeconds = ref(0);
+const sendingEmailCode = ref(false);
 const step = ref<"login" | "register">("login");
 const showPassword = ref(false);
 
@@ -442,16 +448,10 @@ const clearAllTimers = () => {
     clearTimeout(resendHintTimer);
     resendHintTimer = null;
   }
-  if (codeTimer) {
-    clearInterval(codeTimer);
-    codeTimer = null;
-  }
 };
 
 const resetFormState = () => {
   email.value = "";
-  firstName.value = "";
-  lastName.value = "";
   username.value = "";
   password.value = "";
   confirmPassword.value = "";
@@ -912,8 +912,7 @@ const handleForgotPassword = () => {
   }, 2200);
 };
 
-const sendEmailCode = () => {
-  if (!validateEmail(email.value) || codeSeconds.value > 0) return;
+const startEmailCodeCountdown = () => {
   codeSeconds.value = 60;
   if (resendHintTimer) clearTimeout(resendHintTimer);
   if (codeTimer) clearInterval(codeTimer);
@@ -931,8 +930,35 @@ const sendEmailCode = () => {
   }, 50);
 };
 
+const sendEmailCode = async () => {
+  const normalizedEmail = email.value.trim();
+
+  if (codeSeconds.value > 0 || sendingEmailCode.value) return;
+
+  if (!validateEmail(normalizedEmail)) {
+    handleLoginError();
+    return;
+  }
+  sendingEmailCode.value = true;
+  const sent = await sendEmailCodeController(normalizedEmail);
+  sendingEmailCode.value = false;
+
+  if (!sent) {
+    handleLoginError();
+    return;
+  }
+
+  email.value = normalizedEmail;
+  startEmailCodeCountdown();
+  showTipToast({
+    type: "success",
+    title: t("auth.emailCodeSentTitle"),
+    message: t("auth.emailCodeSentMessage"),
+  });
+};
+
 const submitRegister = () => {
-  if (!firstName.value || !lastName.value || !username.value) return;
+  if (!username.value) return;
   if (!validateEmail(email.value) || !emailCode.value || !password.value)
     return;
   if (password.value !== confirmPassword.value) return;
