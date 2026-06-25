@@ -302,23 +302,11 @@
                           }}
                         </button>
                       </div>
-                      <div class="relative">
-                        <input
-                          id="register-confirm-password-input"
-                          v-model.trim="confirmPassword"
-                          :type="showPassword ? 'text' : 'password'"
-                          :placeholder="t('auth.confirmPasswordPlaceholder')"
-                          class="field-input pr-12"
-                          autocomplete="new-password"
-                          @focus="handleConfirmPasswordFocus"
-                          @input="handleConfirmPasswordInput"
-                        />
-                      </div>
                     </div>
                     <button
                       type="button"
                       class="primary-btn"
-                      @click="submitRegister"
+                      @click="registerUser"
                     >
                       {{ t("auth.registerAction") }}
                     </button>
@@ -350,7 +338,7 @@ import {
   nextTick,
 } from "vue";
 import { useI18n } from "~/composables/useI18n";
-import { sendEmailCodeController } from "~/api/user";
+import { sendEmailCodeController, registerUserController } from "~/api/user";
 const props = defineProps<{ open: boolean }>();
 const emit = defineEmits<{
   (e: "close"): void;
@@ -359,8 +347,8 @@ const emit = defineEmits<{
 }>();
 const { t } = useI18n();
 const { showTipToast } = useTipToast();
+const { setToken, loadUser } = useUser()
 
-const emailInput = ref<HTMLInputElement | null>(null);
 const passwordInput = ref<HTMLInputElement | null>(null);
 
 const email = ref("");
@@ -428,7 +416,6 @@ const resetFormState = () => {
   email.value = "";
   username.value = "";
   password.value = "";
-  confirmPassword.value = "";
   emailCode.value = "";
   codeSeconds.value = 0;
   step.value = "login";
@@ -468,18 +455,6 @@ const updateCharacters = () => {
   const yellow = document.getElementById("char-yellow") as HTMLElement | null;
   if (!purple || !black || !orange || !yellow) return;
 
-  // if (!hasInteracted.value && !isLoginError.value) {
-  //   purple.style.transform = "skewX(0deg)";
-  //   black.style.transform = "skewX(0deg)";
-  //   orange.style.transform = "skewX(0deg)";
-  //   yellow.style.transform = "skewX(0deg)";
-  //   purple.style.height = "160px";
-  //   black.style.height = "180px";
-  //   orange.style.height = "150px";
-  //   yellow.style.height = "210px";
-  //   return;
-  // }
-
   const purplePos = calcPosition(purple);
   const blackPos = calcPosition(black);
   const orangePos = calcPosition(orange);
@@ -487,12 +462,10 @@ const updateCharacters = () => {
 
   const isPasswordMode = focusedField.value === "password";
   const isEmailMode = focusedField.value === "email";
-  const hasPasswordText = (passwordInput.value?.value.length || 0) > 0;
   const isShowingPwd = isPasswordMode;
   const isLookingAway =
     isEmailMode && !showPassword.value && hasInteracted.value;
 
-  const passwordEyeOffset = isPasswordMode ? -8 : 0;
   const passwordBodyOffset = isPasswordMode ? -4 : 0;
 
   purple.style.transform = isLookingAway
@@ -622,13 +595,6 @@ const updateCharacters = () => {
     }
   }
 
-  // if (purpleEyes) {
-  //   purpleEyes.style.transform =
-  //     isPurpleBlinking.value || isLoginError.value
-  //       ? "scaleY(0.1)"
-  //       : "scaleY(1)";
-  //   purpleEyes.style.left = `${45 + purplePos.faceX + passwordEyeOffset}px`;
-  // }
   if (purpleMouth) {
     purpleMouth.style.opacity =
       isPurpleBlinking.value || isLoginError.value ? "0.85" : "1";
@@ -985,14 +951,6 @@ const sendEmailCode = async () => {
   });
 };
 
-const submitRegister = () => {
-  if (!username.value) return;
-  if (!validateEmail(email.value) || !emailCode.value || !password.value)
-    return;
-  if (password.value !== confirmPassword.value) return;
-  emit("email", { email: email.value });
-};
-
 const onMouseMove = (e: MouseEvent) => {
   mouseX.value = e.clientX;
   mouseY.value = e.clientY;
@@ -1044,6 +1002,39 @@ onBeforeUnmount(() => {
   window.removeEventListener("mousemove", onMouseMove);
   clearAllTimers();
 });
+
+// 注册用户
+const registerUser = async () => {
+  if (
+    email.value.trim() === "" ||
+    emailCode.value.trim() === "" ||
+    password.value.trim() === "" ||
+    username.value.trim() === "" ||
+    !validateEmail(email.value)
+  ) {
+    showTipToast({
+      type: "error",
+      title: t("auth.registerErrorTitle"),
+      message: t("auth.registerErrorMessage"),
+    });
+    return;
+  }
+  const response = await registerUserController({
+    email: email.value,
+    code: emailCode.value,
+    password: password.value,
+    nickName: username.value,
+  });
+  if (response.data.token && response.data.code === 200) {
+    setToken(response.data.token);
+    await loadUser();
+  }
+  showTipToast({
+    type: "success",
+    title: t("auth.loginSuccessTitle"),
+    message: t("auth.loginSuccessMessage"),
+  });
+};
 </script>
 
 <style scoped>
