@@ -66,10 +66,6 @@ const languages = [
 ] as const
 const currentLabel = computed(() => languages.find(item => item.code === locale.value)?.name ?? 'English')
 const switchLanguage = (code: 'zh' | 'en' | 'de' | 'es' | 'ja') => { setLocale(code); openLang.value = false }
-const GOOGLE_CLIENT_ID = '1007188045137-69g86626b9559hr20bfg3qm7d9oprnfm.apps.googleusercontent.com'
-const googleScriptReady = ref(false)
-const googleCredential = ref('')
-
 const resolveLoginToken = (response: unknown) => {
 	if (typeof response === 'string') return response
 	if (!response || typeof response !== 'object') return ''
@@ -89,80 +85,30 @@ const resolveLoginToken = (response: unknown) => {
 	return payload.data?.token ?? payload.data?.accessToken ?? payload.data?.access_token ?? payload.token ?? payload.accessToken ?? payload.access_token ?? ''
 }
 
-const loadGoogleScript = () => {
-	if (process.client && window.google?.accounts?.id) {
-		googleScriptReady.value = true
-		return Promise.resolve()
+const handleGoogleLogin = async (payload: { credential: string }) => {
+	try {
+		const loginResponse = await thirdPartyLoginController({
+			provider: 'google',
+			credential: payload.credential,
+		})
+		const token = resolveLoginToken(loginResponse)
+		if (token) {
+			setToken(token)
+			await loadUser()
+		}
+		openLogin.value = false
+		showTipToast({
+			type: 'success',
+			title: t('auth.loginSuccessTitle'),
+			message: t('auth.loginSuccessMessage'),
+		})
+	} catch {
+		showTipToast({
+			type: 'error',
+			title: t('auth.loginFailureTitle'),
+			message: t('auth.loginFailureMessage'),
+		})
 	}
-
-	return new Promise<void>((resolve, reject) => {
-		if (document.getElementById('google-identity-services')) {
-			const timer = setInterval(() => {
-				if (window.google?.accounts?.id) {
-					clearInterval(timer)
-					googleScriptReady.value = true
-					resolve()
-				}
-			}, 50)
-			return
-		}
-
-		const script = document.createElement('script')
-		script.id = 'google-identity-services'
-		script.src = 'https://accounts.google.com/gsi/client'
-		script.async = true
-		script.defer = true
-		script.onload = () => {
-			googleScriptReady.value = true
-			resolve()
-		}
-		script.onerror = reject
-		document.head.appendChild(script)
-	})
-}
-
-const initializeGoogleLogin = async () => {
-	await loadGoogleScript()
-	if (!window.google?.accounts?.id) return
-
-	window.google.accounts.id.initialize({
-		client_id: GOOGLE_CLIENT_ID,
-		callback: async (response: { credential?: string }) => {
-			if (!response.credential) return
-            console.log(response.credential,'response.credential++++');
-			
-			try {
-				googleCredential.value = response.credential
-				const loginResponse = await thirdPartyLoginController({
-					provider: 'google',
-					credential: response.credential,
-				})
-				const token = resolveLoginToken(loginResponse)
-				if (token) {
-					setToken(token)
-					await loadUser()
-				}
-				openLogin.value = false
-				showTipToast({
-					type: 'success',
-					title: t('auth.loginSuccessTitle'),
-					message: t('auth.loginSuccessMessage'),
-				})
-			} catch {
-				showTipToast({
-					type: 'error',
-					title: t('auth.loginFailureTitle'),
-					message: t('auth.loginFailureMessage'),
-				})
-			}
-		},
-	})
-}
-
-const handleGoogleLogin = async (payload: { clientId: string }) => {
-	if (payload.clientId !== GOOGLE_CLIENT_ID) return
-	await initializeGoogleLogin()
-	window.google?.accounts?.id.prompt()
 }
 
 const handleEmailLogin = (payload: { email: string }) => {
@@ -172,7 +118,6 @@ const handleEmailLogin = (payload: { email: string }) => {
 onMounted(() => {
 	if (process.client) {
 		void initUser()
-		void initializeGoogleLogin()
 	}
 })
 </script>
