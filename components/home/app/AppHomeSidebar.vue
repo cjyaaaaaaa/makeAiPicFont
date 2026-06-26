@@ -1,11 +1,11 @@
 <template>
-	<aside class="app-home-sidebar">
+	<aside class="app-home-sidebar" :class="{ 'is-collapsed': collapsed }">
 		<div class="app-home-sidebar__brand">
 			<NuxtLink :to="localizedHomePath" :aria-label="siteName">
 				<img src="/gptpix-logo.svg" :alt="siteName" />
-				<span>{{ siteName }}</span>
+				<span class="app-home-sidebar__label">{{ siteName }}</span>
 			</NuxtLink>
-			<button type="button" :aria-label="t('home.app.sidebar.collapse')" aria-disabled="true">
+			<button type="button" :aria-label="t('home.app.sidebar.collapse')" :aria-expanded="!collapsed" @click="emit('toggle-collapse')">
 				<svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
 					<path d="M12.5 5L8 10L12.5 15" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
 					<rect x="4" y="4" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.4" />
@@ -14,26 +14,26 @@
 		</div>
 
 		<nav class="app-home-sidebar__nav" :aria-label="t('home.app.sidebar.navigation')">
-			<NuxtLink v-for="item in primaryItems" :key="item.label" :to="item.to" :class="{ 'is-active': item.active }">
-				<span v-html="item.icon"></span>
-				{{ item.label }}
+			<NuxtLink v-for="item in primaryItems" :key="item.label" :to="item.to" :class="{ 'is-active': item.active }" :title="collapsed ? item.label : undefined">
+				<span class="app-home-sidebar__icon" v-html="item.icon"></span>
+				<span class="app-home-sidebar__label">{{ item.label }}</span>
 			</NuxtLink>
-			<p>{{ t('home.app.sidebar.creation') }}</p>
-			<NuxtLink v-for="item in creationItems" :key="item.label" :to="item.to">
-				<span v-html="item.icon"></span>
-				{{ item.label }}
+			<p class="app-home-sidebar__label">{{ t('home.app.sidebar.creation') }}</p>
+			<NuxtLink v-for="item in creationItems" :key="item.label" :to="item.to" :class="{ 'is-active': item.active }" :title="collapsed ? item.label : undefined">
+				<span class="app-home-sidebar__icon" v-html="item.icon"></span>
+				<span class="app-home-sidebar__label">{{ item.label }}</span>
 			</NuxtLink>
 		</nav>
 
 		<div class="app-home-sidebar__footer">
-			<button type="button" class="app-home-sidebar__upgrade">
-				<span v-html="icons.upgrade"></span>
-				{{ t('home.app.sidebar.upgrade') }}
+			<button type="button" class="app-home-sidebar__upgrade" :title="collapsed ? t('home.app.sidebar.upgrade') : undefined">
+				<span class="app-home-sidebar__icon" v-html="icons.upgrade"></span>
+				<span class="app-home-sidebar__label">{{ t('home.app.sidebar.upgrade') }}</span>
 			</button>
 			<div class="app-home-sidebar__language">
-				<button type="button" @click="languageOpen = !languageOpen">
-					<span v-html="icons.language"></span>
-					{{ currentLanguageName }}
+				<button type="button" :title="collapsed ? currentLanguageName : undefined" @click="languageOpen = !languageOpen">
+					<span class="app-home-sidebar__icon" v-html="icons.language"></span>
+					<span class="app-home-sidebar__label">{{ currentLanguageName }}</span>
 				</button>
 				<div v-if="languageOpen" class="app-home-sidebar__languages">
 					<button v-for="language in languages" :key="language.code" type="button" :class="{ 'is-active': locale === language.code }" @click="switchLanguage(language.code)">
@@ -43,13 +43,23 @@
 			</div>
 			<div class="app-home-sidebar__user">
 				<span>{{ userInitial }}</span>
-				<strong>{{ displayUserName }}</strong>
+				<strong class="app-home-sidebar__label">{{ displayUserName }}</strong>
 			</div>
 		</div>
 	</aside>
 </template>
 
 <script setup lang="ts">
+const props = withDefaults(defineProps<{
+	collapsed?: boolean
+}>(), {
+	collapsed: false,
+})
+const emit = defineEmits<{
+	(event: 'toggle-collapse'): void
+}>()
+const collapsed = computed(() => props.collapsed)
+
 const { t, locale, setLocale } = useAppI18n()
 const route = useRoute()
 const { user } = useUser()
@@ -80,16 +90,18 @@ const localizedHomePath = computed(() => locale.value === 'en' ? '/home' : `/${l
 const currentLanguageName = computed(() => languages.find(language => language.code === locale.value)?.name ?? 'English')
 const displayUserName = computed(() => user.value?.nickName || user.value?.userName || user.value?.email || t('home.app.sidebar.guestName'))
 const userInitial = computed(() => displayUserName.value.slice(0, 1).toUpperCase() || 'N')
+const normalizedRoutePath = computed(() => stripLocalePrefix(route.path))
+const isActivePath = (path: string) => normalizedRoutePath.value === path
 
 const primaryItems = computed(() => [
-	{ label: t('nav.home'), to: localizedHomePath.value, icon: icons.home, active: true },
-	{ label: t('nav.explore'), to: '/explore', icon: icons.explore },
-	{ label: t('nav.assets'), to: '/assets', icon: icons.assets },
+	{ label: t('nav.home'), to: localizedHomePath.value, icon: icons.home, active: isActivePath('/home') },
+	{ label: t('nav.explore'), to: '/explore', icon: icons.explore, active: isActivePath('/explore') },
+	{ label: t('nav.assets'), to: '/assets', icon: icons.assets, active: isActivePath('/assets') },
 ])
 const creationItems = computed(() => [
-	{ label: t('nav.aiImage'), to: '/product', icon: icons.image },
-	{ label: t('nav.aiVideo'), to: '/solution', icon: icons.video },
-	{ label: t('home.app.sidebar.allTools'), to: '/tools', icon: icons.tools },
+	{ label: t('nav.aiImage'), to: '/product', icon: icons.image, active: isActivePath('/product') },
+	{ label: t('nav.aiVideo'), to: '/solution', icon: icons.video, active: isActivePath('/solution') },
+	{ label: t('home.app.sidebar.allTools'), to: '/tools', icon: icons.tools, active: isActivePath('/tools') },
 ])
 
 const getPathLocale = (path: string) => {
@@ -114,6 +126,10 @@ const switchLanguage = async (code: LocaleCode) => {
 	languageOpen.value = false
 	await navigateTo(buildLocalePath(code, route.fullPath))
 }
+
+watch(() => props.collapsed, (collapsed) => {
+	if (collapsed) languageOpen.value = false
+})
 </script>
 
 <style scoped lang="scss">
@@ -122,11 +138,17 @@ const switchLanguage = async (code: LocaleCode) => {
 	top: 0;
 	display: grid;
 	grid-template-rows: auto 1fr auto;
-	width: 240px;
+	width: 288px;
 	height: 100vh;
+	overflow: hidden;
 	border-right: 1px solid rgba(255, 255, 255, 0.08);
 	background: #191919;
 	color: rgba(255, 255, 255, 0.72);
+	transition: width 220ms ease;
+}
+
+.app-home-sidebar.is-collapsed {
+	width: 84px;
 }
 
 .app-home-sidebar__brand {
@@ -136,12 +158,13 @@ const switchLanguage = async (code: LocaleCode) => {
 	gap: 12px;
 	height: 60px;
 	border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-	padding: 0 18px;
+	padding: 0 20px;
 
 	a {
 		display: inline-flex;
 		align-items: center;
 		gap: 11px;
+		min-width: 0;
 		color: #f8f8f8;
 		font-size: 16px;
 		font-weight: 850;
@@ -163,16 +186,23 @@ const switchLanguage = async (code: LocaleCode) => {
 		border: 0;
 		background: transparent;
 		color: rgba(255, 255, 255, 0.55);
+		cursor: pointer;
+		transition: color 160ms ease, transform 160ms ease;
+	}
+
+	button:hover {
+		color: rgba(255, 255, 255, 0.85);
 	}
 
 	svg {
 		width: 18px;
 		height: 18px;
+		transition: transform 180ms ease;
 	}
 }
 
 .app-home-sidebar__nav {
-	padding: 20px 10px;
+	padding: 20px 12px;
 
 	a {
 		display: flex;
@@ -193,8 +223,26 @@ const switchLanguage = async (code: LocaleCode) => {
 		background: rgba(255, 255, 255, 0.08);
 		color: #ffffff;
 	}
+}
 
-	span {
+.app-home-sidebar__icon {
+	flex: 0 0 auto;
+	display: grid;
+	place-items: center;
+	width: 18px;
+	height: 18px;
+}
+
+.app-home-sidebar__label {
+	min-width: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	transition: opacity 160ms ease, transform 160ms ease;
+}
+
+.app-home-sidebar__nav {
+	.app-home-sidebar__icon {
 		display: grid;
 		place-items: center;
 		width: 18px;
@@ -216,11 +264,50 @@ const switchLanguage = async (code: LocaleCode) => {
 	}
 }
 
+.app-home-sidebar.is-collapsed {
+	.app-home-sidebar__brand {
+		justify-content: space-between;
+		padding: 0 12px;
+
+		a {
+			flex: 0 0 auto;
+			gap: 0;
+		}
+
+		button svg {
+			transform: rotate(180deg);
+		}
+	}
+
+	.app-home-sidebar__label {
+		width: 0;
+		opacity: 0;
+		pointer-events: none;
+		transform: translateX(-6px);
+	}
+
+	.app-home-sidebar__nav {
+		padding: 20px 12px;
+
+		a {
+			justify-content: center;
+			gap: 0;
+			padding: 0;
+		}
+
+		p {
+			height: 1px;
+			margin: 14px 0;
+			overflow: hidden;
+		}
+	}
+}
+
 .app-home-sidebar__footer {
 	display: grid;
 	gap: 12px;
 	border-top: 1px solid rgba(255, 255, 255, 0.06);
-	padding: 16px 12px;
+	padding: 16px 14px;
 }
 
 .app-home-sidebar__upgrade,
@@ -257,6 +344,40 @@ const switchLanguage = async (code: LocaleCode) => {
 	:deep(svg) {
 		width: 18px;
 		height: 18px;
+	}
+}
+
+.app-home-sidebar.is-collapsed {
+	.app-home-sidebar__footer {
+		padding: 14px 12px;
+	}
+
+	.app-home-sidebar__upgrade,
+	.app-home-sidebar__language button {
+		justify-content: center;
+		gap: 0;
+		width: 44px;
+		margin: 0 auto;
+		padding: 0;
+	}
+
+	.app-home-sidebar__upgrade {
+		border-radius: 12px;
+	}
+
+	.app-home-sidebar__languages {
+		left: calc(100% + 8px);
+		right: auto;
+		bottom: 0;
+		width: 168px;
+	}
+
+	.app-home-sidebar__user {
+		justify-content: center;
+		gap: 0;
+		width: 44px;
+		margin: 0 auto;
+		padding: 0;
 	}
 }
 
@@ -322,6 +443,26 @@ const switchLanguage = async (code: LocaleCode) => {
 		height: auto;
 	}
 
+	.app-home-sidebar.is-collapsed {
+		width: 100%;
+
+		.app-home-sidebar__brand {
+			justify-content: space-between;
+			padding: 0 20px;
+
+			a {
+				gap: 11px;
+			}
+		}
+
+		.app-home-sidebar__label {
+			width: auto;
+			opacity: 1;
+			pointer-events: auto;
+			transform: none;
+		}
+	}
+
 	.app-home-sidebar__nav {
 		display: grid;
 		grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -330,6 +471,19 @@ const switchLanguage = async (code: LocaleCode) => {
 
 		p {
 			grid-column: 1 / -1;
+			margin: 8px 4px 0;
+		}
+	}
+
+	.app-home-sidebar.is-collapsed .app-home-sidebar__nav {
+		a {
+			justify-content: flex-start;
+			gap: 13px;
+			padding: 0 15px;
+		}
+
+		p {
+			height: auto;
 			margin: 8px 4px 0;
 		}
 	}

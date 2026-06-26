@@ -1,6 +1,6 @@
 <template>
-	<div class="app-home">
-		<AppHomeSidebar />
+	<div class="app-home" :class="{ 'is-sidebar-collapsed': sidebarCollapsed }">
+		<AppHomeSidebar :collapsed="sidebarCollapsed" @toggle-collapse="sidebarCollapsed = !sidebarCollapsed" />
 		<main class="app-home__main">
 			<AppHomeSection :title="copy.modelsTitle" :cards="modelCards" variant="models" large />
 			<AppHomeSection :title="copy.inspirationTitle" :view-all="copy.viewAll" :cards="inspirationCards" variant="rail" view-all-link="/explore" />
@@ -42,6 +42,7 @@ type AppHomeCopy = {
 }
 
 const { t } = useAppI18n()
+const sidebarCollapsed = ref(false)
 const photo = (id: string, width = 900) => `https://images.unsplash.com/${id}?auto=format&fit=crop&w=${width}&q=84`
 const images: Record<string, string> = {
 	cliff: photo('photo-1500530855697-b586d89ba3ee', 1100),
@@ -81,10 +82,15 @@ const historyCards = computed(() => hydrate(copy.value.history, 'history'))
 <style scoped lang="scss">
 .app-home {
 	display: grid;
-	grid-template-columns: 240px minmax(0, 1fr);
+	grid-template-columns: 288px minmax(0, 1fr);
 	min-height: 100vh;
 	background: #000;
 	color: #f5f5f5;
+	transition: grid-template-columns 220ms ease;
+}
+
+.app-home.is-sidebar-collapsed {
+	grid-template-columns: 84px minmax(0, 1fr);
 }
 
 .app-home__main {
@@ -94,6 +100,10 @@ const historyCards = computed(() => hydrate(copy.value.history, 'history'))
 
 @media (max-width: 900px) {
 	.app-home {
+		grid-template-columns: 1fr;
+	}
+
+	.app-home.is-sidebar-collapsed {
 		grid-template-columns: 1fr;
 	}
 

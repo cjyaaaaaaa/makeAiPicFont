@@ -142,6 +142,54 @@
       "addToCart": "Zum Warenkorb hinzufügen"
     },
     "home": {
+      "app": {
+        "modelsTitle": "Unsere Modelle",
+        "inspirationTitle": "Inspirationswand",
+        "templateTitle": "Vorlagen",
+        "exploreTitle": "Entdecken",
+        "historyTitle": "Verlauf",
+        "viewAll": "Alle anzeigen",
+        "sidebar": {
+          "navigation": "Hauptnavigation",
+          "creation": "Erstellung",
+          "allTools": "Alle Tools",
+          "upgrade": "Upgrade",
+          "guestName": "Gast",
+          "collapse": "Seitenleiste einklappen"
+        },
+        "models": [
+          { "id": "veoQuality", "title": "Veo 3.1 Quality", "meta": "Video · Qualität", "badge": "Google", "imageKey": "cliff", "arrow": true },
+          { "id": "veoFast", "title": "Veo 3.1 Fast", "meta": "Video · Schnell", "badge": "Google", "imageKey": "market", "play": true },
+          { "id": "nanoPro", "title": "Nano Banana Pro", "meta": "Bild · Professionell", "badge": "New", "imageKey": "watch" },
+          { "id": "nano2", "title": "Nano Banana 2", "meta": "Bild · Flaggschiff", "imageKey": "collage" },
+          { "id": "nano", "title": "Nano Banana", "meta": "Bild · Schnell", "imageKey": "tuxedo" },
+          { "id": "seedreamLite", "title": "Seedream 5 Lite", "meta": "Bild · Künstlerisch", "imageKey": "warrior" },
+          { "id": "seedanceFast", "title": "Seedance 2 Fast", "meta": "Video · Schnell", "badge": "New", "placeholder": true },
+          { "id": "seedance", "title": "Seedance 2", "meta": "Video · Qualität", "badge": "New", "placeholder": true }
+        ],
+        "inspiration": [
+          { "id": "boxing", "title": "Boxen", "badge": "Veo-3.1", "imageKey": "boxing", "play": true },
+          { "id": "helicopter", "title": "Helikopter", "badge": "Veo-3.1", "imageKey": "helicopter", "play": true },
+          { "id": "basketball", "title": "Basketball", "badge": "Veo-3.1", "imageKey": "basketball", "play": true },
+          { "id": "racing", "title": "Rennen", "badge": "Veo-3.1", "imageKey": "racing", "play": true }
+        ],
+        "templates": [
+          { "id": "street", "eyebrow": "Menschen", "title": "Streetstyle-Porträt", "imageKey": "street" },
+          { "id": "studio", "eyebrow": "Mode", "title": "Studio-Fashion-Porträt", "imageKey": "fashion" },
+          { "id": "ceiling", "eyebrow": "Szenerie", "title": "Persische Decke", "imageKey": "ceiling" },
+          { "id": "espresso", "eyebrow": "Produkt", "title": "Espressomaschine", "imageKey": "espresso" }
+        ],
+        "explore": [
+          { "id": "portraitA", "title": "ZeeZou", "badge": "Nano Banana Pro", "imageKey": "portraitA" },
+          { "id": "portraitB", "title": "ZeeZou", "badge": "Nano Banana Pro", "imageKey": "portraitB" },
+          { "id": "travel", "title": "Anonymous", "badge": "GPT-Image-2", "imageKey": "travel" },
+          { "id": "poster", "title": "Nolwenn Guilloux", "badge": "Nano Banana Pro", "imageKey": "poster" }
+        ],
+        "history": [
+          { "id": "empty", "title": "Eine asiatische Frau als Ganzkörperbild generieren", "meta": "Bild · GPT-Image-2 · 26. Juni 21:45", "placeholder": true },
+          { "id": "reading", "title": "111", "meta": "Bild · GPT-Image-2 · 26. Juni 21:40", "imageKey": "reading" }
+        ]
+      },
       "inspiration": {
         "promptAction": "Prompt testen"
       },

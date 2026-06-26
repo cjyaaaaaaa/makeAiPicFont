@@ -142,6 +142,54 @@
     "addToCart": "カートに追加"
   },
   "home": {
+    "app": {
+      "modelsTitle": "モデル",
+      "inspirationTitle": "インスピレーションウォール",
+      "templateTitle": "テンプレート",
+      "exploreTitle": "探索",
+      "historyTitle": "履歴",
+      "viewAll": "すべて見る",
+      "sidebar": {
+        "navigation": "メインナビゲーション",
+        "creation": "作成",
+        "allTools": "すべてのツール",
+        "upgrade": "アップグレード",
+        "guestName": "ゲスト",
+        "collapse": "サイドバーを閉じる"
+      },
+      "models": [
+        { "id": "veoQuality", "title": "Veo 3.1 Quality", "meta": "動画 · 高品質", "badge": "Google", "imageKey": "cliff", "arrow": true },
+        { "id": "veoFast", "title": "Veo 3.1 Fast", "meta": "動画 · 高速", "badge": "Google", "imageKey": "market", "play": true },
+        { "id": "nanoPro", "title": "Nano Banana Pro", "meta": "画像 · プロ向け", "badge": "New", "imageKey": "watch" },
+        { "id": "nano2", "title": "Nano Banana 2", "meta": "画像 · フラッグシップ", "imageKey": "collage" },
+        { "id": "nano", "title": "Nano Banana", "meta": "画像 · 高速", "imageKey": "tuxedo" },
+        { "id": "seedreamLite", "title": "Seedream 5 Lite", "meta": "画像 · アート", "imageKey": "warrior" },
+        { "id": "seedanceFast", "title": "Seedance 2 Fast", "meta": "動画 · 高速", "badge": "New", "placeholder": true },
+        { "id": "seedance", "title": "Seedance 2", "meta": "動画 · 高品質", "badge": "New", "placeholder": true }
+      ],
+      "inspiration": [
+        { "id": "boxing", "title": "ボクシング", "badge": "Veo-3.1", "imageKey": "boxing", "play": true },
+        { "id": "helicopter", "title": "ヘリコプター", "badge": "Veo-3.1", "imageKey": "helicopter", "play": true },
+        { "id": "basketball", "title": "バスケットボール", "badge": "Veo-3.1", "imageKey": "basketball", "play": true },
+        { "id": "racing", "title": "レース", "badge": "Veo-3.1", "imageKey": "racing", "play": true }
+      ],
+      "templates": [
+        { "id": "street", "eyebrow": "人物", "title": "ストリートスタイルポートレート", "imageKey": "street" },
+        { "id": "studio", "eyebrow": "ファッション", "title": "スタジオファッションポートレート", "imageKey": "fashion" },
+        { "id": "ceiling", "eyebrow": "風景", "title": "ペルシャ天井", "imageKey": "ceiling" },
+        { "id": "espresso", "eyebrow": "商品", "title": "エスプレッソマシン", "imageKey": "espresso" }
+      ],
+      "explore": [
+        { "id": "portraitA", "title": "ZeeZou", "badge": "Nano Banana Pro", "imageKey": "portraitA" },
+        { "id": "portraitB", "title": "ZeeZou", "badge": "Nano Banana Pro", "imageKey": "portraitB" },
+        { "id": "travel", "title": "Anonymous", "badge": "GPT-Image-2", "imageKey": "travel" },
+        { "id": "poster", "title": "Nolwenn Guilloux", "badge": "Nano Banana Pro", "imageKey": "poster" }
+      ],
+      "history": [
+        { "id": "empty", "title": "アジア人女性の全身画像を生成", "meta": "画像 · GPT-Image-2 · 6月26日 21:45", "placeholder": true },
+        { "id": "reading", "title": "111", "meta": "画像 · GPT-Image-2 · 6月26日 21:40", "imageKey": "reading" }
+      ]
+    },
     "inspiration": {
       "promptAction": "このプロンプトを試す"
     },

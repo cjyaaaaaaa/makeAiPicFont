@@ -130,6 +130,54 @@
     "addToCart": "Añadir al carrito"
   },
   "home": {
+    "app": {
+      "modelsTitle": "Nuestros modelos",
+      "inspirationTitle": "Muro de inspiración",
+      "templateTitle": "Plantillas",
+      "exploreTitle": "Explorar",
+      "historyTitle": "Historial",
+      "viewAll": "Ver todo",
+      "sidebar": {
+        "navigation": "Navegación principal",
+        "creation": "Creación",
+        "allTools": "Todas las herramientas",
+        "upgrade": "Mejorar",
+        "guestName": "Invitado",
+        "collapse": "Contraer barra lateral"
+      },
+      "models": [
+        { "id": "veoQuality", "title": "Veo 3.1 Quality", "meta": "Video · Calidad", "badge": "Google", "imageKey": "cliff", "arrow": true },
+        { "id": "veoFast", "title": "Veo 3.1 Fast", "meta": "Video · Rápido", "badge": "Google", "imageKey": "market", "play": true },
+        { "id": "nanoPro", "title": "Nano Banana Pro", "meta": "Imagen · Profesional", "badge": "New", "imageKey": "watch" },
+        { "id": "nano2", "title": "Nano Banana 2", "meta": "Imagen · Insignia", "imageKey": "collage" },
+        { "id": "nano", "title": "Nano Banana", "meta": "Imagen · Rápido", "imageKey": "tuxedo" },
+        { "id": "seedreamLite", "title": "Seedream 5 Lite", "meta": "Imagen · Artístico", "imageKey": "warrior" },
+        { "id": "seedanceFast", "title": "Seedance 2 Fast", "meta": "Video · Rápido", "badge": "New", "placeholder": true },
+        { "id": "seedance", "title": "Seedance 2", "meta": "Video · Calidad", "badge": "New", "placeholder": true }
+      ],
+      "inspiration": [
+        { "id": "boxing", "title": "Boxeo", "badge": "Veo-3.1", "imageKey": "boxing", "play": true },
+        { "id": "helicopter", "title": "Helicóptero", "badge": "Veo-3.1", "imageKey": "helicopter", "play": true },
+        { "id": "basketball", "title": "Baloncesto", "badge": "Veo-3.1", "imageKey": "basketball", "play": true },
+        { "id": "racing", "title": "Carreras", "badge": "Veo-3.1", "imageKey": "racing", "play": true }
+      ],
+      "templates": [
+        { "id": "street", "eyebrow": "Personas", "title": "Retrato estilo urbano", "imageKey": "street" },
+        { "id": "studio", "eyebrow": "Moda", "title": "Retrato de moda en estudio", "imageKey": "fashion" },
+        { "id": "ceiling", "eyebrow": "Escena", "title": "Techo persa", "imageKey": "ceiling" },
+        { "id": "espresso", "eyebrow": "Producto", "title": "Cafetera espresso", "imageKey": "espresso" }
+      ],
+      "explore": [
+        { "id": "portraitA", "title": "ZeeZou", "badge": "Nano Banana Pro", "imageKey": "portraitA" },
+        { "id": "portraitB", "title": "ZeeZou", "badge": "Nano Banana Pro", "imageKey": "portraitB" },
+        { "id": "travel", "title": "Anonymous", "badge": "GPT-Image-2", "imageKey": "travel" },
+        { "id": "poster", "title": "Nolwenn Guilloux", "badge": "Nano Banana Pro", "imageKey": "poster" }
+      ],
+      "history": [
+        { "id": "empty", "title": "Generar una mujer asiática de cuerpo completo", "meta": "Imagen · GPT-Image-2 · 26 jun 21:45", "placeholder": true },
+        { "id": "reading", "title": "111", "meta": "Imagen · GPT-Image-2 · 26 jun 21:40", "imageKey": "reading" }
+      ]
+    },
     "inspiration": {
       "promptAction": "Probar este prompt"
     },

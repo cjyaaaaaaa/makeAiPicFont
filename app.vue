@@ -20,7 +20,8 @@ const route = useRoute()
 const homeLocaleCodes = ['zh', 'en', 'de', 'es', 'ja']
 const isAppHome = computed(() => {
 	const segments = route.path.split('/').filter(Boolean)
-	return segments[0] === 'home' || (homeLocaleCodes.includes(segments[0]) && segments[1] === 'home')
+	const firstAppSegment = homeLocaleCodes.includes(segments[0]) ? segments[1] : segments[0]
+	return firstAppSegment === 'home' || firstAppSegment === 'explore'
 })
 
 onMounted(() => {
