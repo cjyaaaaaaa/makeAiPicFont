@@ -67,6 +67,54 @@
     "enterPasswordToLogin": "请输入密码登录你的账户。"
   },
   "home": {
+    "app": {
+      "modelsTitle": "我们的模型",
+      "inspirationTitle": "灵感墙",
+      "templateTitle": "模板",
+      "exploreTitle": "探索",
+      "historyTitle": "历史记录",
+      "viewAll": "查看全部",
+      "sidebar": {
+        "navigation": "主导航",
+        "creation": "创作",
+        "allTools": "全部工具",
+        "upgrade": "升级",
+        "guestName": "访客",
+        "collapse": "收起侧边栏"
+      },
+      "models": [
+        { "id": "veoQuality", "title": "Veo 3.1 Quality", "meta": "视频 · 高质量", "badge": "Google", "imageKey": "cliff", "arrow": true },
+        { "id": "veoFast", "title": "Veo 3.1 Fast", "meta": "视频 · 快速", "badge": "Google", "imageKey": "market", "play": true },
+        { "id": "nanoPro", "title": "Nano Banana Pro", "meta": "图片 · 专业", "badge": "New", "imageKey": "watch" },
+        { "id": "nano2", "title": "Nano Banana 2", "meta": "图片 · 旗舰", "imageKey": "collage" },
+        { "id": "nano", "title": "Nano Banana", "meta": "图片 · 快速", "imageKey": "tuxedo" },
+        { "id": "seedreamLite", "title": "Seedream 5 Lite", "meta": "图片 · 艺术", "imageKey": "warrior" },
+        { "id": "seedanceFast", "title": "Seedance 2 Fast", "meta": "视频 · 快速", "badge": "New", "placeholder": true },
+        { "id": "seedance", "title": "Seedance 2", "meta": "视频 · 高质量", "badge": "New", "placeholder": true }
+      ],
+      "inspiration": [
+        { "id": "boxing", "title": "拳击", "badge": "Veo-3.1", "imageKey": "boxing", "play": true },
+        { "id": "helicopter", "title": "直升机", "badge": "Veo-3.1", "imageKey": "helicopter", "play": true },
+        { "id": "basketball", "title": "篮球", "badge": "Veo-3.1", "imageKey": "basketball", "play": true },
+        { "id": "racing", "title": "赛车", "badge": "Veo-3.1", "imageKey": "racing", "play": true }
+      ],
+      "templates": [
+        { "id": "street", "eyebrow": "人物", "title": "街拍风格肖像", "imageKey": "street" },
+        { "id": "studio", "eyebrow": "时尚", "title": "棚拍时尚肖像", "imageKey": "fashion" },
+        { "id": "ceiling", "eyebrow": "风景", "title": "波斯穹顶", "imageKey": "ceiling" },
+        { "id": "espresso", "eyebrow": "产品", "title": "意式咖啡机", "imageKey": "espresso" }
+      ],
+      "explore": [
+        { "id": "portraitA", "title": "ZeeZou", "badge": "Nano Banana Pro", "imageKey": "portraitA" },
+        { "id": "portraitB", "title": "ZeeZou", "badge": "Nano Banana Pro", "imageKey": "portraitB" },
+        { "id": "travel", "title": "Anonymous", "badge": "GPT-Image-2", "imageKey": "travel" },
+        { "id": "poster", "title": "Nolwenn Guilloux", "badge": "Nano Banana Pro", "imageKey": "poster" }
+      ],
+      "history": [
+        { "id": "empty", "title": "帮我生成一个全裸的亚洲女性", "meta": "图片 · GPT-Image-2 · 6月26日 21:45", "placeholder": true },
+        { "id": "reading", "title": "111", "meta": "图片 · GPT-Image-2 · 6月26日 21:40", "imageKey": "reading" }
+      ]
+    },
     "particleHero": {
       "title": "Free gptpix.ai Image Generation",
       "subtitle": "电影级 AI 视频与图片工作室 —— 让运动、光影和细节在数秒内生成。",

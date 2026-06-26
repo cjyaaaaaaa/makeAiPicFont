@@ -1,10 +1,10 @@
 <template>
 	<div class="min-h-screen bg-[#15161a] text-[#a8b3c7]">
-		<AppHeader />
-		<main class="mx-auto w-full max-w-[1720px] px-4 md:px-6 lg:px-8">
+		<AppHeader v-if="!isAppHome" />
+		<main :class="isAppHome ? 'w-full' : 'mx-auto w-full max-w-[1720px] px-4 md:px-6 lg:px-8'">
 			<NuxtPage />
 		</main>
-		<SiteFooterSection />
+		<SiteFooterSection v-if="!isAppHome" />
 		<TipToast ref="tipToastRef" />
 	</div>
 </template>
@@ -16,6 +16,12 @@ import TipToast from '~/components/TipToast.vue'
 
 const tipToastRef = ref<{ show: (payload: { title: string; message?: string; type?: 'success' | 'error' | 'info'; duration?: number }) => void } | null>(null)
 const { registerTipToast } = useTipToast()
+const route = useRoute()
+const homeLocaleCodes = ['zh', 'en', 'de', 'es', 'ja']
+const isAppHome = computed(() => {
+	const segments = route.path.split('/').filter(Boolean)
+	return segments[0] === 'home' || (homeLocaleCodes.includes(segments[0]) && segments[1] === 'home')
+})
 
 onMounted(() => {
 	registerTipToast(tipToastRef.value)

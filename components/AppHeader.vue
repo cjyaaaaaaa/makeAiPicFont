@@ -306,9 +306,10 @@ const googleTokenClient = ref<null | {
   requestAccessToken: (overrideConfig?: { prompt?: string }) => void;
 }>(null);
 const headerSiteName = computed(() => t("common.siteName"));
+const localizedAppHomePath = computed(() => locale.value === "en" ? "/home" : `/${locale.value}/home`);
 
 const navItems = computed(() => [
-  { label: t("nav.home"), link: "/" },
+  { label: t("nav.home"), link: localizedAppHomePath.value },
   { label: t("nav.aiImage"), link: "/product" },
   { label: t("nav.aiVideo"), link: "/solution" },
   { label: t("nav.assets"), link: "/assets" },

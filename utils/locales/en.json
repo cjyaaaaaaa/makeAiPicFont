@@ -67,6 +67,54 @@
     "enterPasswordToLogin": "Enter your password to sign in."
   },
   "home": {
+    "app": {
+      "modelsTitle": "Our Models",
+      "inspirationTitle": "The Inspiration Wall",
+      "templateTitle": "Template",
+      "exploreTitle": "Explore",
+      "historyTitle": "History",
+      "viewAll": "View all",
+      "sidebar": {
+        "navigation": "Primary navigation",
+        "creation": "Creation",
+        "allTools": "All Tools",
+        "upgrade": "Upgrade",
+        "guestName": "Guest",
+        "collapse": "Collapse sidebar"
+      },
+      "models": [
+        { "id": "veoQuality", "title": "Veo 3.1 Quality", "meta": "Video · Quality", "badge": "Google", "imageKey": "cliff", "arrow": true },
+        { "id": "veoFast", "title": "Veo 3.1 Fast", "meta": "Video · Fast", "badge": "Google", "imageKey": "market", "play": true },
+        { "id": "nanoPro", "title": "Nano Banana Pro", "meta": "Image · Professional", "badge": "New", "imageKey": "watch" },
+        { "id": "nano2", "title": "Nano Banana 2", "meta": "Image · Flagship", "imageKey": "collage" },
+        { "id": "nano", "title": "Nano Banana", "meta": "Image · Fast", "imageKey": "tuxedo" },
+        { "id": "seedreamLite", "title": "Seedream 5 Lite", "meta": "Image · Artistic", "imageKey": "warrior" },
+        { "id": "seedanceFast", "title": "Seedance 2 Fast", "meta": "Video · Fast", "badge": "New", "placeholder": true },
+        { "id": "seedance", "title": "Seedance 2", "meta": "Video · Quality", "badge": "New", "placeholder": true }
+      ],
+      "inspiration": [
+        { "id": "boxing", "title": "Boxing", "badge": "Veo-3.1", "imageKey": "boxing", "play": true },
+        { "id": "helicopter", "title": "Helicopter", "badge": "Veo-3.1", "imageKey": "helicopter", "play": true },
+        { "id": "basketball", "title": "Basketball", "badge": "Veo-3.1", "imageKey": "basketball", "play": true },
+        { "id": "racing", "title": "Racing", "badge": "Veo-3.1", "imageKey": "racing", "play": true }
+      ],
+      "templates": [
+        { "id": "street", "eyebrow": "People", "title": "Street Style Portrait", "imageKey": "street" },
+        { "id": "studio", "eyebrow": "Fashion", "title": "Studio Fashion Portrait", "imageKey": "fashion" },
+        { "id": "ceiling", "eyebrow": "Scenery", "title": "Persian Ceiling", "imageKey": "ceiling" },
+        { "id": "espresso", "eyebrow": "Product", "title": "Espresso Machine", "imageKey": "espresso" }
+      ],
+      "explore": [
+        { "id": "portraitA", "title": "ZeeZou", "badge": "Nano Banana Pro", "imageKey": "portraitA" },
+        { "id": "portraitB", "title": "ZeeZou", "badge": "Nano Banana Pro", "imageKey": "portraitB" },
+        { "id": "travel", "title": "Anonymous", "badge": "GPT-Image-2", "imageKey": "travel" },
+        { "id": "poster", "title": "Nolwenn Guilloux", "badge": "Nano Banana Pro", "imageKey": "poster" }
+      ],
+      "history": [
+        { "id": "empty", "title": "Generate a full-body Asian woman", "meta": "Image · GPT-Image-2 · Jun 26 21:45", "placeholder": true },
+        { "id": "reading", "title": "111", "meta": "Image · GPT-Image-2 · Jun 26 21:40", "imageKey": "reading" }
+      ]
+    },
     "particleHero": {
       "title": "Free gptpix.ai Image Generation",
       "subtitle": "Cinema-grade AI video & image studio - motion, light, detail in seconds.",
