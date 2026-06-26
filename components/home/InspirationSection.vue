@@ -32,13 +32,13 @@
 
 			<div class="inspiration-section__masonry">
 				<div v-for="(column, columnIndex) in columns" :key="columnIndex" class="inspiration-section__column">
-					<article v-for="item in column" :key="item.id" class="inspiration-card" :class="`inspiration-card--${item.size}`">
+					<article v-for="item in column" :key="item.id" class="inspiration-card" :class="`inspiration-card--${item.size}`" tabindex="0" role="button" @click="selectedPreview = toPreviewItem(item)" @keydown.enter.prevent="selectedPreview = toPreviewItem(item)" @keydown.space.prevent="selectedPreview = toPreviewItem(item)">
 						<NuxtImg v-bind="getLazyImageAttrs(item.image, { alt: item.alt })" />
 						<div class="inspiration-card__overlay">
 							<span class="inspiration-card__code">{{ item.code }}</span>
 							<h3>{{ item.title }}</h3>
 							<p>{{ item.prompt }}</p>
-							<button type="button">
+							<button type="button" @click.stop="selectedPreview = toPreviewItem(item)">
 								{{ promptActionLabel }}
 								<span aria-hidden="true">↗</span>
 							</button>
@@ -57,11 +57,15 @@
 					<button type="button">{{ t('home.inspiration.secondaryAction') }}</button>
 				</div>
 			</div> -->
+
+			<CreativePreviewModal :item="selectedPreview" @close="selectedPreview = null" />
 		</div>
 	</section>
 </template>
 
 <script setup lang="ts">
+import CreativePreviewModal from '~/components/home/CreativePreviewModal.vue'
+
 const { t } = useAppI18n()
 const { getLazyImageAttrs } = useLazyImage()
 
@@ -75,9 +79,26 @@ type InspirationCopy = {
 	size: 'sm' | 'md' | 'lg' | 'xl'
 }
 
+type InspirationItem = InspirationCopy & {
+	image: string
+}
+
+type CreativePreviewItem = {
+	id: string
+	title: string
+	image: string
+	alt?: string
+	prompt: string
+	model: string
+	resolution: string
+	aspectRatio: string
+	outputFormat: string
+}
+
 const photo = (id: string, width = 760) => `https://images.unsplash.com/${id}?auto=format&fit=crop&w=${width}&q=84`
 
 const activeMode = ref<InspirationMode>('images')
+const selectedPreview = ref<CreativePreviewItem | null>(null)
 const modes = computed(() => [
 	{ id: 'images' as const, label: t('home.inspiration.imagesTab') },
 	{ id: 'videos' as const, label: t('home.inspiration.videosTab') },
@@ -121,11 +142,23 @@ const allItems = computed(() => {
 
 const columns = computed(() => {
 	const bucketCount = 4
-	const buckets = Array.from({ length: bucketCount }, () => [] as Array<InspirationCopy & { image: string }>)
+	const buckets = Array.from({ length: bucketCount }, () => [] as InspirationItem[])
 	allItems.value.forEach((item, index) => {
 		buckets[index % bucketCount].push(item)
 	})
 	return buckets
+})
+
+const toPreviewItem = (item: InspirationItem): CreativePreviewItem => ({
+	id: item.id,
+	title: item.title,
+	image: item.image,
+	alt: item.alt,
+	prompt: item.prompt,
+	model: activeMode.value === 'videos' ? 'Nano Banana 2' : 'GPT Image 2',
+	resolution: activeMode.value === 'videos' ? '1080p' : '1K',
+	aspectRatio: '1:1',
+	outputFormat: activeMode.value === 'videos' ? 'MP4' : 'PNG',
 })
 </script>
 
@@ -245,6 +278,7 @@ const columns = computed(() => {
 	border: 1px solid rgba(255, 255, 255, 0.16);
 	border-radius: 10px;
 	background: #222;
+	cursor: pointer;
 	isolation: isolate;
 
 	img {
@@ -274,6 +308,11 @@ const columns = computed(() => {
 	&:hover .inspiration-card__overlay {
 		transform: translateY(0);
 		opacity: 1;
+	}
+
+	&:focus-visible {
+		outline: 2px solid rgba(239, 77, 44, 0.82);
+		outline-offset: 3px;
 	}
 }
 

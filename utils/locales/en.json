@@ -1,6 +1,6 @@
 {
   "common": {
-    "siteName": "gptpix.ai",
+    "siteName": "Nano Banana AI",
     "language": "Language",
     "close": "Close",
     "requestErrorTitle": "Request failed",
@@ -13,6 +13,11 @@
     "signOut": "Sign out"
   },
   "nav": {
+    "home": "Home",
+    "aiImage": "AI Image",
+    "aiVideo": "AI Video",
+    "assets": "Assets",
+    "explore": "Explore",
     "workspace": "Workspace",
     "pricing": "Pricing",
     "dashboard": "Dashboard"

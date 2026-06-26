@@ -3,8 +3,8 @@
 		<Transition name="preview-fade">
 			<div v-if="item" class="preview-modal" role="dialog" aria-modal="true" :aria-label="item.title" @click.self="emit('close')">
 				<div class="preview-modal__shell">
-					<section class="preview-modal__media">
-						<img v-if="item.image" :src="item.image" :alt="item.alt || item.title" />
+					<section class="preview-modal__media" :class="{ 'is-long': isLongPreview }">
+						<img v-if="item.image" :src="previewImage" :alt="item.alt || item.title" @load="handleImageLoad" />
 						<div v-else class="preview-modal__placeholder"></div>
 						<span class="preview-modal__zoom">100%</span>
 					</section>
@@ -87,6 +87,18 @@ const emit = defineEmits<{
 
 const { t } = useAppI18n()
 const promptExpanded = ref(false)
+const imageAspect = ref<number | null>(null)
+const previewImage = computed(() => props.item?.image.replace('fit=crop', 'fit=max') || '')
+const declaredAspect = computed(() => {
+	const [width, height] = props.item?.aspectRatio.split(':').map(Number) || []
+	return width > 0 && height > 0 ? width / height : null
+})
+const isLongPreview = computed(() => (imageAspect.value ?? declaredAspect.value ?? 1) < 0.78)
+
+const handleImageLoad = (event: Event) => {
+	const image = event.target as HTMLImageElement
+	imageAspect.value = image.naturalWidth && image.naturalHeight ? image.naturalWidth / image.naturalHeight : null
+}
 
 const handleKeydown = (event: KeyboardEvent) => {
 	if (event.key === 'Escape' && props.item) {
@@ -98,6 +110,7 @@ watch(
 	() => props.item,
 	(value) => {
 		promptExpanded.value = false
+		imageAspect.value = null
 		if (!import.meta.client) return
 		document.body.style.overflow = value ? 'hidden' : ''
 	},
@@ -153,16 +166,31 @@ onBeforeUnmount(() => {
 	position: relative;
 	display: grid;
 	place-items: center;
+	min-height: 0;
 	min-width: 0;
+	overflow: hidden;
 	background: #070707;
-	padding: clamp(20px, 3vw, 34px);
+	padding: clamp(20px, 3vw, 34px) clamp(20px, 3vw, 34px) clamp(58px, 5vw, 72px);
 
-	img,
+	img {
+		display: block;
+		width: 100%;
+		height: 100%;
+		object-fit: contain;
+	}
+
+	&.is-long img {
+		width: auto;
+		height: auto;
+		max-width: min(100%, 620px);
+		max-height: 100%;
+		object-fit: contain;
+	}
+
 	.preview-modal__placeholder {
 		display: block;
 		width: 100%;
 		max-height: 100%;
-		object-fit: contain;
 	}
 }
 

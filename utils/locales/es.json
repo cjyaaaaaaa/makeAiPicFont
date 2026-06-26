@@ -69,7 +69,7 @@
     "stockArrivalEmail": "Stock Arrival Email"
   },
   "common": {
-    "siteName": "gptpix.ai",
+    "siteName": "Nano Banana AI",
     "code": "Código",
     "all": "Todo",
     "loading": "Cargando",
@@ -81,6 +81,14 @@
     "subscriptionThankYou": "¡Gracias por su suscripción!",
     "inTotal": "en total",
     "overView": "Resumen"
+  },
+  "nav": {
+    "home": "Inicio",
+    "aiImage": "Imagen IA",
+    "aiVideo": "Video IA",
+    "assets": "Recursos",
+    "explore": "Explorar",
+    "pricing": "Precios"
   },
   "auth": {
     "login": "Iniciar sesión",

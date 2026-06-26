@@ -8,16 +8,14 @@
       <NuxtLink
         :to="localizedHomePath"
         class="flex items-center gap-2 text-[#f8fafc]"
-        :aria-label="t('common.siteName')"
+        :aria-label="headerSiteName"
       >
         <img
           src="/gptpix-logo.svg"
-          :alt="t('common.siteName')"
+          :alt="headerSiteName"
           class="h-8 w-8 rounded-[7px] object-cover"
         />
-        <span class="text-[20px] font-semibold tracking-[-0.03em]">{{
-          t("common.siteName")
-        }}</span>
+        <span class="text-[20px] font-semibold tracking-[-0.03em]">{{ headerSiteName }}</span>
       </NuxtLink>
 
       <nav class="hidden items-center gap-8 lg:flex" aria-label="Primary">
@@ -27,9 +25,6 @@
           :to="item.link"
           class="flex items-center gap-2 text-[14px] leading-5 text-[#a8b3c7] transition hover:text-[#f8fafc]"
         >
-          <span class="font-mono text-[12px] text-[#ef4d2c]">{{
-            item.index
-          }}</span>
           <span>{{ item.label }}</span>
         </NuxtLink>
       </nav>
@@ -310,11 +305,15 @@ const googleInitializedClientId = ref("");
 const googleTokenClient = ref<null | {
   requestAccessToken: (overrideConfig?: { prompt?: string }) => void;
 }>(null);
+const headerSiteName = computed(() => t("common.siteName"));
 
 const navItems = computed(() => [
-  { index: "01", label: t("nav.workspace"), link: "/" },
-  { index: "02", label: t("nav.pricing"), link: "/product" },
-  { index: "03", label: t("nav.dashboard"), link: "/solution" },
+  { label: t("nav.home"), link: "/" },
+  { label: t("nav.aiImage"), link: "/product" },
+  { label: t("nav.aiVideo"), link: "/solution" },
+  { label: t("nav.assets"), link: "/assets" },
+  { label: t("nav.explore"), link: "/explore" },
+  { label: t("nav.pricing"), link: "/pricing" },
 ]);
 const languages = [
   { code: "zh", name: "简体中文", short: "中" },

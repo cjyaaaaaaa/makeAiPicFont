@@ -454,6 +454,18 @@ onBeforeUnmount(() => {
 	inherits: false;
 }
 
+@property --rail-angle {
+	syntax: "<angle>";
+	initial-value: 0deg;
+	inherits: false;
+}
+
+@property --control-angle {
+	syntax: "<angle>";
+	initial-value: 0deg;
+	inherits: false;
+}
+
 .particle-hero {
 	position: relative;
 	min-height: max(924px, 100vh);
@@ -576,10 +588,22 @@ onBeforeUnmount(() => {
 	display: grid;
 	gap: 8px;
 	padding: 8px;
-	border: 1px solid rgba(255, 255, 255, 0.18);
+	border: 1px solid transparent;
 	border-radius: 18px;
-	background: rgba(255, 255, 255, 0.04);
-	box-shadow: 0 16px 42px rgba(0, 0, 0, 0.28);
+	background:
+		linear-gradient(rgba(12, 13, 18, 0.88), rgba(12, 13, 18, 0.88)) padding-box,
+		conic-gradient(
+			from var(--rail-angle),
+			rgba(255, 255, 255, 0.16),
+			rgba(239, 77, 44, 0.9),
+			rgba(246, 210, 61, 0.72),
+			rgba(124, 58, 237, 0.58),
+			rgba(255, 255, 255, 0.16)
+		) border-box;
+	box-shadow:
+		0 16px 42px rgba(0, 0, 0, 0.28),
+		0 0 24px rgba(239, 77, 44, 0.12);
+	animation: rail-border-spin 7s linear infinite;
 }
 
 button {
@@ -733,16 +757,35 @@ button {
 	gap: 8px;
 	min-height: 32px;
 	padding: 0 18px;
-	border: 1px solid rgba(255, 255, 255, 0.18);
+	border: 1px solid transparent;
 	border-radius: 999px;
-	background: rgba(255, 255, 255, 0.08);
+	background:
+		linear-gradient(rgba(35, 27, 29, 0.94), rgba(35, 27, 29, 0.94)) padding-box,
+		conic-gradient(
+			from var(--control-angle),
+			rgba(255, 255, 255, 0.16),
+			rgba(239, 77, 44, 0.86),
+			rgba(246, 210, 61, 0.58),
+			rgba(124, 58, 237, 0.5),
+			rgba(255, 255, 255, 0.16)
+		) border-box;
 	color: #f8fafc;
-	box-shadow: inset 0 0 16px rgba(239, 77, 44, 0.08);
+	box-shadow:
+		inset 0 0 16px rgba(239, 77, 44, 0.08),
+		0 0 18px rgba(239, 77, 44, 0.08);
+	animation: control-border-spin 8s linear infinite;
 }
 
 .control-chip.is-strong {
-	border-color: rgba(246, 210, 61, 0.44);
-	background: linear-gradient(90deg, rgba(239, 77, 44, 0.18), rgba(255, 255, 255, 0.08));
+	background:
+		linear-gradient(rgba(66, 30, 25, 0.9), rgba(66, 30, 25, 0.9)) padding-box,
+		conic-gradient(
+			from var(--control-angle),
+			rgba(239, 77, 44, 0.98),
+			rgba(246, 210, 61, 0.88),
+			rgba(124, 58, 237, 0.5),
+			rgba(239, 77, 44, 0.98)
+		) border-box;
 }
 
 .chip-google {
@@ -795,13 +838,23 @@ button {
 	place-items: center;
 	width: 38px;
 	height: 38px;
+	border: 1px solid transparent;
 	border-radius: 999px;
 	background:
-		radial-gradient(circle at 30% 20%, rgba(255, 255, 255, 0.5), transparent 28%),
-		linear-gradient(135deg, #ef4d2c, #111827 68%);
+		linear-gradient(#ef4d2c, #ef4d2c) padding-box,
+		conic-gradient(
+			from var(--control-angle),
+			#ef4d2c,
+			#f6d23d,
+			#7c3aed,
+			#ef4d2c
+		) border-box;
 	color: #f8fafc;
 	font-size: 20px;
-	box-shadow: 0 0 28px rgba(239, 77, 44, 0.3);
+	box-shadow:
+		0 0 28px rgba(239, 77, 44, 0.3),
+		0 0 18px rgba(246, 210, 61, 0.14);
+	animation: control-border-spin 6s linear infinite;
 }
 
 .select-popover {
@@ -957,6 +1010,18 @@ button {
 @keyframes panel-border-spin {
 	to {
 		--panel-angle: 360deg;
+	}
+}
+
+@keyframes rail-border-spin {
+	to {
+		--rail-angle: 360deg;
+	}
+}
+
+@keyframes control-border-spin {
+	to {
+		--control-angle: 360deg;
 	}
 }
 

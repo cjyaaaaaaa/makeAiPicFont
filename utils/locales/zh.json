@@ -1,6 +1,6 @@
 {
   "common": {
-    "siteName": "gptpix.ai",
+    "siteName": "Nano Banana AI",
     "language": "语言",
     "close": "关闭",
     "requestErrorTitle": "请求失败",
@@ -13,6 +13,11 @@
     "signOut": "Sign out"
   },
   "nav": {
+    "home": "首页",
+    "aiImage": "AI 图片",
+    "aiVideo": "AI 视频",
+    "assets": "素材",
+    "explore": "探索",
     "workspace": "工作台",
     "pricing": "价格",
     "dashboard": "控制台"
