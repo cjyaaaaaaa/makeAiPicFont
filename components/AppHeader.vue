@@ -282,7 +282,6 @@
     <LoginModal
       :open="openLogin"
       @close="openLogin = false"
-      @google="handleGoogleLogin"
       @email="handleEmailLogin"
     />
   </header>
@@ -290,7 +289,6 @@
 
 <script setup lang="ts">
 import LoginModal from "~/components/auth/LoginModal.vue";
-import { thirdPartyLoginController } from "~/api/user";
 
 const { t, locale, setLocale } = useAppI18n();
 const { showTipToast } = useTipToast();
@@ -299,12 +297,6 @@ const route = useRoute();
 const openLang = ref(false);
 const openLogin = ref(false);
 const userMenuOpen = ref(false);
-const googleLoginPending = ref(false);
-const googleLoginInitializing = ref(false);
-const googleInitializedClientId = ref("");
-const googleTokenClient = ref<null | {
-  requestAccessToken: (overrideConfig?: { prompt?: string }) => void;
-}>(null);
 const headerSiteName = computed(() => t("common.siteName"));
 const localizedAppHomePath = computed(() => locale.value === "en" ? "/home" : `/${locale.value}/home`);
 
@@ -383,118 +375,6 @@ const userInitial = computed(
 );
 const userCredits = computed(() => user.value?.creditBalance ?? 0);
 
-const loadGoogleIdentityScript = () => {
-  console.log("执行到这里", import.meta);
-  if (typeof window === "undefined") {
-    return Promise.reject(new Error("Google login is client-only"));
-  }
-
-  if ((window as any).google?.accounts?.id) return Promise.resolve();
-
-  return new Promise<void>((resolve, reject) => {
-    const existingScript = document.getElementById("google-identity-services");
-    if (existingScript) {
-      const timer = window.setInterval(() => {
-        if ((window as any).google?.accounts?.id) {
-          window.clearInterval(timer);
-          resolve();
-        }
-      }, 50);
-      window.setTimeout(() => {
-        window.clearInterval(timer);
-        reject(new Error("Google login script timed out"));
-      }, 8000);
-      return;
-    }
-
-    const script = document.createElement("script");
-    script.id = "google-identity-services";
-    script.src = "https://accounts.google.com/gsi/client";
-    script.async = true;
-    script.defer = true;
-    script.onload = () => resolve();
-    script.onerror = () =>
-      reject(new Error("Google login script failed to load"));
-    document.head.appendChild(script);
-  });
-};
-
-const completeGoogleLogin = async (credential: string) => {
-  if (googleLoginPending.value) return;
-  googleLoginPending.value = true;
-
-  try {
-    const token = await thirdPartyLoginController({
-      provider: "google",
-      credential,
-    });
-
-    if (!token) return;
-
-    await loginWithToken(token);
-    openLogin.value = false;
-    userMenuOpen.value = false;
-    showTipToast({
-      type: "success",
-      title: t("auth.loginSuccessTitle"),
-      message: t("auth.loginSuccessMessage"),
-    });
-  } catch {
-    logout();
-    showTipToast({
-      type: "error",
-      title: t("auth.loginFailureTitle"),
-      message: t("auth.loginFailureMessage"),
-    });
-  } finally {
-    googleLoginPending.value = false;
-  }
-};
-
-const initializeGoogleLogin = async (clientId: string) => {
-  console.log("initializeGoogleLogin", clientId);
-  const resloadGoogleIdentityScript = await loadGoogleIdentityScript();
-  console.log("resloadGoogleIdentityScript++", resloadGoogleIdentityScript);
-  if (googleInitializedClientId.value === clientId) return;
-  googleTokenClient.value = (window as any).google.accounts.oauth2.initTokenClient({
-    client_id: clientId,
-    scope: "openid email profile",
-    include_granted_scopes: true,
-    callback: (response: { access_token?: string; error?: string }) => {
-      if (response.error || !response.access_token) return;
-      void completeGoogleLogin(response.access_token);
-    },
-    error_callback: (error: { type?: string }) => {
-      console.log("google token client error", error?.type);
-      showTipToast({
-        type: "error",
-        title: t("auth.loginFailureTitle"),
-        message: t("auth.loginFailureMessage"),
-      });
-    },
-  });
-  googleInitializedClientId.value = clientId;
-};
-
-const handleGoogleLogin = async (payload: { clientId: string }) => {
-  if (googleLoginPending.value || googleLoginInitializing.value) return;
-  googleLoginInitializing.value = true;
-  userMenuOpen.value = false;
-
-  try {
-    const res = await initializeGoogleLogin(payload.clientId);
-    console.log("res++", res);
-    googleTokenClient.value?.requestAccessToken({ prompt: "select_account" });
-  } catch {
-    showTipToast({
-      type: "error",
-      title: t("auth.loginFailureTitle"),
-      message: t("auth.loginFailureMessage"),
-    });
-  } finally {
-    googleLoginInitializing.value = false;
-  }
-};
 
 const handleEmailLogin = () => {};
 
