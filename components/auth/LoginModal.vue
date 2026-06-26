@@ -919,7 +919,8 @@ const GOOGLE_CLIENT_ID =
   "1007188045137-69g86626b9559hr20bfg3qm7d9oprnfm.apps.googleusercontent.com";
 
 const googleOverlayRef = ref<HTMLElement | null>(null);
-let googleButtonRendered = false;
+let googleInitialized = false;
+let resizeObserver: ResizeObserver | null = null;
 
 const loadGoogleScript = (): Promise<void> => {
   if ((window as any).google?.accounts?.id) return Promise.resolve();
@@ -946,36 +947,49 @@ const loadGoogleScript = (): Promise<void> => {
   });
 };
 
+const renderGoogleButton = () => {
+  const el = googleOverlayRef.value;
+  if (!el || !(window as any).google?.accounts?.id) return;
+  const width = el.offsetWidth;
+  if (!width) return;
+  el.innerHTML = "";
+  (window as any).google.accounts.id.renderButton(el, {
+    type: "standard",
+    size: "large",
+    width,
+  });
+};
+
 const initGoogleButton = async () => {
-  if (!process.client || googleButtonRendered) return;
+  if (!process.client) return;
   try {
     await loadGoogleScript();
-    (window as any).google.accounts.id.initialize({
-      client_id: GOOGLE_CLIENT_ID,
-      callback: async (response: { credential?: string }) => {
-        if (!response.credential) return;
-        const token = await thirdPartyLoginController({ provider: "google", credential: response.credential });
-        if (!token) {
-          showTipToast({ type: "error", title: t("auth.loginFailureTitle"), message: t("auth.loginFailureMessage") });
-          return;
-        }
-        try {
-          await loginWithToken(token);
-          showTipToast({ type: "success", title: t("auth.loginSuccessTitle"), message: t("auth.loginSuccessMessage") });
-          emit("close");
-        } catch {
-          logout();
-          showTipToast({ type: "error", title: t("auth.loginFailureTitle"), message: t("auth.loginFailureMessage") });
-        }
-      },
-    });
-    if (googleOverlayRef.value) {
-      (window as any).google.accounts.id.renderButton(googleOverlayRef.value, {
-        type: "standard",
-        size: "large",
-        width: googleOverlayRef.value.offsetWidth || 400,
+    if (!googleInitialized) {
+      (window as any).google.accounts.id.initialize({
+        client_id: GOOGLE_CLIENT_ID,
+        callback: async (response: { credential?: string }) => {
+          if (!response.credential) return;
+          const token = await thirdPartyLoginController({ provider: "google", credential: response.credential });
+          if (!token) {
+            showTipToast({ type: "error", title: t("auth.loginFailureTitle"), message: t("auth.loginFailureMessage") });
+            return;
+          }
+          try {
+            await loginWithToken(token);
+            showTipToast({ type: "success", title: t("auth.loginSuccessTitle"), message: t("auth.loginSuccessMessage") });
+            emit("close");
+          } catch {
+            logout();
+            showTipToast({ type: "error", title: t("auth.loginFailureTitle"), message: t("auth.loginFailureMessage") });
+          }
+        },
       });
-      googleButtonRendered = true;
+      googleInitialized = true;
+    }
+    renderGoogleButton();
+    if (googleOverlayRef.value && !resizeObserver) {
+      resizeObserver = new ResizeObserver(() => renderGoogleButton());
+      resizeObserver.observe(googleOverlayRef.value);
     }
   } catch {
     // script load failed, fallback gracefully
@@ -1182,6 +1196,8 @@ onMounted(() => {
 });
 
 onBeforeUnmount(() => {
+  resizeObserver?.disconnect();
+  resizeObserver = null;
   window.removeEventListener("mousemove", onMouseMove);
   clearAllTimers();
 });
