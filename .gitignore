@@ -41,6 +41,17 @@ pnpm-debug.log*
 Thumbs.db
 
 # =========================
+# IDE files
+# =========================
+.idea/
+.vscode/
+
+# =========================
+# Package manager cache
+# =========================
+.pnpm-store/
+
+# =========================
 # Other files and folders
 # =========================
 .settings/
