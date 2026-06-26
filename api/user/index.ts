@@ -5,22 +5,40 @@ export interface ThirdPartyLoginPayload {
 
 export interface SendEmailCodePayload {
 	email: string
-	purpose: 'user_register' | 'reset_password' | 'set_password'
+	purpose: 'user_register' | 'user_reset_password' | 'user_set_password'
+}
+
+export interface EmailLoginPayload {
+	email: string
+	password: string
+}
+
+export interface EmailRegisterPayload {
+	email: string
+	code: string
+	password: string
+	nickName?: string
+}
+
+export interface ResetPasswordPayload {
+	email: string
+	code: string
+	newPassword: string
 }
 
 export interface ApiResponse<T> {
-	code: number
+	code: number | string
 	msg: string
 	data: T
 }
 
 export interface UserProfile {
-	userId: number
-	site: string
+	userId: string
+	site: string | null
 	userName: string
-	nickName: string
+	nickName?: string | null
 	email: string
-	avatar: string
+	avatar: string | null
 	creditBalance: number
 	emailVerified: string
 	passwordLoginEnabled: string
@@ -32,17 +50,56 @@ export interface LoginData {
 	access_token?: string
 }
 
+const extractAuthToken = (response: unknown) => {
+	if (!response || typeof response !== 'object') return ''
+
+	const payload = response as {
+		data?:
+			| string
+			| {
+					token?: string
+					accessToken?: string
+					access_token?: string
+			  }
+		token?: string
+		accessToken?: string
+		access_token?: string
+	}
+
+	if (typeof payload.data === 'string') return payload.data
+	return (
+		payload.data?.token ??
+		payload.data?.accessToken ??
+		payload.data?.access_token ??
+		payload.token ??
+		payload.accessToken ??
+		payload.access_token ??
+		''
+	)
+}
+
+const isSuccessResponse = (response: unknown) => {
+	if (!response || typeof response !== 'object') return false
+	const payload = response as { code?: number | string }
+	return payload.code === undefined || Number(payload.code) === 200
+}
+
 export const getUser = () => {
 	const request = useRequest()
 	return request<ApiResponse<UserProfile>>('/user/profile')
 }
 
-export const thirdPartyLoginController = (data: ThirdPartyLoginPayload) => {
+export const thirdPartyLoginController = async (data: ThirdPartyLoginPayload) => {
 	const request = useRequest()
-	return request<ApiResponse<LoginData | string>>('/user/auth/third-party/login', {
-		method: 'POST',
-		body: data,
-	})
+	try {
+		const response = await request<ApiResponse<LoginData | string>>('/user/auth/third-party/login', {
+			method: 'POST',
+			body: data,
+		})
+		return isSuccessResponse(response) ? extractAuthToken(response) : ''
+	} catch {
+		return ''
+	}
 }
 
 export const sendEmailCodeController = async (
@@ -56,30 +113,54 @@ export const sendEmailCodeController = async (
 			body: { email, purpose },
 		})
 
-		return response.code === 200
+		return isSuccessResponse(response)
 	} catch {
 		return false
 	}
-}
-
-export interface RegisterUserPayload {
-	email: string
-	password: string
-	code: string
-	nickName: string
 }
 
 export interface RegisterUserResponse {
 	token: string
 }
 
-// 注册账号
-export const registerUserController = async (data: RegisterUserPayload) => {
+export const loginWithEmailController = async (data: EmailLoginPayload) => {
 	const request = useRequest()
-	return request<ApiResponse<RegisterUserResponse>>('/user/auth/email/register', {
-		method: 'POST',
-		body: data,
-	})
+	try {
+		const response = await request<ApiResponse<LoginData | string>>('/user/auth/email/login', {
+			method: 'POST',
+			body: data,
+		})
+		return isSuccessResponse(response) ? extractAuthToken(response) : ''
+	} catch {
+		return ''
+	}
 }
 
-// 登录
+export const registerUserController = async (data: EmailRegisterPayload) => {
+	const request = useRequest()
+	try {
+		const response = await request<ApiResponse<RegisterUserResponse | LoginData | string>>(
+			'/user/auth/email/register',
+			{
+				method: 'POST',
+				body: data,
+			},
+		)
+		return isSuccessResponse(response) ? extractAuthToken(response) : ''
+	} catch {
+		return ''
+	}
+}
+
+export const resetPasswordController = async (data: ResetPasswordPayload) => {
+	const request = useRequest()
+	try {
+		const response = await request<ApiResponse<null>>('/user/auth/email/reset-password', {
+			method: 'POST',
+			body: data,
+		})
+		return isSuccessResponse(response)
+	} catch {
+		return false
+	}
+}

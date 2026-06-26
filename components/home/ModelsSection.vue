@@ -13,7 +13,7 @@
 			</div>
 
 			<div class="models-section__grid">
-				<article v-for="model in modelItems" :key="model.id" class="model-card">
+				<article v-for="model in modelItems" :key="model.id" class="model-card" tabindex="0" role="button" @click="selectedPreview = toPreviewItem(model)" @keydown.enter.prevent="selectedPreview = toPreviewItem(model)" @keydown.space.prevent="selectedPreview = toPreviewItem(model)">
 					<img v-if="model.image" v-bind="getLazyImageAttrs(model.image, { alt: model.name })" />
 					<div v-else class="model-card__placeholder"></div>
 					<div class="model-card__content">
@@ -34,12 +34,16 @@
 					</div>
 				</article>
 			</div>
+
+			<CreativePreviewModal :item="selectedPreview" @close="selectedPreview = null" />
 		</div>
 	</section>
 </template>
 
 <script setup lang="ts">
-const { t } = useI18n()
+import CreativePreviewModal from '~/components/home/CreativePreviewModal.vue'
+
+const { t } = useAppI18n()
 const { getLazyImageAttrs } = useLazyImage()
 
 type ModelCopy = {
@@ -49,16 +53,43 @@ type ModelCopy = {
 	kindLabel: string
 }
 
+type ModelItem = ModelCopy & {
+	image: string
+}
+
+type CreativePreviewItem = {
+	id: string
+	title: string
+	image: string
+	alt?: string
+	prompt: string
+	model: string
+	resolution: string
+	aspectRatio: string
+	outputFormat: string
+}
+
 const photo = (id: string, width = 1100) => `https://images.unsplash.com/${id}?auto=format&fit=crop&w=${width}&q=84`
 
 const modelImages: Record<string, string> = {
-	gptImage2: '',
+	gptImage2: photo('photo-1497215728101-856f4ea42174'),
 	nanoBanana2: photo('photo-1524504388940-b1c1722653e1'),
 	nanoBananaPro: photo('photo-1492144534655-ae79c964c9d7'),
 	veo31: photo('photo-1517841905240-472988babdf9'),
-	seedanceFast: '',
-	seedance2: '',
+	seedanceFast: photo('photo-1500530855697-b586d89ba3ee'),
+	seedance2: photo('photo-1500534314209-a25ddb2bd429'),
 }
+
+const modelPromptMap: Record<string, string> = {
+	gptImage2: 'A cinematic product scene with crisp studio lighting, premium materials, controlled reflections, and clean editorial composition.',
+	nanoBanana2: 'A luxury fashion editorial runway video featuring the same female model walking confidently toward the camera in a single continuous shot.',
+	nanoBananaPro: 'High-end automotive commercial shot at golden hour with smooth camera movement, glossy reflections, and cinematic depth.',
+	veo31: 'Elegant portrait motion with natural facial detail, soft backlight, realistic skin texture, and slow camera push-in.',
+	seedanceFast: 'Wide coastal scene with a camera drifting over architecture and ocean light, fast generation style with clean motion.',
+	seedance2: 'Dreamlike travel film with layered foreground, consistent subject identity, soft daylight, and premium campaign pacing.',
+}
+
+const selectedPreview = ref<CreativePreviewItem | null>(null)
 
 const modelItems = computed(() => {
 	const items = t('home.models.items') as ModelCopy[]
@@ -66,6 +97,18 @@ const modelItems = computed(() => {
 		...item,
 		image: modelImages[item.id],
 	}))
+})
+
+const toPreviewItem = (model: ModelItem): CreativePreviewItem => ({
+	id: model.id,
+	title: model.name,
+	image: model.image,
+	alt: model.name,
+	prompt: modelPromptMap[model.id] || model.name,
+	model: model.name,
+	resolution: model.kind === 'video' ? '1080p' : '1K',
+	aspectRatio: model.kind === 'video' ? '16:9' : '2:3',
+	outputFormat: model.kind === 'video' ? 'MP4' : 'PNG',
 })
 </script>
 
@@ -141,6 +184,19 @@ const modelItems = computed(() => {
 	border: 1px solid rgba(255, 255, 255, 0.18);
 	border-radius: 12px;
 	background: #2e2f30;
+	cursor: pointer;
+	outline: none;
+	transition:
+		border-color 180ms ease,
+		transform 180ms ease,
+		box-shadow 180ms ease;
+
+	&:hover,
+	&:focus-visible {
+		border-color: rgba(255, 255, 255, 0.36);
+		box-shadow: 0 18px 52px rgba(0, 0, 0, 0.36);
+		transform: translateY(-3px);
+	}
 
 	img,
 	.model-card__placeholder {

@@ -142,7 +142,31 @@
                 }}</span>
               </div>
 
-              <div ref="googleBtnSlot" class="google-btn-slot" />
+              <button
+                type="button"
+                class="google-btn"
+                @click="handleGoogleLogin"
+              >
+                <svg class="h-5 w-5" viewBox="0 0 24 24" aria-hidden="true">
+                  <path
+                    fill="#4285F4"
+                    d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"
+                  />
+                  <path
+                    fill="#34A853"
+                    d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                  />
+                  <path
+                    fill="#FBBC05"
+                    d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18A11.96 11.96 0 0 0 1 12c0 1.94.46 3.77 1.18 5.07l3.66-2.84v-.14z"
+                  />
+                  <path
+                    fill="#EA4335"
+                    d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+                  />
+                </svg>
+                <span>{{ t("auth.googleSignup") }}</span>
+              </button>
 
               <div class="divider">
                 <span>{{ t("auth.orContinueWith") }}</span>
@@ -198,14 +222,14 @@
                       <button
                         type="button"
                         class="transition hover:text-white"
-                        @click="handleForgotPassword"
+                        @click="switchToReset"
                       >
                         {{ t("auth.forgotPassword") }}
                       </button>
                       <button
                         type="button"
                         class="transition hover:text-white"
-                        @click="selectRegisterAccount"
+                        @click="switchToRegister"
                       >
                         {{ t("auth.noAccountRegister") }}
                       </button>
@@ -216,7 +240,7 @@
                   </div>
 
                   <div
-                    v-else
+                    v-else-if="step === 'register'"
                     class="grid gap-3 rounded-[16px] border border-white/8 bg-white/4 p-4"
                   >
                     <div class="text-[13px] text-white/65">
@@ -263,7 +287,7 @@
                             codeSeconds > 0 ||
                             !validateEmail(email)
                           "
-                          @click="sendEmailCode"
+                          @click="sendEmailCode('user_register')"
                         >
                           <span class="block text-center">
                             {{
@@ -318,6 +342,98 @@
                       {{ t("auth.backToLogin") }}
                     </button>
                   </div>
+
+                  <div
+                    v-else
+                    class="grid gap-3 rounded-[16px] border border-white/8 bg-white/4 p-4"
+                  >
+                    <div class="text-[13px] text-white/65">
+                      {{ t("auth.resetPasswordTip") }}
+                    </div>
+                    <input
+                      v-model.trim="email"
+                      type="email"
+                      :placeholder="t('auth.emailPlaceholder')"
+                      class="field-input"
+                      autocomplete="email"
+                      @focus="handleEmailFocus"
+                      @input="handleRegisterInput"
+                    />
+                    <div class="grid gap-2">
+                      <div
+                        class="grid gap-2 sm:grid-cols-[1fr_auto] sm:items-start"
+                      >
+                        <input
+                          v-model.trim="emailCode"
+                          type="text"
+                          inputmode="numeric"
+                          maxlength="6"
+                          :placeholder="t('auth.emailCodePlaceholder')"
+                          class="field-input min-w-0"
+                          autocomplete="one-time-code"
+                        />
+                        <button
+                          type="button"
+                          class="secondary-btn min-h-[48px] whitespace-normal px-3 text-[13px] leading-tight sm:w-[110px]"
+                          :disabled="
+                            sendingEmailCode ||
+                            codeSeconds > 0 ||
+                            !validateEmail(email)
+                          "
+                          @click="sendEmailCode('user_reset_password')"
+                        >
+                          <span class="block text-center">
+                            {{
+                              codeSeconds > 0
+                                ? t('auth.codeResendCountdown', {
+                                    seconds: codeSeconds,
+                                  })
+                                : t('auth.sendVerificationCode')
+                            }}
+                          </span>
+                        </button>
+                      </div>
+                    </div>
+                    <div class="grid gap-3">
+                      <div class="relative">
+                        <input
+                          v-model.trim="newPassword"
+                          :type="showPassword ? 'text' : 'password'"
+                          :placeholder="t('auth.newPasswordPlaceholder')"
+                          class="field-input pr-12"
+                          autocomplete="new-password"
+                          @focus="handlePasswordFocus"
+                          @blur="handlePasswordBlur"
+                          @input="handleRegisterInput"
+                        />
+                        <button
+                          type="button"
+                          class="absolute right-3 top-1/2 -translate-y-1/2 text-[12px] font-semibold text-white/55"
+                          @click="togglePassword"
+                        >
+                          {{
+                            showPassword
+                              ? t("auth.hidePassword")
+                              : t("auth.showPassword")
+                          }}
+                        </button>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      class="primary-btn"
+                      @click="resetPassword"
+                    >
+                      {{ t("auth.resetPasswordAction") }}
+                    </button>
+                    <button
+                      type="button"
+                      class="text-[12px] text-white/55 transition hover:text-white"
+                      @click="backToLogin"
+                    >
+                      {{ t("auth.backToLogin") }}
+                    </button>
+                  </div>
                 </Transition>
               </form>
             </div>
@@ -338,27 +454,32 @@ import {
   nextTick,
 } from "vue";
 import { useI18n } from "~/composables/useI18n";
-import { sendEmailCodeController, registerUserController } from "~/api/user";
+import {
+  loginWithEmailController,
+  registerUserController,
+  resetPasswordController,
+  sendEmailCodeController,
+} from "~/api/user";
 const props = defineProps<{ open: boolean }>();
 const emit = defineEmits<{
   (e: "close"): void;
-  (e: "google", payload: { credential: string }): void;
+  (e: "google", payload: { clientId: string }): void;
   (e: "email", payload: { email: string }): void;
 }>();
-const { t } = useI18n();
+const { t } = useAppI18n();
 const { showTipToast } = useTipToast();
-const { setToken, loadUser } = useUser()
+const { loginWithToken, logout } = useUser()
 
 const passwordInput = ref<HTMLInputElement | null>(null);
 
 const email = ref("");
 const username = ref("");
 const password = ref("");
-const confirmPassword = ref("");
+const newPassword = ref("");
 const emailCode = ref("");
 const codeSeconds = ref(0);
 const sendingEmailCode = ref(false);
-const step = ref<"login" | "register">("login");
+const step = ref<"login" | "register" | "reset">("login");
 const showPassword = ref(false);
 
 const mouseX = ref(0);
@@ -416,6 +537,7 @@ const resetFormState = () => {
   email.value = "";
   username.value = "";
   password.value = "";
+  newPassword.value = "";
   emailCode.value = "";
   codeSeconds.value = 0;
   step.value = "login";
@@ -598,16 +720,6 @@ const updateCharacters = () => {
   if (purpleMouth) {
     purpleMouth.style.opacity =
       isPurpleBlinking.value || isLoginError.value ? "0.85" : "1";
-  }
-
-  const registerPasswordInput = document.getElementById(
-    "register-password-input",
-  ) as HTMLInputElement | null;
-  const registerConfirmPasswordInput = document.getElementById(
-    "register-confirm-password-input",
-  ) as HTMLInputElement | null;
-  if (registerPasswordInput && registerConfirmPasswordInput) {
-    registerConfirmPasswordInput.value = confirmPassword.value;
   }
 
   const orangeEyes = document.getElementById(
@@ -799,63 +911,9 @@ const togglePassword = () => {
 const GOOGLE_CLIENT_ID =
   "1007188045137-69g86626b9559hr20bfg3qm7d9oprnfm.apps.googleusercontent.com";
 
-const googleBtnSlot = ref<HTMLDivElement | null>(null);
-const googleInitialized = ref(false);
-
-const loadGoogleScript = (): Promise<void> => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  if (process.client && (window as any).google?.accounts?.id) return Promise.resolve();
-  return new Promise<void>((resolve, reject) => {
-    if (document.getElementById("google-identity-services")) {
-      const timer = setInterval(() => {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        if ((window as any).google?.accounts?.id) { clearInterval(timer); resolve(); }
-      }, 50);
-      setTimeout(() => { clearInterval(timer); reject(new Error("timeout")); }, 10000);
-      return;
-    }
-    const script = document.createElement("script");
-    script.id = "google-identity-services";
-    script.src = "https://accounts.google.com/gsi/client";
-    script.async = true;
-    script.defer = true;
-    script.onload = () => resolve();
-    script.onerror = () => reject(new Error("load error"));
-    document.head.appendChild(script);
-  });
+const handleGoogleLogin = () => {
+  emit("google", { clientId: GOOGLE_CLIENT_ID });
 };
-
-const initGoogleButton = async () => {
-  if (!process.client) return;
-  try { await loadGoogleScript(); } catch { return; }
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const goog = (window as any).google?.accounts?.id;
-  if (!goog || !googleBtnSlot.value) return;
-
-  if (!googleInitialized.value) {
-    goog.initialize({
-      client_id: GOOGLE_CLIENT_ID,
-      callback: (response: { credential?: string }) => {
-        if (response.credential) emit("google", { credential: response.credential });
-      },
-    });
-    googleInitialized.value = true;
-  }
-
-  googleBtnSlot.value.replaceChildren();
-  goog.renderButton(googleBtnSlot.value, {
-    type: "standard",
-    theme: "filled_black",
-    size: "large",
-    text: "signin_with",
-    shape: "rectangular",
-    width: googleBtnSlot.value.clientWidth || 320,
-  });
-};
-
-watch(() => props.open, (open) => {
-  if (open) nextTick(() => void initGoogleButton());
-});
 
 const handleLoginError = () => {
   clearTimeout(errorRecoverTimer as any);
@@ -871,13 +929,88 @@ const handleLoginError = () => {
 const validateEmail = (value: string) =>
   /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 
-const handleLoginSubmit = () => {
-  if (!validateEmail(email.value) || !password.value) return;
-  emit("email", { email: email.value });
+const validatePassword = (value: string) => /^.{6,64}$/.test(value);
+const validateCode = (value: string) => /^\d{6}$/.test(value);
+
+const resolveAuthToken = (response: unknown) => {
+  if (typeof response === "string") return response;
+  if (!response || typeof response !== "object") return "";
+
+  const payload = response as {
+    data?:
+      | string
+      | {
+          token?: string;
+          accessToken?: string;
+          access_token?: string;
+        };
+    token?: string;
+    accessToken?: string;
+    access_token?: string;
+  };
+
+  if (typeof payload.data === "string") return payload.data;
+  return (
+    payload.data?.token ??
+    payload.data?.accessToken ??
+    payload.data?.access_token ??
+    payload.token ??
+    payload.accessToken ??
+    payload.access_token ??
+    ""
+  );
 };
 
-const selectRegisterAccount = () => {
+const completeTokenLogin = async (response: unknown, loggedEmail?: string) => {
+  const token = resolveAuthToken(response);
+
+  if (!token) {
+    handleLoginError();
+    return false;
+  }
+
+  try {
+    await loginWithToken(token);
+    showTipToast({
+      type: "success",
+      title: t("auth.loginSuccessTitle"),
+      message: t("auth.loginSuccessMessage"),
+    });
+    if (loggedEmail) emit("email", { email: loggedEmail });
+    emit("close");
+    return true;
+  } catch {
+    logout();
+    handleLoginError();
+    showTipToast({
+      type: "error",
+      title: t("auth.loginFailureTitle"),
+      message: t("auth.loginFailureMessage"),
+    });
+    return false;
+  }
+};
+
+const handleLoginSubmit = async () => {
+  const normalizedEmail = email.value.trim();
+  if (!validateEmail(normalizedEmail) || !password.value) return;
+
+  const token = await loginWithEmailController({
+    email: normalizedEmail,
+    password: password.value,
+  });
+  await completeTokenLogin(token, normalizedEmail);
+};
+
+const switchToRegister = () => {
   step.value = "register";
+  hasInteracted.value = true;
+  focusedField.value = "password";
+  updateCharacters();
+};
+
+const switchToReset = () => {
+  step.value = "reset";
   hasInteracted.value = true;
   focusedField.value = "password";
   updateCharacters();
@@ -893,17 +1026,6 @@ const backToLogin = () => {
 const handleRegisterInput = () => {
   hasInteracted.value = true;
   updateCharacters();
-};
-
-const handleForgotPassword = () => {
-  hasInteracted.value = true;
-  isLoginError.value = true;
-  updateCharacters();
-  clearTimeout(errorRecoverTimer as any);
-  errorRecoverTimer = setTimeout(() => {
-    isLoginError.value = false;
-    updateCharacters();
-  }, 2200);
 };
 
 const startEmailCodeCountdown = () => {
@@ -924,21 +1046,21 @@ const startEmailCodeCountdown = () => {
   }, 50);
 };
 
-const sendEmailCode = async () => {
+const sendEmailCode = async (
+  purpose: "user_register" | "user_reset_password",
+) => {
   const normalizedEmail = email.value.trim();
 
   if (codeSeconds.value > 0 || sendingEmailCode.value) return;
 
   if (!validateEmail(normalizedEmail)) {
-    handleLoginError();
     return;
   }
   sendingEmailCode.value = true;
-  const sent = await sendEmailCodeController(normalizedEmail);
+  const sent = await sendEmailCodeController(normalizedEmail, purpose);
   sendingEmailCode.value = false;
 
   if (!sent) {
-    handleLoginError();
     return;
   }
 
@@ -956,11 +1078,6 @@ const onMouseMove = (e: MouseEvent) => {
   mouseY.value = e.clientY;
   pointer.x = e.clientX;
   pointer.y = e.clientY;
-  // pointer.active =
-  //   hasInteracted.value || focusedField.value !== null || isLoginError.value;
-  //   console.log(pointer.active,'ointer.active');
-
-  // if (pointer.active)
   updateCharacters();
 };
 
@@ -983,8 +1100,6 @@ watch(
     }
 
     nextTick(() => {
-      console.log(process.client, "process.client++");
-
       if (!process.client) return;
       updateCharacters();
       scheduleBlinkPurple();
@@ -1005,35 +1120,46 @@ onBeforeUnmount(() => {
 
 // 注册用户
 const registerUser = async () => {
+  const normalizedEmail = email.value.trim();
   if (
-    email.value.trim() === "" ||
-    emailCode.value.trim() === "" ||
-    password.value.trim() === "" ||
-    username.value.trim() === "" ||
-    !validateEmail(email.value)
+    !validateEmail(normalizedEmail) ||
+    !validateCode(emailCode.value) ||
+    !validatePassword(password.value) ||
+    !username.value.trim()
   ) {
-    showTipToast({
-      type: "error",
-      title: t("auth.registerErrorTitle"),
-      message: t("auth.registerErrorMessage"),
-    });
     return;
   }
-  const response = await registerUserController({
-    email: email.value,
+  const token = await registerUserController({
+    email: normalizedEmail,
     code: emailCode.value,
     password: password.value,
-    nickName: username.value,
+    nickName: username.value.trim(),
   });
-  if (response.data.token && response.data.code === 200) {
-    setToken(response.data.token);
-    await loadUser();
+  await completeTokenLogin(token, normalizedEmail);
+};
+
+const resetPassword = async () => {
+  const normalizedEmail = email.value.trim();
+  if (
+    !validateEmail(normalizedEmail) ||
+    !validateCode(emailCode.value) ||
+    !validatePassword(newPassword.value)
+  ) {
+    return;
   }
+  const ok = await resetPasswordController({
+    email: normalizedEmail,
+    code: emailCode.value,
+    newPassword: newPassword.value,
+  });
+  if (!ok) return;
+
   showTipToast({
     type: "success",
-    title: t("auth.loginSuccessTitle"),
-    message: t("auth.loginSuccessMessage"),
+    title: t("auth.resetPasswordSuccessTitle"),
+    message: t("auth.resetPasswordSuccessMessage"),
   });
+  backToLogin();
 };
 </script>
 
@@ -1061,6 +1187,7 @@ const registerUser = async () => {
   transform: translateY(8px);
 }
 
+.google-btn,
 .primary-btn,
 .secondary-btn,
 .field-input {
@@ -1073,12 +1200,31 @@ const registerUser = async () => {
     opacity 180ms ease;
 }
 
-.google-btn-slot {
-  width: 100%;
+.google-btn {
   min-height: 48px;
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 10px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background:
+    linear-gradient(#19191d, #19191d) padding-box,
+    linear-gradient(90deg, #34a853 0%, #4285f4 34%, #ea4335 68%, #fbbc05 100%)
+      border-box;
+  color: #f7f7f7;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1;
+}
+
+.google-btn:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.08);
+}
+
+.google-btn:active {
+  transform: translateY(0);
 }
 
 .primary-btn {

@@ -29,20 +29,24 @@
 						<span>{{ t('home.creation.kicker') }}</span>
 						<h4>{{ item.title }}</h4>
 						<p>{{ item.desc }}</p>
-						<button type="button">{{ t('home.creation.itemAction') }}</button>
+						<button type="button" @click="selectedPreview = toPreviewItem(item)">{{ t('home.creation.itemAction') }}</button>
 					</div>
 
-					<div class="creation-item__visual" :class="{ 'is-grid': item.images.length > 1 }">
+					<div class="creation-item__visual" :class="{ 'is-grid': item.images.length > 1 }" tabindex="0" role="button" @click="selectedPreview = toPreviewItem(item)" @keydown.enter.prevent="selectedPreview = toPreviewItem(item)" @keydown.space.prevent="selectedPreview = toPreviewItem(item)">
 						<NuxtImg v-for="image in item.images" :key="image.src" v-bind="getLazyImageAttrs(image.src, { alt: image.alt })" />
 					</div>
 				</div>
 			</div>
+
+			<CreativePreviewModal :item="selectedPreview" @close="selectedPreview = null" />
 		</div>
 	</section>
 </template>
 
 <script setup lang="ts">
-const { t } = useI18n()
+import CreativePreviewModal from '~/components/home/CreativePreviewModal.vue'
+
+const { t } = useAppI18n()
 const { getLazyImageAttrs } = useLazyImage()
 
 type CreationCopy = {
@@ -51,6 +55,22 @@ type CreationCopy = {
 	desc: string
 	imageAlts?: string[]
 	layout: 'wide' | 'poster' | 'grid' | 'mosaic'
+}
+
+type CreationItem = CreationCopy & {
+	images: Array<{ src: string; alt: string }>
+}
+
+type CreativePreviewItem = {
+	id: string
+	title: string
+	image: string
+	alt?: string
+	prompt: string
+	model: string
+	resolution: string
+	aspectRatio: string
+	outputFormat: string
 }
 
 const photo = (id: string, width = 980) => `https://images.unsplash.com/${id}?auto=format&fit=crop&w=${width}&q=84`
@@ -81,16 +101,30 @@ const visualMap: Record<string, Array<{ src: string; alt: string }>> = {
 	],
 }
 
+const selectedPreview = ref<CreativePreviewItem | null>(null)
+
 const items = computed(() => {
 	const copy = t('home.creation.items') as CreationCopy[]
 	const source = Array.isArray(copy) ? copy : fallbackItems
 	return source.map(item => ({
 		...item,
-		images: visualMap[item.id].map((image, index) => ({
+		images: (visualMap[item.id] || visualMap.scenes).map((image, index) => ({
 			...image,
 			alt: item.imageAlts?.[index] ?? image.alt,
 		})),
 	}))
+})
+
+const toPreviewItem = (item: CreationItem): CreativePreviewItem => ({
+	id: item.id,
+	title: item.title,
+	image: item.images[0]?.src || '',
+	alt: item.images[0]?.alt || item.title,
+	prompt: item.desc,
+	model: item.id === 'products' ? 'GPT Image 2' : 'Nano Banana 2',
+	resolution: item.layout === 'wide' ? '2K' : '1K',
+	aspectRatio: item.layout === 'wide' ? '4:1' : item.layout === 'poster' ? '2:3' : '1:1',
+	outputFormat: 'PNG',
 })
 </script>
 
@@ -262,6 +296,19 @@ const items = computed(() => {
 	border: 1px solid rgba(255, 255, 255, 0.14);
 	border-radius: 12px;
 	background: #202020;
+	cursor: pointer;
+	outline: none;
+	transition:
+		border-color 180ms ease,
+		box-shadow 180ms ease,
+		transform 180ms ease;
+
+	&:hover,
+	&:focus-visible {
+		border-color: rgba(255, 255, 255, 0.34);
+		box-shadow: 0 18px 52px rgba(0, 0, 0, 0.34);
+		transform: translateY(-2px);
+	}
 
 	img {
 		display: block;

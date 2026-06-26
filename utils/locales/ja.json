@@ -81,6 +81,7 @@
     "stockArrivalEmail": "入荷お知らせメール"
   },
   "common": {
+    "siteName": "gptpix.ai",
     "code": "コード",
     "all": "すべて",
     "loading": "読み込み中",
@@ -94,6 +95,7 @@
     "overView": "概要"
   },
   "auth": {
+    "login": "ログイン",
     "emailCodeSentTitle": "認証コードを送信しました",
     "emailCodeSentMessage": "メールを確認し、認証コードを入力してください。",
     "emailCodeFailedTitle": "コードを送信できませんでした",
@@ -145,7 +147,7 @@
       "tags": ["4K解像度", "複数のAIモデル", "テンプレート", "画像編集", "高速生成", "パノラマ対応", "商品画像", "動画生成", "無料クレジット", "商用利用可", "デザイン経験不要"]
     },
     "footer": {
-      "brandName": "Nano Banana AI",
+      "brandName": "gptpix.ai",
       "desc": "精細なディテール、リアルな光、無限の創造スタイルを備えたAI画像生成。",
       "companyTitle": "会社",
       "productsTitle": "製品",
@@ -157,7 +159,7 @@
       "privacy": "プライバシーポリシー",
       "refund": "返金ポリシー",
       "languageLabel": "言語",
-      "copyright": "© {year} Nano Banana AI. All rights reserved.",
+      "copyright": "© {year} gptpix.ai. All rights reserved.",
       "slogan": "クリエイターのために"
     }
   },

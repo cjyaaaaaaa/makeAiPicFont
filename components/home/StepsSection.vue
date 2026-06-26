@@ -19,6 +19,6 @@
 </template>
 
 <script setup lang="ts">
-const { t } = useI18n()
+const { t } = useAppI18n()
 const steps = computed(() => t('home.steps.items') as Array<{ no: string; title: string; desc: string }>)
 </script>

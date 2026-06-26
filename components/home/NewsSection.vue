@@ -25,7 +25,7 @@
 </template>
 
 <script setup lang="ts">
-const { t } = useI18n()
+const { t } = useAppI18n()
 const items = computed(() => t('home.news.items') as Array<{ title: string; date: string }>)
 </script>
 

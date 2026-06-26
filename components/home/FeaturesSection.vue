@@ -81,7 +81,7 @@
 
 <script setup lang="ts">
 import AiCarousel from '~/components/home/AiCarousel.vue'
-const { t } = useI18n()
+const { t } = useAppI18n()
 
 const sampleImages = [
 	{ src: 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=640&q=80', alt: 'Sample 1' },

@@ -20,7 +20,7 @@
 </template>
 
 <script setup lang="ts">
-const { t } = useI18n()
+const { t } = useAppI18n()
 const cards = [
 	{ title: 'AI 录音平台', desc: '支持录音、转写、检索和标签管理。' },
 	{ title: '智能质检', desc: '面向服务话术、合规和客服质检场景。' },

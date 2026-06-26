@@ -23,7 +23,7 @@
 </template>
 
 <script setup lang="ts">
-const { t } = useI18n()
+const { t } = useAppI18n()
 
 const prompt = ref('')
 const fallbackTags = ['4K resolution', 'AI models', 'Ready templates', 'Image editing', 'Fast generation', 'All scenes', 'Product images', 'Video generation', 'Free credits', 'Commercial use', 'No design experience']

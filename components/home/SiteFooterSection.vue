@@ -14,7 +14,7 @@
 			</div>
 
 			<div class="site-footer__languages" :aria-label="t('home.footer.languageLabel')">
-				<button v-for="language in languages" :key="language.code" type="button" :class="{ 'is-active': locale === language.code }" @click="setLocale(language.code)">
+				<button v-for="language in languages" :key="language.code" type="button" :class="{ 'is-active': locale === language.code }" @click="switchLanguage(language.code)">
 					{{ language.label }}
 				</button>
 			</div>
@@ -30,7 +30,8 @@
 <script setup lang="ts">
 type LocaleCode = 'zh' | 'en' | 'de' | 'es' | 'ja'
 
-const { t, locale, setLocale } = useI18n()
+const { t, locale, setLocale } = useAppI18n()
+const route = useRoute()
 const year = new Date().getFullYear()
 
 const languages: Array<{ code: LocaleCode; label: string }> = [
@@ -40,6 +41,30 @@ const languages: Array<{ code: LocaleCode; label: string }> = [
 	{ code: 'ja', label: '日本語' },
 	{ code: 'zh', label: '中文' },
 ]
+
+const defaultLocale: LocaleCode = 'en'
+const localeCodes = languages.map(item => item.code)
+const getPathLocale = (path: string) => {
+	const firstSegment = path.split('/').filter(Boolean)[0]
+	return localeCodes.includes(firstSegment as LocaleCode) ? firstSegment as LocaleCode : null
+}
+const stripLocalePrefix = (path: string) => {
+	const currentPathLocale = getPathLocale(path)
+	if (!currentPathLocale) return path || '/'
+	const stripped = path.replace(new RegExp(`^/${currentPathLocale}(?=/|$)`), '')
+	return stripped || '/'
+}
+const buildLocalePath = (code: LocaleCode, fullPath: string) => {
+	const [pathWithQuery, hash = ''] = fullPath.split('#')
+	const [pathOnly, query = ''] = pathWithQuery.split('?')
+	const strippedPath = stripLocalePrefix(pathOnly)
+	const localizedPath = code === defaultLocale ? strippedPath : `/${code}${strippedPath === '/' ? '' : strippedPath}`
+	return `${localizedPath}${query ? `?${query}` : ''}${hash ? `#${hash}` : ''}`
+}
+const switchLanguage = async (code: LocaleCode) => {
+	setLocale(code)
+	await navigateTo(buildLocalePath(code, route.fullPath))
+}
 
 const linkGroups = computed(() => [
 	{

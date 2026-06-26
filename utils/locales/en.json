@@ -1,8 +1,16 @@
 {
   "common": {
-    "siteName": "LUMINA",
+    "siteName": "gptpix.ai",
     "language": "Language",
-    "close": "Close"
+    "close": "Close",
+    "requestErrorTitle": "Request failed",
+    "requestErrorMessage": "The service returned an error. Please try again later."
+  },
+  "account": {
+    "credits": "Credits: {count}",
+    "settings": "Account Settings",
+    "subscription": "Subscription",
+    "signOut": "Sign out"
   },
   "nav": {
     "workspace": "Workspace",
@@ -10,6 +18,7 @@
     "dashboard": "Dashboard"
   },
   "auth": {
+    "login": "Log in",
     "emailPlaceholder": "Enter your email",
     "sendVerificationCode": "Send verification code",
     "loginTip": "Supports Google sign-in or email login.",
@@ -21,10 +30,10 @@
     "hidePassword": "Hide",
     "showPassword": "Show",
     "registerTip": "Fill in your registration details.",
-    "firstNamePlaceholder": "First name",
-    "lastNamePlaceholder": "Last name",
-    "usernamePlaceholder": "Username",
+    "nickNamePlaceholder": "Nickname",
     "confirmPasswordPlaceholder": "Confirm password",
+    "newPasswordPlaceholder": "New password",
+    "confirmNewPasswordPlaceholder": "Confirm new password",
     "emailCodePlaceholder": "Email verification code",
     "emailCodeHint": "The code can be resent after 60 seconds.",
     "codeResendCountdown": "Resend in {seconds}s",
@@ -34,12 +43,18 @@
     "emailCodeFailedMessage": "Check the email address or try again later.",
     "backToLogin": "Back to login",
     "registerAction": "Register",
+    "resetPasswordAction": "Reset password",
+    "resetPasswordTip": "Enter your email, code, and new password.",
+    "resetPasswordSuccessTitle": "Password reset successful",
+    "resetPasswordSuccessMessage": "Please sign in again with your new password.",
     "googleLogin": "Sign in with Google",
     "googleSignup": "Sign up with Google",
     "loginSuccessTitle": "Login successful",
     "loginSuccessMessage": "Welcome back. You are now signed in.",
     "loginFailureTitle": "Login failed",
     "loginFailureMessage": "Please try again later, or check your network and sign in again.",
+    "registerErrorTitle": "Registration failed",
+    "registerErrorMessage": "Check your email, code, and password, then try again.",
     "orContinueWith": "Or continue with",
     "chooseAccountState": "Choose your account state and we’ll switch to the matching form.",
     "alreadyRegistered": "I’m already registered, log in",
@@ -48,7 +63,7 @@
   },
   "home": {
     "particleHero": {
-      "title": "Free Nano Banana AI Image Generation",
+      "title": "Free gptpix.ai Image Generation",
       "subtitle": "Cinema-grade AI video & image studio - motion, light, detail in seconds.",
       "placeholder": "Describe the image you want to generate...",
       "imagePlaceholder": "Describe the image you want to generate...",
@@ -85,7 +100,7 @@
     },
     "editingCases": {
       "eyebrow": "AI IMAGE EDITING",
-      "title": "Reimagine with Nano Banana AI",
+      "title": "Reimagine with gptpix.ai",
       "desc": "Transform a single image into multiple scenes, styles, and moods with one click.",
       "items": [
         {
@@ -144,10 +159,22 @@
         { "id": "seedance2", "name": "Seedance 2", "kind": "video", "kindLabel": "Video" }
       ]
     },
+    "preview": {
+      "download": "Download",
+      "prompt": "Prompt",
+      "seeMore": "See more",
+      "seeLess": "See less",
+      "settings": "Settings",
+      "model": "Model",
+      "resolution": "Resolution",
+      "aspectRatio": "Aspect Ratio",
+      "outputFormat": "Output Format",
+      "tryPrompt": "Try this prompt"
+    },
     "inspiration": {
       "eyebrow": "Made by creators",
-      "title": "Get Inspired by Nano Banana AI",
-      "desc": "See what others are creating with Nano Banana AI.",
+      "title": "Get Inspired by gptpix.ai",
+      "desc": "See what others are creating with gptpix.ai.",
       "toggleLabel": "Inspiration type",
       "imagesTab": "Images",
       "videosTab": "Videos",
@@ -196,9 +223,9 @@
       "secondaryAction": "Browse All",
       "title": "What can you create",
       "desc": "Use a few words to turn ideas into striking visual stories.",
-      "kicker": "Nano Banana AI",
+      "kicker": "gptpix.ai",
       "itemAction": "Try it now",
-      "templatesEyebrow": "Nano Banana AI Prompt Templates",
+      "templatesEyebrow": "gptpix.ai Prompt Templates",
       "templatesTitle": "Start with templates",
       "templatesDesc": "Choose a template, tune the prompt, and start creating in one click.",
       "items": [
@@ -209,7 +236,7 @@
       ]
     },
     "promptTemplates": {
-      "eyebrow": "Nano Banana AI Prompt Templates",
+      "eyebrow": "gptpix.ai Prompt Templates",
       "title": "Start with templates",
       "desc": "Choose a template, tune the prompt, and start creating in one click.",
       "tabsLabel": "Template categories",
@@ -274,7 +301,7 @@
     },
     "audience": {
       "title": "Who is it for",
-      "desc": "Anyone who needs to quickly produce high-quality visual content can use Nano Banana AI.",
+      "desc": "Anyone who needs to quickly produce high-quality visual content can use gptpix.ai.",
       "items": [
         { "id": "creators", "icon": "palette", "title": "For creators", "desc": "Turn ideas directly into visual work without design experience.", "accent": true },
         { "id": "designers", "icon": "camera", "title": "For designers", "desc": "Quickly generate moodboards, UI assets, and brand materials without leaving your workflow." },
@@ -294,7 +321,7 @@
       "tags": ["4K resolution", "Multiple AI models", "Ready templates", "Image editing", "Fast generation", "Panorama support", "Product images", "Video generation", "Free credits", "Commercial use", "No design experience"]
     },
     "footer": {
-      "brandName": "Nano Banana AI",
+      "brandName": "gptpix.ai",
       "desc": "AI-powered image generation with refined detail, realistic lighting, and limitless creative styles.",
       "companyTitle": "Company",
       "productsTitle": "Products",
@@ -306,7 +333,7 @@
       "privacy": "Privacy Policy",
       "refund": "Refund Policy",
       "languageLabel": "Languages",
-      "copyright": "© {year} Nano Banana AI. All rights reserved.",
+      "copyright": "© {year} gptpix.ai. All rights reserved.",
       "slogan": "Built for creators"
     },
     "hero": {

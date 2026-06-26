@@ -81,6 +81,7 @@
       "stockArrivalEmail": "Lagerbestand-E-Mail"
     },
     "common": {
+      "siteName": "gptpix.ai",
       "code": "Code",
       "all": "Alle",
       "loading": "Lädt",
@@ -94,6 +95,7 @@
       "overView": "Übersicht"
     },
     "auth": {
+      "login": "Anmelden",
       "emailCodeSentTitle": "Bestätigungscode gesendet",
       "emailCodeSentMessage": "Bitte prüfe dein Postfach und gib den Code ein.",
       "emailCodeFailedTitle": "Code konnte nicht gesendet werden",
@@ -145,7 +147,7 @@
         "tags": ["4K-Auflösung", "Mehrere KI-Modelle", "Fertige Vorlagen", "Bildbearbeitung", "Schnelle Generierung", "Panorama-Support", "Produktbilder", "Videogenerierung", "Kostenlose Credits", "Kommerziell nutzbar", "Keine Designerfahrung"]
       },
       "footer": {
-        "brandName": "Nano Banana AI",
+        "brandName": "gptpix.ai",
         "desc": "KI-gestützte Bildgenerierung mit feinen Details, realistischer Beleuchtung und grenzenlosen Kreativstilen.",
         "companyTitle": "Unternehmen",
         "productsTitle": "Produkte",
@@ -157,7 +159,7 @@
         "privacy": "Datenschutzrichtlinie",
         "refund": "Rückerstattungsrichtlinie",
         "languageLabel": "Sprachen",
-        "copyright": "© {year} Nano Banana AI. Alle Rechte vorbehalten.",
+        "copyright": "© {year} gptpix.ai. Alle Rechte vorbehalten.",
         "slogan": "Für Kreative gemacht"
       }
     },

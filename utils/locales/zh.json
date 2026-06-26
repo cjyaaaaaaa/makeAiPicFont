@@ -1,10 +1,16 @@
 {
   "common": {
-    "siteName": "LUMINA",
+    "siteName": "gptpix.ai",
     "language": "语言",
     "close": "关闭",
     "requestErrorTitle": "请求失败",
     "requestErrorMessage": "服务返回异常，请稍后重试。"
+  },
+  "account": {
+    "credits": "Credits: {count}",
+    "settings": "Account Settings",
+    "subscription": "Subscription",
+    "signOut": "Sign out"
   },
   "nav": {
     "workspace": "工作台",
@@ -12,6 +18,7 @@
     "dashboard": "控制台"
   },
   "auth": {
+    "login": "登录",
     "emailPlaceholder": "请输入邮箱",
     "sendVerificationCode": "发送验证码",
     "loginTip": "支持 Google 登录或邮箱登录。",
@@ -23,10 +30,10 @@
     "hidePassword": "隐藏",
     "showPassword": "显示",
     "registerTip": "请填写你的注册信息。",
-    "firstNamePlaceholder": "名",
-    "lastNamePlaceholder": "姓",
-    "usernamePlaceholder": "用户名",
+    "nickNamePlaceholder": "昵称",
     "confirmPasswordPlaceholder": "确认密码",
+    "newPasswordPlaceholder": "新密码",
+    "confirmNewPasswordPlaceholder": "确认新密码",
     "emailCodePlaceholder": "邮箱验证码",
     "emailCodeHint": "验证码 60 秒后可重新发送。",
     "codeResendCountdown": "{seconds}s 后重发",
@@ -36,12 +43,18 @@
     "emailCodeFailedMessage": "请检查邮箱地址或稍后重试。",
     "backToLogin": "返回登录",
     "registerAction": "注册",
+    "resetPasswordAction": "重置密码",
+    "resetPasswordTip": "请输入邮箱、验证码和新密码。",
+    "resetPasswordSuccessTitle": "密码重置成功",
+    "resetPasswordSuccessMessage": "请使用新密码重新登录。",
     "googleLogin": "使用 Google 登录",
     "googleSignup": "使用 Google 注册",
     "loginSuccessTitle": "登录成功",
     "loginSuccessMessage": "欢迎回来，已成功进入系统。",
     "loginFailureTitle": "登录失败",
     "loginFailureMessage": "请稍后重试，或检查网络后重新登录。",
+    "registerErrorTitle": "注册失败",
+    "registerErrorMessage": "请检查邮箱、验证码和密码后重试。",
     "orContinueWith": "或继续使用",
     "chooseAccountState": "请选择你的账号状态，我们会切换到对应的表单。",
     "alreadyRegistered": "我已经注册，直接登录",
@@ -50,7 +63,7 @@
   },
   "home": {
     "particleHero": {
-      "title": "Free Nano Banana AI Image Generation",
+      "title": "Free gptpix.ai Image Generation",
       "subtitle": "电影级 AI 视频与图片工作室 —— 让运动、光影和细节在数秒内生成。",
       "placeholder": "Describe the image you want to generate...",
       "imagePlaceholder": "描述你想生成的图片...",
@@ -87,7 +100,7 @@
     },
     "editingCases": {
       "eyebrow": "AI 图像编辑",
-      "title": "用 Nano Banana AI 重新想象图片",
+      "title": "用 gptpix.ai 重新想象图片",
       "desc": "把一张图片快速转换成多种场景、风格和氛围，一次点击完成。",
       "items": [
         {
@@ -146,10 +159,22 @@
         { "id": "seedance2", "name": "Seedance 2", "kind": "video", "kindLabel": "视频" }
       ]
     },
+    "preview": {
+      "download": "下载",
+      "prompt": "提示词",
+      "seeMore": "查看更多",
+      "seeLess": "收起",
+      "settings": "设置",
+      "model": "模型",
+      "resolution": "分辨率",
+      "aspectRatio": "画面比例",
+      "outputFormat": "输出格式",
+      "tryPrompt": "试用提示词"
+    },
     "inspiration": {
       "eyebrow": "创作者作品",
-      "title": "Get Inspired by Nano Banana AI",
-      "desc": "看看其他创作者正在用 Nano Banana AI 做什么。",
+      "title": "Get Inspired by gptpix.ai",
+      "desc": "看看其他创作者正在用 gptpix.ai 做什么。",
       "toggleLabel": "灵感类型",
       "imagesTab": "图片",
       "videosTab": "视频",
@@ -198,9 +223,9 @@
       "secondaryAction": "浏览全部",
       "title": "你可以创作什么",
       "desc": "只需几个词，把想法变成惊艳画面。",
-      "kicker": "Nano Banana AI",
+      "kicker": "gptpix.ai",
       "itemAction": "立即体验",
-      "templatesEyebrow": "Nano Banana AI 提示词模板",
+      "templatesEyebrow": "gptpix.ai 提示词模板",
       "templatesTitle": "从模板开始",
       "templatesDesc": "选择模板、调整提示词，一键开始创作。",
       "items": [
@@ -211,7 +236,7 @@
       ]
     },
     "promptTemplates": {
-      "eyebrow": "Nano Banana AI 提示词模板",
+      "eyebrow": "gptpix.ai 提示词模板",
       "title": "从模板开始",
       "desc": "选择模板、调整提示词，一键开始创作。",
       "tabsLabel": "模板分类",
@@ -276,7 +301,7 @@
     },
     "audience": {
       "title": "适合谁使用",
-      "desc": "任何需要快速产出高质量视觉内容的人都可以使用 Nano Banana AI。",
+      "desc": "任何需要快速产出高质量视觉内容的人都可以使用 gptpix.ai。",
       "items": [
         { "id": "creators", "icon": "palette", "title": "适合创作者", "desc": "把想法直接变成视觉作品，无需设计基础。", "accent": true },
         { "id": "designers", "icon": "camera", "title": "适合设计师", "desc": "快速生成情绪板、UI 与品牌素材，不用离开工作位。" },
@@ -296,7 +321,7 @@
       "tags": ["4K 分辨率", "多种 AI 模型", "现成模板", "图像编辑", "快速生成", "支持全景", "产品图", "视频生成", "免费额度", "可商用", "无需设计经验"]
     },
     "footer": {
-      "brandName": "Nano Banana AI",
+      "brandName": "gptpix.ai",
       "desc": "AI 驱动的图像生成，细节精美，光影真实，创意风格无限。",
       "companyTitle": "公司",
       "productsTitle": "产品",
@@ -308,7 +333,7 @@
       "privacy": "隐私政策",
       "refund": "退款政策",
       "languageLabel": "语言",
-      "copyright": "© {year} Nano Banana AI. 保留所有权利。",
+      "copyright": "© {year} gptpix.ai. 保留所有权利。",
       "slogan": "为创作者而生"
     },
     "hero": {

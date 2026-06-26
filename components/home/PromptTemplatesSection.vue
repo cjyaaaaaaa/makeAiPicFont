@@ -31,7 +31,7 @@
 </template>
 
 <script setup lang="ts">
-const { t } = useI18n()
+const { t } = useAppI18n()
 const { getLazyImageAttrs } = useLazyImage()
 
 type TemplateTab = 'people' | 'fashion' | 'scenery' | 'product' | 'whimsical'

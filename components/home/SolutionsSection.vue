@@ -20,7 +20,7 @@
 </template>
 
 <script setup lang="ts">
-const { t } = useI18n()
+const { t } = useAppI18n()
 const items = computed(() => t('home.solutions.items') as Array<{ title: string; desc: string }>)
 </script>
 

@@ -4,7 +4,7 @@ const SITE = 'gptpix.ai'
 
 export default defineNuxtPlugin(() => {
 	const config = useRuntimeConfig()
-	const { locale, t } = useI18n()
+	const { locale, t } = useAppI18n()
 	const { showTipToast } = useTipToast()
 
 	const showGlobalRequestError = (message?: string) => {
@@ -21,9 +21,10 @@ export default defineNuxtPlugin(() => {
 			'Content-Type': 'application/json',
 		},
 		onRequest({ options }) {
+			const stateToken = useState<string | null>('user.token', () => null)
 			const token = import.meta.client
-				? localStorage.getItem('token') ?? useCookie<string | null>('token').value
-				: useCookie<string | null>('token').value ?? null
+				? stateToken.value ?? localStorage.getItem('token') ?? useCookie<string | null>('token').value
+				: stateToken.value ?? useCookie<string | null>('token').value ?? null
 
 			options.headers = {
 				...options.headers,
@@ -50,7 +51,7 @@ export default defineNuxtPlugin(() => {
 				typeof data === 'object' &&
 				'code' in data &&
 				data.code !== undefined &&
-				data.code !== 200
+				Number(data.code) !== 200
 			) {
 				showGlobalRequestError(data.msg || data.message)
 				throw createError({

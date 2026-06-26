@@ -2,6 +2,7 @@ import { useUserService } from '../services/user'
 import type { UserProfile } from '../api/user'
 
 const TOKEN_KEY = 'token'
+const TOKEN_KEYS = ['token', 'accessToken', 'access_token']
 
 const readToken = () => {
 	const tokenCookie = useCookie<string | null>(TOKEN_KEY)
@@ -23,7 +24,10 @@ const clearToken = () => {
 	const tokenCookie = useCookie<string | null>(TOKEN_KEY)
 	tokenCookie.value = null
 	if (import.meta.client) {
-		localStorage.removeItem(TOKEN_KEY)
+		TOKEN_KEYS.forEach((key) => {
+			localStorage.removeItem(key)
+			sessionStorage.removeItem(key)
+		})
 	}
 }
 
@@ -35,7 +39,8 @@ export const useUser = () => {
 	const token = useState<string | null>('user.token', () => readToken())
 
 	const loadUser = async () => {
-		if (!readToken()) {
+		const currentToken = token.value || readToken()
+		if (!currentToken) {
 			user.value = null
 			return null
 		}
@@ -64,6 +69,21 @@ export const useUser = () => {
 		token.value = null
 		user.value = null
 		error.value = null
+		pending.value = false
+	}
+
+	const loginWithToken = async (nextToken: string) => {
+		setToken(nextToken)
+		try {
+			const profile = await loadUser()
+			if (!profile) {
+				throw new Error('Failed to load user profile')
+			}
+			return profile
+		} catch (err) {
+			logout()
+			throw err
+		}
 	}
 
 	const initUser = async () => {
@@ -79,6 +99,7 @@ export const useUser = () => {
 		error,
 		token,
 		setToken,
+		loginWithToken,
 		loadUser,
 		initUser,
 		logout,

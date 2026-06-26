@@ -17,7 +17,7 @@
 </template>
 
 <script setup lang="ts">
-const { t } = useI18n()
+const { t } = useAppI18n()
 const stats = computed(() => t('home.about.stats') as Array<{ value: string; label: string }>)
 </script>
 

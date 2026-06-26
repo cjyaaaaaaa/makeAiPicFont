@@ -166,14 +166,14 @@ type RatioOption = {
 	label: string
 }
 
-const { t } = useI18n()
+const { t } = useAppI18n()
 
 const fallbackText = (key: string, fallback: string) => {
 	const value = t(key)
 	return typeof value === 'string' && value !== key ? value : fallback
 }
 
-const title = computed(() => fallbackText('home.particleHero.title', 'Free Nano Banana AI Image Generation'))
+const title = computed(() => fallbackText('home.particleHero.title', 'Free gptpix.ai Image Generation'))
 const subtitle = computed(() => fallbackText('home.particleHero.subtitle', 'Cinema-grade AI video & image studio - motion, light, detail in seconds.'))
 
 const imagePlaceholder = computed(() => fallbackText('home.particleHero.imagePlaceholder', 'Describe the image you want to generate...'))
