@@ -20,6 +20,12 @@
 					:key="item.id"
 					class="app-explore-card"
 					:class="[`is-${item.size}`, { 'is-video': item.type === 'video' }]"
+					tabindex="0"
+					role="button"
+					:aria-label="item.title"
+					@click="selectedPreview = toPreviewItem(item)"
+					@keydown.enter.prevent="selectedPreview = toPreviewItem(item)"
+					@keydown.space.prevent="selectedPreview = toPreviewItem(item)"
 				>
 					<NuxtImg :src="item.image" :alt="item.title" />
 					<div v-if="item.type === 'video'" class="app-explore-card__play" aria-hidden="true">
@@ -33,11 +39,14 @@
 					</footer>
 				</article>
 			</section>
+
+			<CreativePreviewModal :item="selectedPreview" @close="selectedPreview = null" />
 		</main>
 	</div>
 </template>
 
 <script setup lang="ts">
+import CreativePreviewModal from '~/components/home/CreativePreviewModal.vue'
 import AppHomeSidebar from '~/components/home/app/AppHomeSidebar.vue'
 
 type ExploreFilter = 'all' | 'video' | 'image'
@@ -52,8 +61,21 @@ type ExploreItem = {
 	image: string
 }
 
+type CreativePreviewItem = {
+	id: string
+	title: string
+	image: string
+	alt?: string
+	prompt: string
+	model: string
+	resolution: string
+	aspectRatio: string
+	outputFormat: string
+}
+
 const sidebarCollapsed = ref(false)
 const activeFilter = ref<ExploreFilter>('all')
+const selectedPreview = ref<CreativePreviewItem | null>(null)
 
 const filters: Array<{ label: string; value: ExploreFilter }> = [
 	{ label: 'All', value: 'all' },
@@ -177,6 +199,18 @@ const filteredItems = computed(() => {
 	if (activeFilter.value === 'all') return items
 	return items.filter(item => item.type === activeFilter.value)
 })
+
+const toPreviewItem = (item: ExploreItem): CreativePreviewItem => ({
+	id: item.id,
+	title: item.title,
+	image: item.image,
+	alt: item.title,
+	prompt: `${item.title} ${item.type === 'video' ? 'AI video' : 'AI image'} creative reference from Explore.`,
+	model: item.type === 'video' ? 'Nano Banana 2' : 'GPT Image 2',
+	resolution: item.type === 'video' ? '1080p' : '1K',
+	aspectRatio: item.size === 'wide' ? '16:9' : item.size === 'tall' ? '2:3' : '1:1',
+	outputFormat: item.type === 'video' ? 'MP4' : 'PNG',
+})
 </script>
 
 <style scoped lang="scss">
@@ -251,7 +285,9 @@ const filteredItems = computed(() => {
 	background: #161616;
 	color: #fff;
 	break-inside: avoid;
+	cursor: pointer;
 	isolation: isolate;
+	outline: none;
 
 	&::after {
 		content: "";
@@ -274,6 +310,10 @@ const filteredItems = computed(() => {
 	&:hover img {
 		transform: scale(1.035);
 		filter: saturate(1.04) contrast(1.04);
+	}
+
+	&:focus-visible {
+		box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.72), 0 0 0 5px rgba(255, 255, 255, 0.14);
 	}
 
 	footer {

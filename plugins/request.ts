@@ -25,11 +25,19 @@ export default defineNuxtPlugin(() => {
 			const token = import.meta.client
 				? stateToken.value ?? localStorage.getItem('token') ?? useCookie<string | null>('token').value
 				: stateToken.value ?? useCookie<string | null>('token').value ?? null
+			const isFormData = typeof FormData !== 'undefined' && options.body instanceof FormData
 
 			options.headers = {
 				...options.headers,
 				'X-site': SITE,
 				'Accept-Language': locale.value,
+			}
+
+			if (isFormData) {
+				const headers = { ...options.headers } as Record<string, string | undefined>
+				delete headers['Content-Type']
+				delete headers['content-type']
+				options.headers = headers
 			}
 
 			if (token) {
@@ -51,7 +59,7 @@ export default defineNuxtPlugin(() => {
 				typeof data === 'object' &&
 				'code' in data &&
 				data.code !== undefined &&
-				Number(data.code) !== 200
+				![0, 200].includes(Number(data.code))
 			) {
 				showGlobalRequestError(data.msg || data.message)
 				throw createError({

@@ -99,7 +99,7 @@ const primaryItems = computed(() => [
 	{ label: t('nav.assets'), to: '/assets', icon: icons.assets, active: isActivePath('/assets') },
 ])
 const creationItems = computed(() => [
-	{ label: t('nav.aiImage'), to: '/product', icon: icons.image, active: isActivePath('/product') },
+	{ label: t('nav.aiImage'), to: '/ai-image-generator', icon: icons.image, active: isActivePath('/ai-image-generator') },
 	{ label: t('nav.aiVideo'), to: '/solution', icon: icons.video, active: isActivePath('/solution') },
 	{ label: t('home.app.sidebar.allTools'), to: '/tools', icon: icons.tools, active: isActivePath('/tools') },
 ])
