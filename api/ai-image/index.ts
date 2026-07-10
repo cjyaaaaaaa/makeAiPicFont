@@ -98,7 +98,6 @@ export const uploadAiImageFilesController = async (files: File[]) => {
 	const request = useRequest()
 	const body = new FormData()
 	files.forEach(file => body.append('files', file))
-	body.append('directory', 'user-upload')
 
 	const response = await request<ApiResponse<BatchUploadFileData | UploadFileData[] | string>>(
 		'/oss/uploadsToDir',
