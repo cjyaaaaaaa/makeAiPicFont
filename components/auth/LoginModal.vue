@@ -460,7 +460,6 @@ import {
   watch,
   nextTick,
 } from "vue";
-import { useI18n } from "~/composables/useI18n";
 import {
   loginWithEmailController,
   registerUserController,

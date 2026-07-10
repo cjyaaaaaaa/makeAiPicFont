@@ -41,9 +41,71 @@
 					</button>
 				</div>
 			</div>
-			<div class="app-home-sidebar__user">
-				<span>{{ userInitial }}</span>
-				<strong class="app-home-sidebar__label">{{ displayUserName }}</strong>
+			<div class="app-home-sidebar__account">
+				<button
+					type="button"
+					class="app-home-sidebar__user"
+					:class="{ 'is-open': userMenuOpen }"
+					:title="collapsed ? displayUserName : undefined"
+					:aria-expanded="userMenuOpen"
+					@click="toggleUserMenu"
+				>
+					<span class="app-home-sidebar__avatar">
+						<img v-if="user?.avatar" :src="user.avatar" alt="" />
+						<span v-else>{{ userInitial }}</span>
+					</span>
+					<strong class="app-home-sidebar__label">{{ displayUserName }}</strong>
+				</button>
+
+				<Teleport to="body">
+					<div
+						v-if="userMenuOpen"
+						class="app-home-sidebar__menu-backdrop"
+						@click="userMenuOpen = false"
+					></div>
+					<div
+						v-if="userMenuOpen"
+						class="app-home-sidebar__account-menu"
+						:class="{ 'is-collapsed-anchor': collapsed }"
+					>
+						<div class="app-home-sidebar__account-email">
+							{{ user?.email || displayUserName }}
+						</div>
+						<div class="app-home-sidebar__account-divider"></div>
+						<div class="app-home-sidebar__account-items">
+							<div class="app-home-sidebar__account-item">
+								<svg class="is-credits" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+									<circle cx="9" cy="9" r="4" stroke="currentColor" stroke-width="1.8" />
+									<path d="M14.5 13.5C16.7 13.5 18.5 11.7 18.5 9.5M18.5 9.5L20.5 9.5M18.5 9.5V7.5M13 17.5C15.8 17.5 18 15.3 18 12.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+								</svg>
+								<span>{{ accountCreditsLabel }}</span>
+							</div>
+							<button type="button" class="app-home-sidebar__account-item" @click="userMenuOpen = false">
+								<svg class="is-settings" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+									<path d="M12 12.5A3.5 3.5 0 1 0 12 5.5A3.5 3.5 0 0 0 12 12.5Z" stroke="currentColor" stroke-width="1.8" />
+									<path d="M6.5 20C7.2 17.3 9.2 15.8 12 15.8C14.8 15.8 16.8 17.3 17.5 20" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+								</svg>
+								<span>{{ t('account.settings') }}</span>
+							</button>
+							<button type="button" class="app-home-sidebar__account-item" @click="userMenuOpen = false">
+								<svg class="is-subscription" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+									<rect x="4.5" y="7" width="15" height="10" rx="1.6" stroke="currentColor" stroke-width="1.8" />
+									<path d="M4.5 10H19.5" stroke="currentColor" stroke-width="1.8" />
+								</svg>
+								<span>{{ t('account.subscription') }}</span>
+							</button>
+						</div>
+						<div class="app-home-sidebar__account-divider"></div>
+						<button type="button" class="app-home-sidebar__account-item is-sign-out" @click="handleLogout">
+							<svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+								<path d="M10 6H6.5C5.7 6 5 6.7 5 7.5V16.5C5 17.3 5.7 18 6.5 18H10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+								<path d="M14 8L18 12L14 16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+								<path d="M18 12H9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+							</svg>
+							<span>{{ t('account.signOut') }}</span>
+						</button>
+					</div>
+				</Teleport>
 			</div>
 		</div>
 	</aside>
@@ -62,7 +124,7 @@ const collapsed = computed(() => props.collapsed)
 
 const { t, locale, setLocale } = useAppI18n()
 const route = useRoute()
-const { user } = useUser()
+const { user, logout } = useUser()
 
 const languages = [
 	{ code: 'zh', name: '简体中文' },
@@ -85,11 +147,14 @@ const icons = {
 }
 
 const languageOpen = ref(false)
+const userMenuOpen = ref(false)
 const siteName = computed(() => t('common.siteName'))
 const localizedHomePath = computed(() => locale.value === 'en' ? '/home' : `/${locale.value}/home`)
 const currentLanguageName = computed(() => languages.find(language => language.code === locale.value)?.name ?? 'English')
 const displayUserName = computed(() => user.value?.nickName || user.value?.userName || user.value?.email || t('home.app.sidebar.guestName'))
 const userInitial = computed(() => displayUserName.value.slice(0, 1).toUpperCase() || 'N')
+const userCredits = computed(() => user.value?.creditBalance ?? 0)
+const accountCreditsLabel = computed(() => `${userCredits.value} credits`)
 const normalizedRoutePath = computed(() => stripLocalePrefix(route.path))
 const isActivePath = (path: string) => normalizedRoutePath.value === path
 
@@ -100,7 +165,7 @@ const primaryItems = computed(() => [
 ])
 const creationItems = computed(() => [
 	{ label: t('nav.aiImage'), to: '/ai-image-generator', icon: icons.image, active: isActivePath('/ai-image-generator') },
-	{ label: t('nav.aiVideo'), to: '/solution', icon: icons.video, active: isActivePath('/solution') },
+	{ label: t('nav.aiVideo'), to: '/ai-video-generator', icon: icons.video, active: isActivePath('/ai-video-generator') },
 	{ label: t('home.app.sidebar.allTools'), to: '/tools', icon: icons.tools, active: isActivePath('/tools') },
 ])
 
@@ -124,11 +189,23 @@ const buildLocalePath = (code: LocaleCode, fullPath: string) => {
 const switchLanguage = async (code: LocaleCode) => {
 	setLocale(code)
 	languageOpen.value = false
+	userMenuOpen.value = false
 	await navigateTo(buildLocalePath(code, route.fullPath))
+}
+const toggleUserMenu = () => {
+	languageOpen.value = false
+	userMenuOpen.value = !userMenuOpen.value
+}
+const handleLogout = () => {
+	logout()
+	userMenuOpen.value = false
 }
 
 watch(() => props.collapsed, (collapsed) => {
-	if (collapsed) languageOpen.value = false
+	if (collapsed) {
+		languageOpen.value = false
+		userMenuOpen.value = false
+	}
 })
 </script>
 
@@ -406,23 +483,49 @@ watch(() => props.collapsed, (collapsed) => {
 	}
 }
 
+.app-home-sidebar__account {
+	position: relative;
+}
+
 .app-home-sidebar__user {
 	display: flex;
 	align-items: center;
 	gap: 11px;
+	width: 100%;
 	min-height: 34px;
+	border: 0;
+	border-radius: 12px;
+	background: transparent;
 	padding: 0 10px;
+	color: inherit;
+	font: inherit;
+	text-align: left;
+	cursor: pointer;
+	transition: background 160ms ease, color 160ms ease;
 
-	span {
+	&:hover,
+	&.is-open {
+		background: rgba(255, 255, 255, 0.08);
+	}
+
+	.app-home-sidebar__avatar {
+		flex: 0 0 auto;
 		display: grid;
 		place-items: center;
 		width: 28px;
 		height: 28px;
+		overflow: hidden;
 		border-radius: 999px;
 		background: #ef4d2c;
 		color: #fff;
 		font-size: 12px;
 		font-weight: 900;
+
+		img {
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+		}
 	}
 
 	strong {
@@ -434,6 +537,102 @@ watch(() => props.collapsed, (collapsed) => {
 		text-overflow: ellipsis;
 		white-space: nowrap;
 	}
+}
+
+.app-home-sidebar__menu-backdrop {
+	position: fixed;
+	inset: 0;
+	z-index: 75;
+	background: transparent;
+}
+
+.app-home-sidebar__account-menu {
+	position: fixed;
+	left: 24px;
+	bottom: 72px;
+	z-index: 80;
+	width: min(260px, calc(100vw - 48px));
+	overflow: hidden;
+	border: 1px solid rgba(255, 255, 255, 0.12);
+	border-radius: 14px;
+	background: #050505;
+	color: #ffffff;
+	box-shadow: 0 24px 80px rgba(0, 0, 0, 0.55);
+}
+
+.app-home-sidebar__account-menu.is-collapsed-anchor {
+	left: 96px;
+	width: min(250px, calc(100vw - 116px));
+}
+
+.app-home-sidebar__account-email {
+	padding: 14px 18px 12px;
+	overflow: hidden;
+	color: rgba(255, 255, 255, 0.62);
+	font-size: 13px;
+	font-weight: 500;
+	line-height: 1.25;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.app-home-sidebar__account-divider {
+	height: 1px;
+	background: rgba(255, 255, 255, 0.14);
+}
+
+.app-home-sidebar__account-items {
+	padding: 5px 0;
+}
+
+.app-home-sidebar__account-item {
+	display: flex;
+	align-items: center;
+	gap: 13px;
+	width: 100%;
+	min-height: 34px;
+	border: 0;
+	background: transparent;
+	padding: 0 20px;
+	color: #ffffff;
+	font: inherit;
+	font-size: 14px;
+	font-weight: 500;
+	text-align: left;
+	cursor: default;
+
+	svg {
+		flex: 0 0 auto;
+		width: 17px;
+		height: 17px;
+		color: rgba(255, 255, 255, 0.48);
+	}
+
+	.is-credits {
+		color: #ffd400;
+	}
+
+	.is-settings {
+		color: #267dff;
+	}
+
+	.is-subscription {
+		color: #b331ff;
+	}
+}
+
+button.app-home-sidebar__account-item {
+	cursor: pointer;
+	transition: background 160ms ease;
+
+	&:hover {
+		background: rgba(255, 255, 255, 0.07);
+	}
+}
+
+.app-home-sidebar__account-item.is-sign-out {
+	min-height: 40px;
+	color: #ff5656;
 }
 
 @media (max-width: 900px) {
@@ -490,6 +689,27 @@ watch(() => props.collapsed, (collapsed) => {
 
 	.app-home-sidebar__footer {
 		display: none;
+	}
+
+	.app-home-sidebar__account-menu,
+	.app-home-sidebar__account-menu.is-collapsed-anchor {
+		left: 16px;
+		right: 16px;
+		bottom: 16px;
+		width: auto;
+		min-width: 0;
+	}
+
+	.app-home-sidebar__account-email {
+		padding: 22px 24px 20px;
+		font-size: 18px;
+	}
+
+	.app-home-sidebar__account-item {
+		min-height: 58px;
+		gap: 20px;
+		padding: 0 26px;
+		font-size: 20px;
 	}
 }
 

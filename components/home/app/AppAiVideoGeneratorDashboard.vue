@@ -10,7 +10,7 @@
 		<main class="grid h-dvh min-w-0 grid-cols-[clamp(390px,34vw,560px)_minmax(0,1fr)] overflow-hidden max-xl:grid-cols-[clamp(360px,40vw,500px)_minmax(0,1fr)] max-[1120px]:h-auto max-[1120px]:grid-cols-1 max-[1120px]:overflow-visible">
 			<section ref="composerRef" class="flex min-w-0 flex-col gap-3.5 overflow-y-auto border-r border-white/10 bg-[#101012] px-[22px] pt-4 max-[1120px]:h-auto max-[1120px]:border-b max-[1120px]:border-r-0" :aria-label="copy.composerLabel">
 				<AppCreationModeSwitcher
-					active-mode="image"
+					active-mode="video"
 					:creation-mode-label="copy.creationModeLabel"
 					:ai-image-label="copy.aiImage"
 					:ai-video-label="copy.aiVideo"
@@ -18,20 +18,7 @@
 
 				<div ref="modelPickerRef" class="relative z-[8]">
 					<button type="button" class="grid min-h-[58px] w-full grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2.5 rounded-[10px] border border-white/10 bg-[#131315] px-3 text-left text-white/50" :aria-expanded="modelPickerOpen" @click="modelPickerOpen = !modelPickerOpen">
-						<span :class="modelIconClass(selectedModel.icon)" aria-hidden="true">
-							<svg v-if="selectedModel.icon === 'openai'" class="h-[22px] w-[22px]" viewBox="0 0 24 24" fill="none">
-								<circle cx="12" cy="12" r="7.8" stroke="currentColor" stroke-width="1.6" />
-								<path d="M8.8 8.7C9.8 7.7 11 7.2 12.4 7.4C14.6 7.6 16.3 9.4 16.1 11.6C15.9 13.9 14 15.5 11.8 15.3C9.7 15.1 8.1 13.6 7.8 11.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
-								<path d="M11.9 9.4C13.1 9.4 14 10.3 14 11.5C14 12.7 13.1 13.6 11.9 13.6C10.7 13.6 9.8 12.7 9.8 11.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
-							</svg>
-							<svg v-else-if="selectedModel.icon === 'google'" class="h-[22px] w-[22px]" viewBox="0 0 24 24" aria-hidden="true">
-								<path fill="#4285F4" d="M21.6 12.2c0-.7-.1-1.3-.2-1.9H12v3.6h5.4c-.2 1.2-.9 2.2-2 2.9v2.4h3.2c1.9-1.7 3-4.2 3-7Z" />
-								<path fill="#34A853" d="M12 22c2.7 0 5-.9 6.6-2.5l-3.2-2.4c-.9.6-2 .9-3.4.9-2.6 0-4.8-1.7-5.5-4.1H3.2v2.5C4.8 19.7 8.1 22 12 22Z" />
-								<path fill="#FBBC05" d="M6.5 13.9c-.2-.6-.3-1.2-.3-1.9s.1-1.3.3-1.9V7.6H3.2C2.4 8.9 2 10.4 2 12s.4 3.1 1.2 4.4l3.3-2.5Z" />
-								<path fill="#EA4335" d="M12 6c1.5 0 2.8.5 3.9 1.5l2.8-2.8C17 3 14.7 2 12 2 8.1 2 4.8 4.3 3.2 7.6l3.3 2.5C7.2 7.7 9.4 6 12 6Z" />
-							</svg>
-							<span v-else>S</span>
-						</span>
+						<span class="grid h-9 w-9 place-items-center rounded-[10px] border border-white/10 bg-gradient-to-br from-[#26262a] to-slate-800 text-lg font-black text-cyan-200" aria-hidden="true">S</span>
 						<span class="min-w-0">
 							<strong class="block truncate text-[13px] font-[850] text-white/90">{{ selectedModel.name }}</strong>
 							<small class="mt-[3px] block truncate text-[11px] font-semibold text-white/35">{{ selectedModel.desc }}</small>
@@ -42,17 +29,9 @@
 					</button>
 
 					<div v-if="modelPickerOpen" class="absolute left-0 right-0 top-[calc(100%+8px)] z-10 overflow-hidden rounded-xl border border-white/15 bg-[#151517] shadow-[0_22px_60px_rgba(0,0,0,0.56)]">
-						<label class="flex h-12 items-center gap-2.5 border-b border-white/10 px-3.5 text-white/45">
-							<svg class="h-[19px] w-[19px] shrink-0" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-								<circle cx="9" cy="9" r="5.5" stroke="currentColor" stroke-width="1.5" />
-								<path d="M13.2 13.2L16.5 16.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
-							</svg>
-							<input v-model.trim="modelSearch" class="min-w-0 flex-1 bg-transparent text-[13px] text-white/85 outline-none placeholder:text-white/30" type="search" :placeholder="copy.modelSearchPlaceholder" />
-						</label>
-
-						<div class="grid max-h-[min(390px,56vh)] gap-1 overflow-y-auto p-2">
+						<div class="grid gap-1 p-2">
 							<button
-								v-for="model in filteredModels"
+								v-for="model in localizedVideoModels"
 								:key="model.id"
 								type="button"
 								:class="[
@@ -61,20 +40,7 @@
 								]"
 								@click="selectModel(model.id)"
 							>
-								<span :class="modelIconClass(model.icon)" aria-hidden="true">
-									<svg v-if="model.icon === 'openai'" class="h-[22px] w-[22px]" viewBox="0 0 24 24" fill="none">
-										<circle cx="12" cy="12" r="7.8" stroke="currentColor" stroke-width="1.6" />
-										<path d="M8.8 8.7C9.8 7.7 11 7.2 12.4 7.4C14.6 7.6 16.3 9.4 16.1 11.6C15.9 13.9 14 15.5 11.8 15.3C9.7 15.1 8.1 13.6 7.8 11.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
-										<path d="M11.9 9.4C13.1 9.4 14 10.3 14 11.5C14 12.7 13.1 13.6 11.9 13.6C10.7 13.6 9.8 12.7 9.8 11.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
-									</svg>
-									<svg v-else-if="model.icon === 'google'" class="h-[22px] w-[22px]" viewBox="0 0 24 24" aria-hidden="true">
-										<path fill="#4285F4" d="M21.6 12.2c0-.7-.1-1.3-.2-1.9H12v3.6h5.4c-.2 1.2-.9 2.2-2 2.9v2.4h3.2c1.9-1.7 3-4.2 3-7Z" />
-										<path fill="#34A853" d="M12 22c2.7 0 5-.9 6.6-2.5l-3.2-2.4c-.9.6-2 .9-3.4.9-2.6 0-4.8-1.7-5.5-4.1H3.2v2.5C4.8 19.7 8.1 22 12 22Z" />
-										<path fill="#FBBC05" d="M6.5 13.9c-.2-.6-.3-1.2-.3-1.9s.1-1.3.3-1.9V7.6H3.2C2.4 8.9 2 10.4 2 12s.4 3.1 1.2 4.4l3.3-2.5Z" />
-										<path fill="#EA4335" d="M12 6c1.5 0 2.8.5 3.9 1.5l2.8-2.8C17 3 14.7 2 12 2 8.1 2 4.8 4.3 3.2 7.6l3.3 2.5C7.2 7.7 9.4 6 12 6Z" />
-									</svg>
-									<span v-else>S</span>
-								</span>
+								<span class="grid h-9 w-9 place-items-center rounded-[10px] border border-white/10 bg-gradient-to-br from-[#26262a] to-slate-800 text-lg font-black text-cyan-200" aria-hidden="true">S</span>
 								<span class="min-w-0">
 									<strong class="block truncate text-[13px] font-[850] text-white/90">{{ model.name }}</strong>
 									<small class="mt-[3px] block truncate text-[11px] font-semibold text-white/40">{{ model.desc }}</small>
@@ -90,17 +56,19 @@
 					<button type="button" class="grid h-[18px] w-[18px] place-items-center rounded-full border border-white/25 text-[11px] font-[850] text-white/45" :aria-label="copy.imageUploadHelp">?</button>
 				</div>
 
-				<div v-if="uploadedCount" class="flex min-h-[78px] flex-wrap items-center gap-3">
-					<div v-for="(preview, index) in uploadedPreviews" :key="preview" class="relative h-[74px] w-[74px] overflow-hidden rounded-[14px] border border-white/15 bg-[#171719]">
-						<img class="h-full w-full object-cover" :src="preview" :alt="t('aiImageGenerator.uploadedImageAlt', { index: index + 1 })" />
-						<button type="button" class="absolute right-1 top-1 grid h-[18px] w-[18px] place-items-center rounded-full bg-black/55 text-base leading-none text-white/90 hover:bg-white hover:text-[#111]" :aria-label="t('aiImageGenerator.removeImage', { index: index + 1 })" @click="removeUploadedImage(index)">x</button>
-						<span class="absolute bottom-1.5 left-2 grid h-[18px] min-w-[18px] place-items-center rounded-full bg-black/50 text-[11px] font-[850] leading-none text-white/80">{{ index + 1 }}</span>
+				<div v-if="uploadedCount" class="min-h-[98px] shrink-0 overflow-hidden rounded-[14px] border border-white/10 bg-[#171719] px-3 py-3">
+					<div class="flex min-h-[74px] max-w-full items-center gap-3 overflow-x-auto overflow-y-hidden pb-1 [scrollbar-width:thin]">
+						<div v-for="(preview, index) in uploadedPreviews" :key="preview" class="relative h-[74px] min-h-[74px] w-[74px] min-w-[74px] shrink-0 overflow-hidden rounded-[12px] border border-white/15 bg-[#101012]">
+							<img class="h-full w-full object-cover" :src="preview" :alt="t('aiVideoGenerator.uploadedImageAlt', { index: index + 1 })" />
+							<button type="button" class="absolute right-1 top-1 grid h-[18px] w-[18px] place-items-center rounded-full bg-black/55 text-base leading-none text-white/90 hover:bg-white hover:text-[#111]" :aria-label="t('aiVideoGenerator.removeImage', { index: index + 1 })" @click="removeUploadedImage(index)">x</button>
+							<span class="absolute bottom-1.5 left-2 grid h-[18px] min-w-[18px] place-items-center rounded-full bg-black/50 text-[11px] font-[850] leading-none text-white/80">{{ index + 1 }}</span>
+						</div>
+						<label v-if="uploadedCount < 8" class="relative grid h-[74px] min-h-[74px] w-[74px] min-w-[74px] shrink-0 cursor-pointer place-items-center content-center gap-1.5 overflow-hidden rounded-[12px] border border-dashed border-white/20 bg-[#101012] text-white/35 hover:border-white/35 hover:bg-[#1f1f21] hover:text-white/60">
+							<input class="sr-only" type="file" multiple accept="image/png,image/jpeg,image/webp" @change="handleFiles" />
+							<span class="text-2xl font-light leading-none" aria-hidden="true">+</span>
+							<strong class="text-xs font-bold">{{ copy.add }}</strong>
+						</label>
 					</div>
-					<label v-if="uploadedCount < 8" class="relative grid h-[74px] w-[74px] cursor-pointer place-items-center content-center gap-1.5 overflow-hidden rounded-[14px] border border-dashed border-white/20 bg-[#171719] text-white/35 hover:border-white/35 hover:bg-[#1f1f21] hover:text-white/60">
-						<input class="sr-only" type="file" multiple accept="image/png,image/jpeg,image/webp" @change="handleFiles" />
-						<span class="text-2xl font-light leading-none" aria-hidden="true">+</span>
-						<strong class="text-xs font-bold">{{ copy.add }}</strong>
-					</label>
 				</div>
 
 				<label v-if="!uploadedCount" class="grid min-h-[clamp(132px,17vh,168px)] cursor-pointer place-items-center gap-2 rounded-[13px] border-2 border-dashed border-white/25 bg-[#202022] p-4 text-center text-white/35">
@@ -109,12 +77,12 @@
 						<path d="M14 19V5.5M9.2 10.4L14 5.5L18.8 10.4" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
 						<path d="M6.5 17.5V20.8A2.2 2.2 0 0 0 8.7 23H19.3A2.2 2.2 0 0 0 21.5 20.8V17.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" />
 					</svg>
-					<strong class="text-[13px] font-[850] text-white/50">{{ uploadedCount ? t('aiImageGenerator.imagesSelected', { count: uploadedCount }) : copy.uploadImages }}</strong>
+					<strong class="text-[13px] font-[850] text-white/50">{{ uploadedCount ? t('aiVideoGenerator.imagesSelected', { count: uploadedCount }) : copy.uploadImages }}</strong>
 					<span class="text-[11.5px] font-semibold">{{ copy.uploadHint }}</span>
 				</label>
 
 				<div class="grid min-h-[clamp(238px,32vh,310px)] grid-rows-[minmax(190px,1fr)_auto] overflow-hidden rounded-xl border border-white/10 bg-[#171719]">
-					<textarea id="ai-image-prompt" v-model="prompt" class="min-h-0 w-full resize-none bg-transparent p-4 text-[12.5px] font-semibold leading-normal text-white/80 outline-none placeholder:text-white/30" maxlength="20000" :placeholder="copy.promptPlaceholder" />
+					<textarea id="ai-video-prompt" v-model="prompt" class="min-h-0 w-full resize-none bg-transparent p-4 text-[12.5px] font-semibold leading-normal text-white/80 outline-none placeholder:text-white/30" maxlength="20000" :placeholder="copy.promptPlaceholder" />
 					<div class="flex items-center justify-between gap-4 px-3.5 pb-3 text-[11px] font-bold text-white/25">
 						<span class="inline-flex items-center gap-1.5">
 							<svg class="h-[13px] w-[13px]" viewBox="0 0 20 20" fill="none" aria-hidden="true">
@@ -129,40 +97,54 @@
 				<div class="grid gap-4 py-1" @pointerdown="modelPickerOpen = false">
 					<section class="grid gap-2.5">
 						<h3 class="m-0 text-[13px] font-[850] text-white/90">{{ copy.aspectRatio }}</h3>
-						<div class="grid grid-cols-4 gap-2">
-							<button v-for="ratio in aspectRatios" :key="ratio.value" type="button" :class="choiceButtonClass(selectedAspectRatio === ratio.value)" @click="selectedAspectRatio = ratio.value">
-								{{ ratio.label }}
-							</button>
-						</div>
-					</section>
-
-					<section v-if="selectedModelProfile.supportsQuality" class="grid gap-2.5">
-						<h3 class="m-0 text-[13px] font-[850] text-white/90">{{ copy.quality }}</h3>
 						<div class="grid grid-cols-3 gap-2">
-							<button v-for="quality in qualityOptions" :key="quality.value" type="button" :class="choiceButtonClass(selectedQuality === quality.value, 'min-h-[52px]')" @click="selectedQuality = quality.value">
-								<strong class="block leading-tight">{{ quality.label }}</strong>
-								<span class="mt-1 block text-[11px] font-bold leading-tight opacity-80">{{ quality.desc }}</span>
+							<button v-for="ratio in aspectRatios" :key="ratio" type="button" :class="choiceButtonClass(selectedAspectRatio === ratio)" @click="selectedAspectRatio = ratio">
+								{{ ratio }}
 							</button>
 						</div>
 					</section>
 
 					<section class="grid gap-2.5">
 						<h3 class="m-0 text-[13px] font-[850] text-white/90">{{ copy.resolution }}</h3>
-						<div class="grid grid-cols-3 gap-2">
+						<div class="grid grid-cols-4 gap-2">
 							<button v-for="resolution in resolutionOptions" :key="resolution.value" type="button" :class="choiceButtonClass(selectedResolution === resolution.value, 'min-h-[52px]')" @click="selectedResolution = resolution.value">
-								<strong class="block leading-tight">{{ resolution.label }}</strong>
-								<span class="mt-1 block text-[11px] font-bold leading-tight opacity-80">{{ t('aiImageGenerator.creditsShort', { count: resolution.credits }) }}</span>
+								<strong class="block leading-tight uppercase">{{ resolution.label }}</strong>
+								<span class="mt-1 block text-[11px] font-bold leading-tight opacity-80">{{ t('aiVideoGenerator.creditsPerSecond', { count: resolution.creditsPerSecond }) }}</span>
 							</button>
 						</div>
 					</section>
 
-					<section v-if="selectedModelProfile.supportsQuality" class="grid gap-2.5">
-						<h3 class="m-0 text-[13px] font-[850] text-white/90">{{ copy.numberOfImages }}</h3>
+					<section class="grid gap-2.5">
+						<h3 class="m-0 text-[13px] font-[850] text-white/90">{{ copy.duration }}</h3>
 						<div class="grid grid-cols-4 gap-2">
-							<button v-for="count in imageCounts" :key="count" type="button" :class="choiceButtonClass(imageCount === count)" @click="imageCount = count">
-								{{ count }}
+							<button v-for="duration in durationOptions" :key="duration" type="button" :class="choiceButtonClass(selectedDuration === duration)" @click="selectedDuration = duration">
+								{{ duration }}{{ copy.durationUnit }}
 							</button>
 						</div>
+					</section>
+
+					<section class="flex items-center justify-between gap-4 rounded-[10px] border border-white/10 bg-[#171719] px-3.5 py-3">
+						<div>
+							<h3 class="m-0 text-[13px] font-[850] text-white/90">{{ copy.generateAudio }}</h3>
+							<p class="m-0 mt-1 text-[11px] font-semibold text-white/35">{{ copy.generateAudioHelp }}</p>
+						</div>
+						<button
+							type="button"
+							:class="[
+								'relative h-6 w-11 rounded-full transition-colors',
+								generateAudio ? 'bg-white' : 'bg-white/20',
+							]"
+							:aria-label="copy.generateAudio"
+							:aria-pressed="generateAudio"
+							@click="generateAudio = !generateAudio"
+						>
+							<span
+								:class="[
+									'absolute top-0.5 h-5 w-5 rounded-full transition-all',
+									generateAudio ? 'left-[22px] bg-[#151515]' : 'left-0.5 bg-white/80',
+								]"
+							/>
+						</button>
 					</section>
 				</div>
 
@@ -177,9 +159,9 @@
 						</span>
 						<strong>{{ copy.creditsRequired }}</strong>
 						<button type="button" class="grid h-4 w-4 place-items-center rounded-full border border-white/20 text-[10px] text-white/40" :aria-label="copy.creditsHelp">i</button>
-						<em class="ml-auto not-italic text-white/70">{{ t('aiImageGenerator.credits', { count: requiredCredits }) }}</em>
+						<em class="ml-auto not-italic text-white/70">{{ t('aiVideoGenerator.credits', { count: requiredCredits }) }}</em>
 					</div>
-					<button type="button" class="inline-flex h-[46px] items-center justify-center gap-2.5 rounded-xl bg-white text-[13.5px] font-black text-[#151515] disabled:cursor-not-allowed disabled:opacity-60" :disabled="isUploading || isGenerating" @click="generateImage">
+					<button type="button" class="inline-flex h-[46px] items-center justify-center gap-2.5 rounded-xl bg-white text-[13.5px] font-black text-[#151515] disabled:cursor-not-allowed disabled:opacity-60" :disabled="isUploading || isGenerating" @click="generateVideo">
 						<svg class="h-[18px] w-[18px]" viewBox="0 0 20 20" fill="none" aria-hidden="true">
 							<path d="M10.5 3.5L11.8 7.8L16 9L11.8 10.2L10.5 14.5L9.2 10.2L5 9L9.2 7.8L10.5 3.5Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" />
 							<path d="M4.5 13.5L5.2 15.2L7 16L5.2 16.8L4.5 18.5L3.8 16.8L2 16L3.8 15.2L4.5 13.5Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" />
@@ -228,7 +210,7 @@
 					v-else-if="activeTab === 'tutorials'"
 					:title="copy.tutorialsTitle"
 					:description="copy.tutorialsDesc"
-					:video-src="AI_IMAGE_TUTORIAL_VIDEO"
+					:video-src="AI_VIDEO_TUTORIAL_VIDEO"
 					:video-label="copy.tutorialsVideoLabel"
 				/>
 
@@ -240,31 +222,25 @@
 								<strong class="font-[820] text-white/55">{{ record.model }}</strong>
 								<span class="rounded bg-white/10 px-1.5 py-0.5 text-[9.5px] font-black text-white/45">{{ record.type }}</span>
 								<time>{{ record.time }}</time>
+								<span v-if="record.duration" class="text-white/30">{{ record.duration }}s</span>
 							</div>
-							<div v-if="record.status === 'success'" class="ml-auto flex items-center gap-1.5">
-								<button type="button" class="grid h-6 w-6 place-items-center rounded-full bg-[#ffd60a]/10 text-[#f6c400]" :aria-label="copy.openAsset">
-									<svg class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-										<path d="M5.5 4.5H10L11.4 6H15A1.5 1.5 0 0 1 16.5 7.5V14A1.5 1.5 0 0 1 15 15.5H5A1.5 1.5 0 0 1 3.5 14V6A1.5 1.5 0 0 1 5 4.5Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" />
-									</svg>
-								</button>
-								<button type="button" class="grid h-6 w-6 place-items-center rounded-full bg-red-500/15 text-red-500 disabled:cursor-not-allowed disabled:opacity-50" :aria-label="copy.delete" :disabled="deletingIds.includes(record.id)" @click="requestDeleteRecord(record.id)">
-									<svg class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-										<path d="M7.5 4.5H12.5M4.5 6.5H15.5M6 6.5L6.6 15A1.5 1.5 0 0 0 8.1 16.4H11.9A1.5 1.5 0 0 0 13.4 15L14 6.5M8.6 9V14M11.4 9V14" stroke="currentColor" stroke-width="1.45" stroke-linecap="round" />
-									</svg>
-								</button>
-							</div>
+							<button v-if="record.status === 'success'" type="button" class="grid h-6 w-6 place-items-center rounded-full bg-[#ffd60a]/10 text-[#f6c400]" :aria-label="copy.openAsset">
+								<svg class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+									<path d="M5.5 4.5H10L11.4 6H15A1.5 1.5 0 0 1 16.5 7.5V14A1.5 1.5 0 0 1 15 15.5H5A1.5 1.5 0 0 1 3.5 14V6A1.5 1.5 0 0 1 5 4.5Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" />
+								</svg>
+							</button>
 						</header>
 						<p class="my-3 text-xs font-semibold leading-normal text-white/50">{{ record.prompt }}</p>
 						<div v-if="record.status === 'processing'" class="grid gap-2.5 rounded-[10px] border border-white/10 bg-white/[0.045] p-3">
 							<div class="flex items-center justify-between gap-3 text-xs font-[850] text-white/80">
-								<strong>{{ copy.generatingImage }}</strong>
+								<strong>{{ copy.generatingVideo }}</strong>
 								<span class="text-white/50">{{ record.progress !== undefined ? record.progress + '%' : copy.preparingTask }}</span>
 							</div>
 							<div class="h-2 overflow-hidden rounded-full bg-white/10" aria-hidden="true">
-								<span v-if="record.progress !== undefined" class="block h-full rounded-full bg-gradient-to-r from-[#5b5b60] to-[#f5f5f5] transition-[width] duration-500" :style="{ width: record.progress + '%' }"></span>
+								<span v-if="record.progress !== undefined" class="block h-full rounded-full bg-gradient-to-r from-[#5b5b60] to-[#f5f5f5] transition-[width] duration-[2000ms] ease-linear" :style="{ width: record.progress + '%' }"></span>
 								<span v-else class="block h-full w-1/3 animate-pulse rounded-full bg-white/60"></span>
 							</div>
-							<small class="truncate text-[10.5px] font-semibold text-white/35">{{ record.traceId ? t('aiImageGenerator.traceId', { traceId: record.traceId }) : copy.preparingTask }}</small>
+							<small class="truncate text-[10.5px] font-semibold text-white/35">{{ record.traceId ? t('aiVideoGenerator.traceId', { traceId: record.traceId }) : copy.preparingTask }}</small>
 						</div>
 						<div v-else-if="record.status === 'failed'" class="rounded-[10px] border border-red-500/35 bg-red-950/20 p-3 text-white/50">
 							<strong class="inline-flex items-center gap-2 text-[11.5px] font-[850] text-[#ff5b5b]">
@@ -277,32 +253,31 @@
 							<p class="my-2.5 text-[11.5px] font-semibold leading-normal">{{ record.errorInfo || copy.failedMessage }}</p>
 							<small class="block text-[10.5px] font-semibold text-white/30">{{ copy.refundedMessage }}</small>
 							<div class="mt-3 grid grid-cols-[minmax(0,1fr)_34px] gap-2">
-								<button type="button" class="inline-flex h-[30px] items-center justify-center gap-1.5 rounded-lg bg-white/10 text-[11.5px] font-bold text-white/55" @click="applyImageRetry(record)">
+								<button type="button" class="inline-flex h-[30px] items-center justify-center gap-1.5 rounded-lg bg-white/10 text-[11.5px] font-bold text-white/55" @click="applyVideoRetry(record)">
 									<svg class="h-[15px] w-[15px]" viewBox="0 0 20 20" fill="none" aria-hidden="true">
 										<path d="M15.5 9.5A5.5 5.5 0 1 1 14 5.7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
 										<path d="M14.4 3.2V6.3H11.3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
 									</svg>
 									{{ copy.retry }}
 								</button>
-								<button type="button" class="grid h-[30px] place-items-center rounded-lg bg-red-500/15 text-red-500 disabled:cursor-not-allowed disabled:opacity-50" :aria-label="copy.delete" :disabled="deletingIds.includes(record.id)" @click="requestDeleteRecord(record.id)">
+								<button type="button" class="grid h-[30px] place-items-center rounded-lg bg-red-500/15 text-red-500" :aria-label="copy.delete">
 									<svg class="h-[15px] w-[15px]" viewBox="0 0 20 20" fill="none" aria-hidden="true">
 										<path d="M7.5 4.5H12.5M4.5 6.5H15.5M6 6.5L6.6 15A1.5 1.5 0 0 0 8.1 16.4H11.9A1.5 1.5 0 0 0 13.4 15L14 6.5M8.6 9V14M11.4 9V14" stroke="currentColor" stroke-width="1.45" stroke-linecap="round" />
 									</svg>
 								</button>
 							</div>
 						</div>
-						<button v-else type="button" class="block w-[min(260px,48%)] max-w-full overflow-hidden rounded-lg bg-[#141414]" @click="selectedImage = record">
-							<NuxtImg class="block aspect-square w-full object-cover" :src="record.image" :alt="record.prompt" />
-						</button>
+						<div v-else class="block w-full max-w-[min(480px,100%)] overflow-hidden rounded-lg bg-[#141414]">
+							<video class="block aspect-video w-full bg-black object-contain" :src="record.video" controls playsinline preload="metadata" />
+						</div>
 					</article>
 				</div>
 				<div v-else class="grid min-h-[360px] place-items-center rounded-xl border border-dashed border-white/10 bg-white/[0.03] p-8 text-center">
 					<div class="grid max-w-[360px] justify-items-center gap-3">
 						<div class="grid h-14 w-14 place-items-center rounded-2xl border border-white/10 bg-[#111113] text-white/45" aria-hidden="true">
 							<svg class="h-7 w-7" viewBox="0 0 24 24" fill="none">
-								<rect x="4" y="5" width="16" height="14" rx="2.4" stroke="currentColor" stroke-width="1.6" />
-								<path d="M6.8 15.7L10 12.4L12.3 14.5L14.5 12.2L17.4 15.7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
-								<path d="M8 8.6H8.01" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" />
+								<rect x="3" y="6.5" width="11" height="8" rx="1.6" stroke="currentColor" stroke-width="1.6" />
+								<path d="M14.5 8.5L19 6.5V14.5L14.5 12.5V8.5Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" />
 							</svg>
 						</div>
 						<strong class="text-sm font-[850] text-white/80">{{ copy.emptyStateTitle }}</strong>
@@ -312,56 +287,42 @@
 				</template>
 			</section>
 		</main>
-
-		<CreativePreviewModal :item="previewItem" @close="selectedImage = null" />
-		<AppConfirmDialog
-			:open="!!pendingDeleteId"
-			:title="deleteDialogCopy.title"
-			:message="deleteDialogCopy.message"
-			:confirm-label="deleteDialogCopy.confirm"
-			:cancel-label="deleteDialogCopy.cancel"
-			:loading-label="deleteDialogCopy.loading"
-			:loading="!!pendingDeleteId && deletingIds.includes(pendingDeleteId)"
-			@cancel="pendingDeleteId = null"
-			@confirm="confirmDeleteRecord"
-		/>
 	</div>
 </template>
 
 <script setup lang="ts">
 import {
-	deleteAiImageController,
-	generateAiImageController,
-	getAiImageHistoryController,
-	getAiImageResultController,
-	uploadAiImageFileController,
-	uploadAiImageFilesController,
-	type GenerateAiImagePayload,
-} from '~/api/ai-image'
-import type { AiImageResultItem } from '~/api/ai-image'
-import CreativePreviewModal from '~/components/home/CreativePreviewModal.vue'
-import AppCreationTutorialsPanel from '~/components/home/app/AppCreationTutorialsPanel.vue'
-import AppCreationTemplatesPanel from '~/components/home/app/AppCreationTemplatesPanel.vue'
-import AppConfirmDialog from '~/components/home/app/AppConfirmDialog.vue'
+	generateAiVideoController,
+	getAiVideoHistoryController,
+	getAiVideoResultController,
+	type GenerateAiVideoPayload,
+	type AiVideoResultItem,
+} from '~/api/ai-video'
+import { uploadAiImageFileController, uploadAiImageFilesController } from '~/api/ai-image'
 import AppCreationModeSwitcher from '~/components/home/app/AppCreationModeSwitcher.vue'
+import AppCreationTemplatesPanel from '~/components/home/app/AppCreationTemplatesPanel.vue'
+import AppCreationTutorialsPanel from '~/components/home/app/AppCreationTutorialsPanel.vue'
 import AppCreationToolbar from '~/components/home/app/AppCreationToolbar.vue'
 import AppHomeSidebar from '~/components/home/app/AppHomeSidebar.vue'
-import {
-	MODEL_PROFILES,
-	getModelCredits,
-	type CreationTabId,
-	type AspectRatioValue,
-	type QualityValue,
-	type ResolutionValue,
-	type HistoryRecord,
-	type AiImageGeneratorCopy,
-	type ImageModelId,
-	type ImageModel,
-	type ModelProfile,
-	type ImageGenerationParams,
-} from './AIimage'
 import type { TemplateCard, TemplateTabId } from '~/utils/promptTemplates'
-import { AI_IMAGE_TUTORIAL_VIDEO } from '~/utils/creationTutorials'
+import { AI_VIDEO_TUTORIAL_VIDEO } from '~/utils/creationTutorials'
+import {
+	SEEDANCE_RATIOS,
+	SEEDANCE_RESOLUTIONS,
+	SEEDANCE_CREDITS_PER_SECOND,
+	SEEDANCE_DURATION_OPTIONS,
+	SEEDANCE_DURATION_MIN,
+	SEEDANCE_DURATION_MAX,
+	getVideoCredits,
+	type AiVideoGeneratorCopy,
+	type CreationTabId,
+	type VideoAspectRatioValue,
+	type VideoHistoryRecord,
+	type VideoGenerationParams,
+	type VideoModel,
+	type VideoModelId,
+	type VideoResolutionValue,
+} from './AIVideo'
 
 type ToolbarOption = {
 	label: string
@@ -384,25 +345,22 @@ const activeTab = ref<CreationTabId>('my-creations')
 const searchQuery = ref('')
 const timeFilter = ref('all')
 const typeFilter = ref('all')
-const modelSearch = ref('')
 const modelPickerOpen = ref(false)
 const modelPickerRef = ref<HTMLElement | null>(null)
 const composerRef = ref<HTMLElement | null>(null)
 const isUploading = ref(false)
 const isGenerating = ref(false)
-const imageCount = ref(1)
 const uploadedCount = ref(0)
 const uploadedFiles = ref<File[]>([])
 const uploadedPreviews = ref<string[]>([])
 const uploadedImageUrls = ref<string[]>([])
-const selectedModelId = ref<ImageModelId>('gpt-image-2')
-const selectedAspectRatio = ref<AspectRatioValue>('auto')
-const selectedQuality = ref<QualityValue>('medium')
-const selectedResolution = ref<ResolutionValue>('1K')
-const selectedImage = ref<HistoryRecord | null>(null)
-const pendingDeleteId = ref<string | null>(null)
-const deletingIds = ref<string[]>([])
+const selectedModelId = ref<VideoModelId>('seedance-2-0')
+const selectedAspectRatio = ref<VideoAspectRatioValue>('1:1')
+const selectedResolution = ref<VideoResolutionValue>('480p')
+const selectedDuration = ref(4)
+const generateAudio = ref(true)
 const prompt = ref('')
+
 const padDatePart = (value: number) => String(value).padStart(2, '0')
 const formatAssetDate = (date: Date) => `${padDatePart(date.getFullYear() % 100)}-${padDatePart(date.getMonth() + 1)}-${padDatePart(date.getDate())}`
 const parseAssetDate = (value: string) => {
@@ -432,24 +390,9 @@ const startOfWeek = (date: Date) => {
 const endDate = ref(formatAssetDate(new Date()))
 const startDate = ref('')
 
-const copy = computed(() => t('aiImageGenerator') as AiImageGeneratorCopy)
+const copy = computed(() => t('aiVideoGenerator') as AiVideoGeneratorCopy)
 const toolbarCopy = computed(() => t('assets') as ToolbarCopy)
 const customTimeLabel = computed(() => locale.value === 'zh' ? '自定义' : 'Custom')
-const deleteDialogCopy = computed(() => locale.value === 'zh'
-	? {
-			title: '删除AI生图记录',
-			message: '删除后该记录将从当前账号移除，且不可恢复。',
-			confirm: '确认删除',
-			cancel: '取消',
-			loading: '删除中...',
-		}
-	: {
-			title: 'Delete AI image record',
-			message: 'This record will be removed from your account and cannot be restored.',
-			confirm: 'Delete',
-			cancel: 'Cancel',
-			loading: 'Deleting...',
-		})
 const selectedTimeLabel = computed(() => toolbarCopy.value.timeFilters.find(option => option.value === timeFilter.value)?.label ?? (timeFilter.value === 'custom' ? customTimeLabel.value : copy.value.allTime))
 const selectedTypeLabel = computed(() => toolbarCopy.value.typeFilters.find(option => option.value === typeFilter.value)?.label ?? copy.value.allTypes)
 const tabs = computed<Array<{ id: CreationTabId; label: string }>>(() => [
@@ -457,66 +400,19 @@ const tabs = computed<Array<{ id: CreationTabId; label: string }>>(() => [
 	{ id: 'templates', label: copy.value.templates },
 	{ id: 'tutorials', label: copy.value.tutorials },
 ])
-const imageModels: ImageModel[] = [
+
+const videoModels: VideoModel[] = [
 	{
-		id: 'gpt-image-2',
-		name: 'GPT Image 2',
+		id: 'seedance-2-0',
+		name: 'Seedance 2.0',
 		desc: '',
 		credits: '',
-		icon: 'openai',
-		profile: 'gpt-image',
-		textToImage: { platformCode: 2, modelCode: 3 },
-		imageToImage: { platformCode: 2, modelCode: 4 },
-	},
-	{
-		id: 'nano-banana-2',
-		name: 'Seedream 4.5',
-		desc: '',
-		credits: '',
-		icon: 'seedream',
-		profile: 'seedream',
-		textToImage: { platformCode: 2, modelCode: 1 },
-		imageToImage: { platformCode: 2, modelCode: 2 },
-	},
-	{
-		id: 'seedream-4-5',
-		name: 'Seedream 4.5',
-		desc: '',
-		credits: '',
-		icon: 'seedream',
-		profile: 'seedream',
-		textToImage: { platformCode: 1, modelCode: 1 },
-		imageToImage: { platformCode: 1, modelCode: 2 },
-	},
-	{
-		id: 'nano-banana-pro',
-		name: 'Nano Banana Pro',
-		desc: '',
-		credits: '',
-		icon: 'google',
-		profile: 'seedream',
-		textToImage: { platformCode: 1, modelCode: 1 },
-		imageToImage: { platformCode: 1, modelCode: 2 },
-	},
-	{
-		id: 'nano-banana',
-		name: 'Nano Banana',
-		desc: '',
-		credits: '',
-		icon: 'google',
-		profile: 'seedream',
-		textToImage: { platformCode: 1, modelCode: 1 },
-		imageToImage: { platformCode: 1, modelCode: 2 },
+		icon: 'seedance',
+		textToVideo: { platformCode: 2, modelCode: 10001 },
+		imageToVideo: { platformCode: 2, modelCode: 10002 },
 	},
 ]
-const modelIconClass = (icon: ImageModel['icon']) => [
-	'grid h-9 w-9 place-items-center rounded-[10px] border border-white/10 text-lg font-black',
-	icon === 'google'
-		? 'bg-[#242426] text-[#4285f4]'
-		: icon === 'seedream'
-			? 'bg-gradient-to-br from-[#26262a] to-slate-800 text-cyan-200'
-			: 'bg-[#242426] text-white/85',
-]
+
 const choiceButtonClass = (active: boolean, minHeight = 'min-h-[38px]') => [
 	'grid min-w-0 place-items-center rounded-[9px] border px-2 text-[13px] font-[850] transition-colors',
 	minHeight,
@@ -524,54 +420,23 @@ const choiceButtonClass = (active: boolean, minHeight = 'min-h-[38px]') => [
 		? 'border-white/20 bg-[#3a3a3d] text-white shadow-[inset_0_0_0_1px_rgba(255,255,255,0.08)]'
 		: 'border-white/10 bg-[#1f1f21] text-white/60 hover:border-white/20 hover:bg-[#252527] hover:text-white/80',
 ]
-const selectedModelProfile = computed(() => MODEL_PROFILES[selectedModel.value.profile])
-const aspectRatios = computed<Array<{ label: string; value: AspectRatioValue }>>(() => {
-	const ratios = selectedModelProfile.value.supportedRatios.map(value => ({ label: value, value }))
-	if (selectedModelProfile.value.supportsAutoRatio) {
-		return [{ label: copy.value.autoRatio, value: 'auto' as AspectRatioValue }, ...ratios]
-	}
-	return ratios
-})
-const localizedImageModels = computed(() => imageModels.map(model => ({
+
+const aspectRatios = SEEDANCE_RATIOS
+const durationOptions = SEEDANCE_DURATION_OPTIONS
+const resolutionOptions = SEEDANCE_RESOLUTIONS.map(value => ({
+	label: value,
+	value,
+	creditsPerSecond: SEEDANCE_CREDITS_PER_SECOND,
+}))
+const localizedVideoModels = computed(() => videoModels.map(model => ({
 	...model,
 	desc: copy.value.models[model.id]?.desc ?? model.name,
 	credits: copy.value.models[model.id]?.credits ?? '',
 })))
-const qualityOptions = computed<Array<{ label: string; value: QualityValue; desc: string }>>(() => [
-	{ label: copy.value.qualities.low.label, value: 'low', desc: copy.value.qualities.low.desc },
-	{ label: copy.value.qualities.medium.label, value: 'medium', desc: copy.value.qualities.medium.desc },
-	{ label: copy.value.qualities.high.label, value: 'high', desc: copy.value.qualities.high.desc },
-])
-const resolutionOptions = computed<Array<{ label: ResolutionValue; value: ResolutionValue; credits: number }>>(() => {
-	const hasImages = uploadedCount.value > 0
-	return selectedModelProfile.value.supportedResolutions.map(value => ({
-		label: value,
-		value,
-		credits: getModelCredits(
-			selectedModel.value.profile,
-			selectedQuality.value,
-			value,
-			hasImages,
-			1,
-		),
-	}))
-})
-const imageCounts = [1, 2, 3, 4]
-const selectedModel = computed(() => localizedImageModels.value.find(model => model.id === selectedModelId.value) ?? localizedImageModels.value[0])
-const filteredModels = computed(() => {
-	const query = modelSearch.value.toLowerCase()
-	if (!query) return localizedImageModels.value
-	return localizedImageModels.value.filter(model => `${model.name} ${model.desc}`.toLowerCase().includes(query))
-})
-const requiredCredits = computed(() => getModelCredits(
-	selectedModel.value.profile,
-	selectedQuality.value,
-	selectedResolution.value,
-	uploadedCount.value > 0,
-	imageCount.value,
-))
+const selectedModel = computed(() => localizedVideoModels.value.find(model => model.id === selectedModelId.value) ?? localizedVideoModels.value[0])
+const requiredCredits = computed(() => getVideoCredits(selectedDuration.value))
 
-const records = ref<HistoryRecord[]>([])
+const records = ref<VideoHistoryRecord[]>([])
 
 const visibleRecords = computed(() => {
 	const rangeStart = timeFilter.value === 'custom' ? parseAssetDate(startDate.value) : null
@@ -582,7 +447,7 @@ const visibleRecords = computed(() => {
 	const fallbackYear = rangeStart?.getFullYear() ?? rangeEnd?.getFullYear() ?? now.getFullYear()
 
 	return records.value.filter((record) => {
-		if (typeFilter.value !== 'all' && typeFilter.value !== 'image') return false
+		if (typeFilter.value !== 'all' && typeFilter.value !== 'video') return false
 
 		const recordDate = parseRecordDate(record.time, fallbackYear)
 		if (!recordDate) return true
@@ -598,19 +463,8 @@ const visibleRecords = computed(() => {
 	})
 })
 
-const previewItem = computed(() => selectedImage.value ? {
-	id: selectedImage.value.id,
-	title: selectedImage.value.prompt,
-	image: selectedImage.value.image,
-	alt: selectedImage.value.prompt,
-	prompt: selectedImage.value.prompt,
-	model: selectedImage.value.model,
-	resolution: selectedResolution.value,
-	aspectRatio: selectedAspectRatio.value === 'auto' ? '1:1' : selectedAspectRatio.value,
-	outputFormat: 'PNG',
-} : null)
-
 const sleep = (ms: number) => new Promise(resolve => window.setTimeout(resolve, ms))
+
 const formatRecordTime = (value?: number | string) => {
 	if (!value) return copy.value.now
 	if (typeof value === 'number') {
@@ -620,17 +474,7 @@ const formatRecordTime = (value?: number | string) => {
 	const match = value.match(/^(\d{4})-(\d{2})-(\d{2})\s+(\d{2}):(\d{2})/)
 	return match ? `${match[2]}/${match[3]} ${match[4]}:${match[5]}` : value
 }
-const getModelNameFromCodes = (platformCode?: number, modelCode?: number) => {
-	const match = imageModels.find((model) => {
-		const codes = [model.textToImage, model.imageToImage]
-		return codes.some(code => code.platformCode === platformCode && code.modelCode === modelCode)
-	})
-	return match?.name ?? copy.value.fallbackModelName
-}
-const getModelIdFromCodes = (platformCode?: number, modelCode?: number) => imageModels.find((model) => {
-	const codes = [model.textToImage, model.imageToImage]
-	return codes.some(code => code.platformCode === platformCode && code.modelCode === modelCode)
-})?.id
+
 const parseUserImages = (value?: string[] | string) => {
 	if (!value) return []
 	if (Array.isArray(value)) return value.filter(Boolean)
@@ -641,37 +485,45 @@ const parseUserImages = (value?: string[] | string) => {
 		return value ? [value] : []
 	}
 }
-const normalizeImageResolution = (value?: string): ResolutionValue | undefined => {
+
+const normalizeVideoResolution = (value?: string): VideoResolutionValue | undefined => {
 	if (!value) return undefined
-	const normalized = value.toUpperCase()
-	if (normalized === '1K' || normalized === '2K' || normalized === '4K') return normalized
+	const lower = value.toLowerCase()
+	if (SEEDANCE_RESOLUTIONS.includes(lower as VideoResolutionValue)) return lower as VideoResolutionValue
 	return undefined
 }
-const buildImageParamsFromItem = (item: AiImageResultItem): ImageGenerationParams => ({
-	modelId: getModelIdFromCodes(item.platformCode, item.modelCode),
+
+const normalizeVideoDuration = (value?: number) => {
+	if (!value) return undefined
+	if (SEEDANCE_DURATION_OPTIONS.includes(value as typeof SEEDANCE_DURATION_OPTIONS[number])) return value
+	return Math.min(SEEDANCE_DURATION_MAX, Math.max(SEEDANCE_DURATION_MIN, value))
+}
+
+const buildVideoParamsFromItem = (item: AiVideoResultItem): VideoGenerationParams => ({
 	platformCode: item.platformCode,
 	modelCode: item.modelCode,
 	prompt: item.prompt || '',
 	ratio: item.ratio || item.media?.ratio,
 	resolution: item.resolution || item.media?.resolution,
-	quality: item.quality,
-	imageCount: item.n,
+	duration: item.duration ?? (item.media?.duration_ms ? Math.round(item.media.duration_ms / 1000) : undefined),
+	generateAudio: item.generateAudio,
 	userImages: parseUserImages(item.userImages),
 })
-const buildImageParamsFromForm = (
+
+const buildVideoParamsFromForm = (
 	imageUrls: string[],
 	codes: { platformCode: number; modelCode: number },
-): ImageGenerationParams => ({
-	modelId: selectedModelId.value,
+): VideoGenerationParams => ({
 	platformCode: codes.platformCode,
 	modelCode: codes.modelCode,
 	prompt: prompt.value,
-	ratio: selectedAspectRatio.value === 'auto' ? '1:1' : selectedAspectRatio.value,
-	resolution: selectedResolution.value.toLowerCase(),
-	quality: selectedModel.value.profile === 'gpt-image' ? selectedQuality.value : undefined,
-	imageCount: imageCount.value,
+	ratio: selectedAspectRatio.value,
+	resolution: selectedResolution.value,
+	duration: selectedDuration.value,
+	generateAudio: generateAudio.value,
 	userImages: imageUrls,
 })
+
 const clearUploadedImages = () => {
 	uploadedPreviews.value.forEach((url) => {
 		if (url.startsWith('blob:')) URL.revokeObjectURL(url)
@@ -681,39 +533,38 @@ const clearUploadedImages = () => {
 	uploadedImageUrls.value = []
 	uploadedCount.value = 0
 }
+
 const setUploadedImageUrls = (urls: string[]) => {
 	clearUploadedImages()
 	uploadedPreviews.value = urls
 	uploadedImageUrls.value = urls
 	uploadedCount.value = urls.length
 }
-const applyImageRetry = (record: HistoryRecord) => {
+
+const applyVideoRetry = (record: VideoHistoryRecord) => {
 	const params = record.params ?? { prompt: record.prompt }
 	prompt.value = params.prompt || record.prompt
 
-	if (params.modelId) {
-		selectModel(params.modelId)
-	} else if (params.platformCode !== undefined && params.modelCode !== undefined) {
-		const modelId = getModelIdFromCodes(params.platformCode, params.modelCode)
-		if (modelId) selectModel(modelId)
+	if (params.ratio && SEEDANCE_RATIOS.includes(params.ratio as VideoAspectRatioValue)) {
+		selectedAspectRatio.value = params.ratio as VideoAspectRatioValue
 	}
 
-	if (params.ratio) {
-		const profile = MODEL_PROFILES[selectedModel.value.profile]
-		const ratio = params.ratio as AspectRatioValue
-		if (profile.supportedRatios.includes(ratio) || (ratio === 'auto' && profile.supportsAutoRatio)) {
-			selectedAspectRatio.value = ratio
-		}
-	}
-
-	const resolution = normalizeImageResolution(params.resolution)
+	const resolution = normalizeVideoResolution(params.resolution)
 	if (resolution) selectedResolution.value = resolution
 
-	if (params.quality) selectedQuality.value = params.quality
-	if (params.imageCount) imageCount.value = params.imageCount
+	if (typeof params.duration === 'number' && params.duration >= SEEDANCE_DURATION_MIN && params.duration <= SEEDANCE_DURATION_MAX) {
+		selectedDuration.value = params.duration
+	} else if (record.duration && record.duration >= SEEDANCE_DURATION_MIN && record.duration <= SEEDANCE_DURATION_MAX) {
+		selectedDuration.value = record.duration
+	}
 
-	if (params.userImages?.length) {
-		setUploadedImageUrls(params.userImages)
+	if (typeof params.generateAudio === 'boolean') {
+		generateAudio.value = params.generateAudio
+	}
+
+	const images = params.userImages?.filter(Boolean) ?? []
+	if (images.length) {
+		setUploadedImageUrls(images)
 	} else {
 		clearUploadedImages()
 	}
@@ -721,7 +572,7 @@ const applyImageRetry = (record: HistoryRecord) => {
 	composerRef.value?.scrollIntoView({ behavior: 'smooth', block: 'start' })
 }
 
-const TEMPLATE_ASPECT_RATIOS: Record<TemplateTabId, AspectRatioValue> = {
+const TEMPLATE_ASPECT_RATIOS: Record<TemplateTabId, VideoAspectRatioValue> = {
 	people: '9:16',
 	fashion: '9:16',
 	scenery: '16:9',
@@ -732,77 +583,47 @@ const TEMPLATE_ASPECT_RATIOS: Record<TemplateTabId, AspectRatioValue> = {
 const applyTemplate = ({ card, category }: { card: TemplateCard; category: TemplateTabId }) => {
 	prompt.value = card.prompt
 	const ratio = TEMPLATE_ASPECT_RATIOS[category]
-	const profile = MODEL_PROFILES[selectedModel.value.profile]
-	if (profile.supportedRatios.includes(ratio)) {
+	if (SEEDANCE_RATIOS.includes(ratio)) {
 		selectedAspectRatio.value = ratio
 	}
 	clearUploadedImages()
 	composerRef.value?.scrollIntoView({ behavior: 'smooth', block: 'start' })
 }
-const ensureModelOptions = (profile: ModelProfile) => {
-	const config = MODEL_PROFILES[profile]
-	if (!config.supportedRatios.includes(selectedAspectRatio.value) && !(config.supportsAutoRatio && selectedAspectRatio.value === 'auto')) {
-		selectedAspectRatio.value = config.supportedRatios[0]
-	}
-	if (!config.supportedResolutions.includes(selectedResolution.value)) {
-		selectedResolution.value = config.supportedResolutions[0]
-	}
-}
-const mapResultToRecord = (item: AiImageResultItem): HistoryRecord => ({
-	id: String(item.imageId ?? item.traceId ?? item.media?.mediaId ?? Date.now()),
-	model: getModelNameFromCodes(item.platformCode, item.modelCode),
-	type: copy.value.recordTypeImage,
-	time: formatRecordTime(item.updateTime || item.createTime || item.media?.createTime),
+
+const mapResultToRecord = (item: AiVideoResultItem): VideoHistoryRecord => ({
+	id: String(item.videoId ?? item.traceId ?? Date.now()),
+	model: selectedModel.value.name,
+	type: copy.value.recordTypeVideo,
+	time: formatRecordTime(item.createTime),
 	status: item.errorInfo ? 'failed' : item.media?.url ? 'success' : 'processing',
 	prompt: item.prompt || '',
-	image: item.media?.url || '',
+	video: item.media?.url || '',
 	traceId: item.traceId,
 	progress: item.media?.url ? 100 : 0,
 	errorInfo: item.errorInfo,
-	params: buildImageParamsFromItem(item),
+	duration: item.duration ?? (item.media?.duration_ms ? Math.round(item.media.duration_ms / 1000) : undefined),
+	params: buildVideoParamsFromItem(item),
 })
-const updateRecord = (id: string, patch: Partial<HistoryRecord>) => {
+
+const updateRecord = (id: string, patch: Partial<VideoHistoryRecord>) => {
 	records.value = records.value.map(record => record.id === id ? { ...record, ...patch } : record)
 }
-const requestDeleteRecord = (id: string) => {
-	if (deletingIds.value.includes(id)) return
-	pendingDeleteId.value = id
-}
-const confirmDeleteRecord = async () => {
-	const id = pendingDeleteId.value
-	if (!id || deletingIds.value.includes(id)) return
 
-	deletingIds.value = [...deletingIds.value, id]
-	try {
-		await deleteAiImageController(id)
-		records.value = records.value.filter(record => record.id !== id)
-		if (selectedImage.value?.id === id) selectedImage.value = null
-		pendingDeleteId.value = null
-	} finally {
-		deletingIds.value = deletingIds.value.filter(deletingId => deletingId !== id)
-	}
-}
-const getRecordProgress = (recordId: string) => records.value.find(record => record.id === recordId)?.progress ?? 0
-const uploadSingleFile = async (file: File) => {
-	return uploadAiImageFileController(file)
-}
-const uploadMultipleFiles = async (files: File[]) => {
-	return uploadAiImageFilesController(files)
-}
 const uploadSelectedFiles = async (files = uploadedFiles.value) => {
 	if (!files.length) return []
 	isUploading.value = true
 	try {
-		const urls = files.length > 1
-			? await uploadMultipleFiles(files)
-			: await Promise.all(files.map(file => uploadSingleFile(file)))
+		const urls = files.length > 2
+			? await uploadAiImageFilesController(files)
+			: await Promise.all(files.map(file => uploadAiImageFileController(file)))
 		uploadedImageUrls.value = urls.filter(Boolean)
 		return uploadedImageUrls.value
 	} finally {
 		isUploading.value = false
 	}
 }
-const handleFiles = (event: Event) => {
+
+const handleFiles = async (event: Event) => {
 	const input = event.target as HTMLInputElement
 	const files = [
 		...uploadedFiles.value,
@@ -816,7 +637,11 @@ const handleFiles = (event: Event) => {
 	uploadedImageUrls.value = []
 	uploadedCount.value = files.length
 	input.value = ''
+	if (files.length) {
+		await uploadSelectedFiles(files)
+	}
 }
+
 const removeUploadedImage = (index: number) => {
 	const preview = uploadedPreviews.value[index]
 	if (preview?.startsWith('blob:')) URL.revokeObjectURL(preview)
@@ -826,39 +651,29 @@ const removeUploadedImage = (index: number) => {
 	uploadedCount.value = uploadedFiles.value.length
 }
 
-const selectModel = (id: ImageModelId) => {
+const selectModel = (id: VideoModelId) => {
 	selectedModelId.value = id
-	const model = imageModels.find(item => item.id === id)
-	if (model) ensureModelOptions(model.profile)
 	modelPickerOpen.value = false
-	modelSearch.value = ''
 }
 
 const getGenerationCodes = (hasImages: boolean) => hasImages
-	? selectedModel.value.imageToImage
-	: selectedModel.value.textToImage
-let isUnmounted = false
-const activePollTraceIds = new Set<string>()
-const activeProgressTimers = new Map<string, ReturnType<typeof window.setInterval>>()
-const pollImageResult = async (traceId: string, recordId: string) => {
-	if (!traceId || activePollTraceIds.has(traceId)) return
+	? selectedModel.value.imageToVideo
+	: selectedModel.value.textToVideo
 
-	activePollTraceIds.add(traceId)
-	const initialProgress = Math.min(getRecordProgress(recordId), 96)
-	const startedAt = Date.now() - Math.round((initialProgress / 96) * 20000)
-	const progressTimer: ReturnType<typeof window.setInterval> = window.setInterval(() => {
-		if (isUnmounted) return
+const pollVideoResult = async (traceId: string, recordId: string) => {
+	const startedAt = Date.now()
+	const expectedDurationMs = 5 * 60 * 1000
+	let progressTimer: ReturnType<typeof window.setInterval> | null = window.setInterval(() => {
 		const elapsed = Date.now() - startedAt
-		updateRecord(recordId, { progress: Math.min(96, Math.round((elapsed / 20000) * 96)) })
-	}, 600)
-	activeProgressTimers.set(traceId, progressTimer)
-	let result: AiImageResultItem | null = null
+		updateRecord(recordId, { progress: Math.min(96, Math.round((elapsed / expectedDurationMs) * 96)) })
+	}, 2000)
+	let result: AiVideoResultItem | null = null
 
 	try {
-		for (let attempt = 0; attempt < 60; attempt++) {
-			if (isUnmounted) return
-			await sleep(2500)
-			const response = await getAiImageResultController(traceId)
+		// Poll every 30s for up to ~15 minutes (video generation often takes ~5 minutes).
+		for (let attempt = 0; attempt < 30; attempt++) {
+			await sleep(30000)
+			const response = await getAiVideoResultController(traceId)
 			const item = response.data?.find(resultItem => resultItem.traceId === traceId) ?? response.data?.[0]
 			if (item?.errorInfo) throw new Error(item.errorInfo)
 			if (item?.media?.url) {
@@ -868,12 +683,10 @@ const pollImageResult = async (traceId: string, recordId: string) => {
 		}
 
 		if (!result) throw new Error(copy.value.stillPending)
-		const remainingFakeTime = Math.max(0, 20000 - (Date.now() - startedAt))
-		if (remainingFakeTime) await sleep(remainingFakeTime)
 		updateRecord(recordId, {
 			...mapResultToRecord(result),
 			id: recordId,
-			model: records.value.find(record => record.id === recordId)?.model ?? getModelNameFromCodes(result.platformCode, result.modelCode),
+			model: selectedModel.value.name,
 			status: 'success',
 			progress: 100,
 		})
@@ -884,59 +697,64 @@ const pollImageResult = async (traceId: string, recordId: string) => {
 			errorInfo: error instanceof Error ? error.message : copy.value.generationFailed,
 		})
 	} finally {
-		window.clearInterval(progressTimer)
-		activeProgressTimers.delete(traceId)
-		activePollTraceIds.delete(traceId)
+		if (progressTimer) {
+			window.clearInterval(progressTimer)
+			progressTimer = null
+		}
 	}
 }
-const generateImage = async () => {
+
+const generateVideo = async () => {
 	if (isUploading.value || isGenerating.value) return
 	isGenerating.value = true
 	try {
-		const imageUrls = uploadedFiles.value.length
+		const imageUrls = uploadedFiles.value.length && !uploadedImageUrls.value.length
 			? await uploadSelectedFiles()
 			: uploadedImageUrls.value
 		const hasImages = imageUrls.length > 0
 		const codes = getGenerationCodes(hasImages)
-		const payload: GenerateAiImagePayload = {
-			prompt: prompt.value,
-			images: imageUrls,
-			ratio: selectedAspectRatio.value === 'auto' ? '1:1' : selectedAspectRatio.value,
-			resolution: selectedResolution.value.toLowerCase(),
+		const payload: GenerateAiVideoPayload = {
 			platformCode: codes.platformCode,
 			modelCode: codes.modelCode,
-			n: selectedModel.value.profile === 'seedream' ? 1 : imageCount.value,
+			prompt: prompt.value,
+			ratio: selectedAspectRatio.value,
+			resolution: selectedResolution.value,
+			duration: selectedDuration.value,
+			generateAudio: generateAudio.value,
+			n: 1,
 		}
-		if (selectedModel.value.profile === 'gpt-image') {
-			payload.quality = selectedQuality.value
+		if (hasImages) {
+			payload.images = imageUrls
 		}
-		const response = await generateAiImageController(payload)
+		const response = await generateAiVideoController(payload)
 		const traceId = response.data.traceId
 		const recordId = traceId || `trace-${Date.now()}`
 		records.value = [
 			{
 				id: recordId,
 				model: selectedModel.value.name,
-				type: copy.value.recordTypeImage,
+				type: copy.value.recordTypeVideo,
 				time: formatRecordTime(),
 				status: 'processing',
 				prompt: prompt.value,
-				image: '',
+				video: '',
 				traceId,
 				progress: 0,
-				params: buildImageParamsFromForm(imageUrls, codes),
+				duration: selectedDuration.value,
+				params: buildVideoParamsFromForm(imageUrls, codes),
 			},
 			...records.value,
 		]
-		await pollImageResult(traceId, recordId)
+		await pollVideoResult(traceId, recordId)
 	} finally {
 		isGenerating.value = false
 	}
 }
+
 const buildHistoryQuery = () => {
 	const query: {
-		pageNum: 1,
-		pageSize: 50,
+		pageNum: 1
+		pageSize: 50
 		startTime?: number
 		endTime?: number
 		prompt?: string
@@ -945,8 +763,8 @@ const buildHistoryQuery = () => {
 		pageSize: 50,
 	}
 	const now = new Date()
-	const prompt = searchQuery.value.trim()
-	if (prompt) query.prompt = prompt
+	const promptQuery = searchQuery.value.trim()
+	if (promptQuery) query.prompt = promptQuery
 
 	if (timeFilter.value === 'today') {
 		query.startTime = startOfDay(now).getTime()
@@ -976,23 +794,13 @@ let historyFilterTimer: ReturnType<typeof setTimeout> | null = null
 const loadHistory = async () => {
 	const requestId = historyRequestId + 1
 	historyRequestId = requestId
-	const response = await getAiImageHistoryController(buildHistoryQuery())
+	const response = await getAiVideoHistoryController(buildHistoryQuery())
 	if (requestId !== historyRequestId) return
-	const history = (response.rows ?? []).map(mapResultToRecord)
-
+	const history = (response.rows ?? []).map(item => ({
+		...mapResultToRecord(item),
+		model: 'Seedance 2.0',
+	}))
 	records.value = history
-	resumePendingHistoryPolling(history)
-}
-
-const resumePendingHistoryPolling = (history: HistoryRecord[]) => {
-	history
-		.filter(record => record.status === 'processing' && record.traceId)
-		.forEach((record) => {
-			updateRecord(record.id, {
-				progress: Math.max(8, record.progress ?? 0),
-			})
-			void pollImageResult(record.traceId as string, record.id)
-		})
 }
 
 const scheduleHistoryLoad = (delay = 0) => {
@@ -1008,11 +816,6 @@ const handleDocumentPointerDown = (event: PointerEvent) => {
 	}
 }
 
-watch(selectedModelId, (id) => {
-	const model = imageModels.find(item => item.id === id)
-	if (model) ensureModelOptions(model.profile)
-}, { immediate: true })
-
 watch([timeFilter, startDate, endDate], () => {
 	scheduleHistoryLoad()
 })
@@ -1022,18 +825,13 @@ watch(searchQuery, () => {
 })
 
 onMounted(() => {
-	isUnmounted = false
 	document.addEventListener('pointerdown', handleDocumentPointerDown)
 	loadHistory().catch(() => {})
 })
 
 onBeforeUnmount(() => {
-	isUnmounted = true
 	document.removeEventListener('pointerdown', handleDocumentPointerDown)
 	if (historyFilterTimer) clearTimeout(historyFilterTimer)
-	activeProgressTimers.forEach(timer => window.clearInterval(timer))
-	activeProgressTimers.clear()
-	activePollTraceIds.clear()
 	uploadedPreviews.value.forEach((url) => {
 		if (url.startsWith('blob:')) URL.revokeObjectURL(url)
 	})

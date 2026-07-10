@@ -19,6 +19,7 @@ export interface GenerateAiImagePayload {
 	platformCode: number
 	modelCode: number
 	n: number
+	quality?: 'low' | 'medium' | 'high'
 }
 
 export interface UploadFileData {
@@ -31,7 +32,7 @@ export interface UploadFileData {
 }
 
 export interface AiResultMedia {
-	mediaId?: number
+	mediaId?: number | string
 	mediaType?: string
 	url?: string
 	fileName?: string
@@ -39,24 +40,30 @@ export interface AiResultMedia {
 	size?: number
 	width?: number
 	height?: number
-	createTime?: string
+	ratio?: string
+	resolution?: string
+	createTime?: number | string
 }
 
 export interface AiImageResultItem {
-	imageId?: number
+	imageId?: number | string
 	traceId?: string
 	status?: string
 	prompt?: string
-	userImages?: string
+	userImages?: string[] | string
 	width?: number
 	height?: number
 	platformCode?: number
 	modelCode?: number
+	ratio?: string
+	resolution?: string
+	quality?: 'low' | 'medium' | 'high'
+	n?: number
 	creditCost?: number
 	media?: AiResultMedia
 	errorInfo?: string
-	createTime?: string
-	updateTime?: string
+	createTime?: number | string
+	updateTime?: number | string
 }
 
 export interface HistoryResponse {
@@ -67,8 +74,11 @@ export interface HistoryResponse {
 }
 
 export interface ImageHistoryQuery {
-	startTime: string
-	endTime: string
+	pageNum?: number
+	pageSize?: number
+	startTime?: number
+	endTime?: number
+	prompt?: string
 }
 
 const extractUploadUrls = (payload: unknown) => {
@@ -121,6 +131,14 @@ export const generateAiImageController = (data: GenerateAiImagePayload) => {
 	return request<ApiResponse<GenerateImageData>>('/ai/image/generate', {
 		method: 'POST',
 		body: data,
+	})
+}
+
+export const deleteAiImageController = (imageId: number | string) => {
+	const request = useRequest()
+
+	return request<ApiResponse<null>>(`/ai/image/${encodeURIComponent(String(imageId))}`, {
+		method: 'DELETE',
 	})
 }
 
