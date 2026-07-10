@@ -21,7 +21,7 @@ const homeLocaleCodes = ['zh', 'en', 'de', 'es', 'ja']
 const isAppHome = computed(() => {
 	const segments = route.path.split('/').filter(Boolean)
 	const firstAppSegment = homeLocaleCodes.includes(segments[0]) ? segments[1] : segments[0]
-	return firstAppSegment === 'home' || firstAppSegment === 'explore' || firstAppSegment === 'assets' || firstAppSegment === 'ai-image-generator' || firstAppSegment === 'ai-video-generator'
+	return firstAppSegment === 'home' || firstAppSegment === 'explore' || firstAppSegment === 'assets' || firstAppSegment === 'ai-image-generator' || firstAppSegment === 'ai-video-generator' || firstAppSegment === 'tools'
 })
 
 onMounted(() => {

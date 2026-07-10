@@ -267,6 +267,7 @@
     "comingSoon": "Coming Soon",
     "imageUpscaler": "Image Upscaler",
     "backgroundRemover": "Background Remover",
+    "useAction": "Use",
     "upscalerBeforeAlt": "Low-resolution portrait before upscaling",
     "upscalerAfterAlt": "Sharper portrait after upscaling",
     "backgroundBeforeAlt": "Photo before background removal",

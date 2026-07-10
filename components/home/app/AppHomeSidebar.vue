@@ -25,7 +25,7 @@
 			</NuxtLink>
 		</nav>
 
-		<div class="app-home-sidebar__footer">
+		<div v-if="!hideFooter" class="app-home-sidebar__footer">
 			<button type="button" class="app-home-sidebar__upgrade" :title="collapsed ? t('home.app.sidebar.upgrade') : undefined">
 				<span class="app-home-sidebar__icon" v-html="icons.upgrade"></span>
 				<span class="app-home-sidebar__label">{{ t('home.app.sidebar.upgrade') }}</span>
@@ -114,13 +114,16 @@
 <script setup lang="ts">
 const props = withDefaults(defineProps<{
 	collapsed?: boolean
+	hideFooter?: boolean
 }>(), {
 	collapsed: false,
+	hideFooter: false,
 })
 const emit = defineEmits<{
 	(event: 'toggle-collapse'): void
 }>()
 const collapsed = computed(() => props.collapsed)
+const hideFooter = computed(() => props.hideFooter)
 
 const { t, locale, setLocale } = useAppI18n()
 const route = useRoute()

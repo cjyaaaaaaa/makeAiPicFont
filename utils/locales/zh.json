@@ -267,6 +267,7 @@
     "comingSoon": "Coming Soon",
     "imageUpscaler": "Image Upscaler",
     "backgroundRemover": "Background Remover",
+    "useAction": "使用",
     "upscalerBeforeAlt": "图片放大前的低清晰度人像",
     "upscalerAfterAlt": "图片放大后的高清人像",
     "backgroundBeforeAlt": "移除背景前的照片",

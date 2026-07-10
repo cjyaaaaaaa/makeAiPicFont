@@ -796,8 +796,12 @@ const uploadSelectedFiles = async (files = uploadedFiles.value) => {
 		const urls = files.length > 1
 			? await uploadMultipleFiles(files)
 			: await Promise.all(files.map(file => uploadSingleFile(file)))
-		uploadedImageUrls.value = urls.filter(Boolean)
-		return uploadedImageUrls.value
+		const resolvedUrls = urls.filter(Boolean)
+		if (resolvedUrls.length !== files.length) {
+			throw new Error(copy.value.generationFailed)
+		}
+		uploadedImageUrls.value = resolvedUrls
+		return resolvedUrls
 	} finally {
 		isUploading.value = false
 	}
@@ -894,8 +898,12 @@ const generateImage = async () => {
 	isGenerating.value = true
 	try {
 		const imageUrls = uploadedFiles.value.length
-			? await uploadSelectedFiles()
-			: uploadedImageUrls.value
+			? (
+				uploadedImageUrls.value.length === uploadedFiles.value.length
+					? uploadedImageUrls.value
+					: await uploadSelectedFiles()
+			)
+			: uploadedImageUrls.value.filter(Boolean)
 		const hasImages = imageUrls.length > 0
 		const codes = getGenerationCodes(hasImages)
 		const payload: GenerateAiImagePayload = {

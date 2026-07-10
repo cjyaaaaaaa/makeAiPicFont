@@ -330,6 +330,7 @@
     "comingSoon": "Coming Soon",
     "imageUpscaler": "Image Upscaler",
     "backgroundRemover": "Background Remover",
+    "useAction": "Usar",
     "upscalerBeforeAlt": "Retrato de baja resolucion antes de ampliar",
     "upscalerAfterAlt": "Retrato mas nitido despues de ampliar",
     "backgroundBeforeAlt": "Foto antes de quitar el fondo",

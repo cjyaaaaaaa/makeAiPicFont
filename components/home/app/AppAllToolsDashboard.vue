@@ -48,6 +48,8 @@
 							</div>
 							<span class="app-tool-card__divider" aria-hidden="true"></span>
 						</template>
+
+						<span class="app-tool-card__use" aria-hidden="true">{{ copy.useAction }}</span>
 					</div>
 					<strong>{{ tool.title }}</strong>
 				</NuxtLink>
@@ -66,6 +68,7 @@ type AllToolsCopy = {
 	comingSoon: string
 	imageUpscaler: string
 	backgroundRemover: string
+	useAction: string
 	upscalerBeforeAlt: string
 	upscalerAfterAlt: string
 	backgroundBeforeAlt: string
@@ -118,36 +121,36 @@ const tools = computed<ToolCard[]>(() => [
 .app-tools__switcher {
 	display: inline-flex;
 	align-items: center;
-	gap: 8px;
-	min-height: 88px;
-	margin-bottom: 46px;
-	border: 1px solid rgba(255, 255, 255, 0.12);
-	border-radius: 24px;
+	gap: 6px;
+	min-height: 44px;
+	margin-bottom: 28px;
+	border: 1px solid rgba(255, 255, 255, 0.1);
+	border-radius: 14px;
 	background: #111113;
-	padding: 8px;
+	padding: 4px;
 
 	button {
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
-		gap: 12px;
-		min-height: 66px;
+		gap: 8px;
+		min-height: 34px;
 		border: 0;
-		border-radius: 18px;
-		padding: 0 30px;
+		border-radius: 10px;
+		padding: 0 14px;
 		background: transparent;
 		color: rgba(255, 255, 255, 0.32);
-		font-size: 28px;
-		font-weight: 780;
+		font-size: 13px;
+		font-weight: 800;
 		letter-spacing: 0;
 		white-space: nowrap;
 	}
 
 	button.is-active {
-		border: 1px solid rgba(255, 255, 255, 0.14);
-		background: #404042;
+		border: 1px solid rgba(255, 255, 255, 0.12);
+		background: #3a3a3d;
 		color: rgba(255, 255, 255, 0.92);
-		box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+		box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
 	}
 
 	button.is-disabled {
@@ -155,11 +158,11 @@ const tools = computed<ToolCard[]>(() => [
 	}
 
 	small {
-		border-radius: 8px;
+		border-radius: 6px;
 		background: rgba(255, 255, 255, 0.08);
-		padding: 4px 12px;
+		padding: 3px 8px;
 		color: rgba(255, 255, 255, 0.34);
-		font-size: 20px;
+		font-size: 10.5px;
 		font-weight: 800;
 		line-height: 1;
 	}
@@ -168,8 +171,8 @@ const tools = computed<ToolCard[]>(() => [
 .app-tools__tab-icon {
 	display: grid;
 	place-items: center;
-	width: 27px;
-	height: 27px;
+	width: 15px;
+	height: 15px;
 
 	:deep(svg) {
 		width: 100%;
@@ -179,17 +182,17 @@ const tools = computed<ToolCard[]>(() => [
 
 .app-tools__grid {
 	display: grid;
-	grid-template-columns: repeat(2, minmax(280px, 536px));
-	gap: 32px;
+	grid-template-columns: repeat(auto-fill, minmax(220px, 280px));
+	gap: 16px;
 	align-items: start;
 }
 
 .app-tool-card {
 	display: grid;
-	grid-template-rows: 300px 92px;
+	grid-template-rows: 148px 48px;
 	overflow: hidden;
-	border: 1px solid rgba(255, 255, 255, 0.12);
-	border-radius: 32px;
+	border: 1px solid rgba(255, 255, 255, 0.1);
+	border-radius: 16px;
 	background: #141416;
 	color: #fff;
 	text-align: center;
@@ -197,13 +200,23 @@ const tools = computed<ToolCard[]>(() => [
 	transition: border-color 180ms ease, transform 180ms ease, background 180ms ease;
 
 	&:hover {
-		border-color: rgba(255, 255, 255, 0.22);
+		border-color: rgba(255, 255, 255, 0.2);
 		background: #18181a;
-		transform: translateY(-2px);
+		transform: translateY(-1px);
+
+		.app-tool-card__use {
+			opacity: 1;
+			transform: translate(-50%, 0);
+		}
 	}
 
 	&:focus-visible {
 		box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.8), 0 0 0 6px rgba(255, 255, 255, 0.12);
+
+		.app-tool-card__use {
+			opacity: 1;
+			transform: translate(-50%, 0);
+		}
 	}
 
 	strong {
@@ -211,11 +224,11 @@ const tools = computed<ToolCard[]>(() => [
 		align-items: center;
 		justify-content: center;
 		min-width: 0;
-		padding: 0 22px;
-		color: rgba(255, 255, 255, 0.92);
-		font-size: 28px;
-		font-weight: 860;
-		line-height: 1.15;
+		padding: 0 14px;
+		color: rgba(255, 255, 255, 0.9);
+		font-size: 13.5px;
+		font-weight: 850;
+		line-height: 1.2;
 	}
 }
 
@@ -227,6 +240,29 @@ const tools = computed<ToolCard[]>(() => [
 	overflow: hidden;
 	background: #1a1a1c;
 	isolation: isolate;
+}
+
+.app-tool-card__use {
+	position: absolute;
+	left: 50%;
+	bottom: 14px;
+	z-index: 3;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 30px;
+	padding: 0 18px;
+	border-radius: 999px;
+	background: #fff;
+	color: #111;
+	font-size: 12.5px;
+	font-weight: 800;
+	line-height: 1;
+	opacity: 0;
+	pointer-events: none;
+	transform: translate(-50%, 4px);
+	transition: opacity 180ms ease, transform 180ms ease;
+	box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
 }
 
 .app-tool-card__split {
@@ -245,8 +281,8 @@ const tools = computed<ToolCard[]>(() => [
 
 .app-tool-card__preview.is-upscaler {
 	.app-tool-card__split:first-child img {
-		filter: blur(2px) saturate(0.86) contrast(0.9);
-		transform: scale(1.035);
+		filter: blur(1.5px) saturate(0.86) contrast(0.9);
+		transform: scale(1.03);
 	}
 
 	.app-tool-card__split.is-sharp img {
@@ -256,9 +292,9 @@ const tools = computed<ToolCard[]>(() => [
 
 .app-tool-card__preview.is-background {
 	.app-tool-card__split img {
-		inset: 20px 18px 0;
-		width: calc(100% - 36px);
-		height: calc(100% - 20px);
+		inset: 12px 10px 0;
+		width: calc(100% - 20px);
+		height: calc(100% - 12px);
 		object-fit: contain;
 		filter: saturate(1.02) contrast(1.05);
 	}
@@ -275,8 +311,8 @@ const tools = computed<ToolCard[]>(() => [
 		linear-gradient(-45deg, rgba(255, 255, 255, 0.09) 25%, transparent 25%),
 		linear-gradient(45deg, transparent 75%, rgba(255, 255, 255, 0.09) 75%),
 		linear-gradient(-45deg, transparent 75%, rgba(255, 255, 255, 0.09) 75%);
-	background-position: 0 0, 0 12px, 12px -12px, -12px 0;
-	background-size: 24px 24px;
+	background-position: 0 0, 0 8px, 8px -8px, -8px 0;
+	background-size: 16px 16px;
 }
 
 .app-tool-card__divider {
@@ -284,76 +320,38 @@ const tools = computed<ToolCard[]>(() => [
 	inset: 0 auto 0 50%;
 	z-index: 2;
 	width: 1px;
-	background: rgba(255, 255, 255, 0.16);
-}
-
-@media (max-width: 1180px) {
-	.app-tools__switcher {
-		margin-bottom: 34px;
-
-		button {
-			font-size: 22px;
-		}
-
-		small {
-			font-size: 16px;
-		}
-	}
-
-	.app-tools__grid {
-		grid-template-columns: repeat(2, minmax(250px, 1fr));
-		gap: 24px;
-	}
-
-	.app-tool-card {
-		grid-template-rows: 250px 82px;
-		border-radius: 24px;
-
-		strong {
-			font-size: 23px;
-		}
-	}
+	background: rgba(255, 255, 255, 0.14);
 }
 
 @media (max-width: 900px) {
 	.app-tools__switcher {
 		max-width: 100%;
-		min-height: 68px;
 		overflow-x: auto;
-		border-radius: 18px;
-		margin-bottom: 24px;
-		padding: 6px;
-
-		button {
-			min-height: 52px;
-			border-radius: 14px;
-			padding: 0 18px;
-			font-size: 17px;
-		}
-
-		small {
-			font-size: 12px;
-		}
-	}
-
-	.app-tools__tab-icon {
-		width: 20px;
-		height: 20px;
+		margin-bottom: 20px;
 	}
 
 	.app-tools__grid {
-		grid-template-columns: 1fr;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 12px;
+	}
+
+	.app-tool-card {
+		grid-template-rows: 128px 44px;
+		border-radius: 14px;
+
+		strong {
+			font-size: 12.5px;
+		}
 	}
 }
 
 @media (max-width: 560px) {
-	.app-tool-card {
-		grid-template-rows: 210px 72px;
-		border-radius: 20px;
+	.app-tools__grid {
+		grid-template-columns: 1fr;
+	}
 
-		strong {
-			font-size: 20px;
-		}
+	.app-tool-card {
+		grid-template-rows: 160px 46px;
 	}
 }
 </style>

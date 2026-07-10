@@ -613,11 +613,15 @@ const uploadSelectedFiles = async (files = uploadedFiles.value) => {
 	if (!files.length) return []
 	isUploading.value = true
 	try {
-		const urls = files.length > 2
+		const urls = files.length > 1
 			? await uploadAiImageFilesController(files)
 			: await Promise.all(files.map(file => uploadAiImageFileController(file)))
-		uploadedImageUrls.value = urls.filter(Boolean)
-		return uploadedImageUrls.value
+		const resolvedUrls = urls.filter(Boolean)
+		if (resolvedUrls.length !== files.length) {
+			throw new Error(copy.value.generationFailed)
+		}
+		uploadedImageUrls.value = resolvedUrls
+		return resolvedUrls
 	} finally {
 		isUploading.value = false
 	}
@@ -708,9 +712,13 @@ const generateVideo = async () => {
 	if (isUploading.value || isGenerating.value) return
 	isGenerating.value = true
 	try {
-		const imageUrls = uploadedFiles.value.length && !uploadedImageUrls.value.length
-			? await uploadSelectedFiles()
-			: uploadedImageUrls.value
+		const imageUrls = uploadedFiles.value.length
+			? (
+				uploadedImageUrls.value.length === uploadedFiles.value.length
+					? uploadedImageUrls.value
+					: await uploadSelectedFiles()
+			)
+			: uploadedImageUrls.value.filter(Boolean)
 		const hasImages = imageUrls.length > 0
 		const codes = getGenerationCodes(hasImages)
 		const payload: GenerateAiVideoPayload = {

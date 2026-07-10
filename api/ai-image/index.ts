@@ -31,6 +31,91 @@ export interface UploadFileData {
 	size?: number
 }
 
+export interface BatchUploadFileData {
+	urls?: string | string[]
+	fileNames?: string | string[]
+	list?: UploadFileData[]
+	url?: string
+	fileName?: string
+}
+
+const splitUploadValues = (value: string | string[] | undefined | null) => {
+	if (!value) return []
+	if (Array.isArray(value)) return value.map(item => String(item).trim()).filter(Boolean)
+	return String(value)
+		.split(',')
+		.map(item => item.trim())
+		.filter(Boolean)
+}
+
+const pickUploadUrl = (item: unknown): string => {
+	if (typeof item === 'string') return item.trim()
+	if (!item || typeof item !== 'object') return ''
+	const data = item as UploadFileData & { fileUrl?: string }
+	return String(data.url || data.fileUrl || data.fileName || '').trim()
+}
+
+const extractUploadUrls = (payload: unknown) => {
+	if (typeof payload === 'string') {
+		return splitUploadValues(payload)
+	}
+
+	if (Array.isArray(payload)) {
+		return payload.map(pickUploadUrl).filter(Boolean)
+	}
+
+	if (payload && typeof payload === 'object') {
+		const data = payload as BatchUploadFileData
+		if (data.urls !== undefined) return splitUploadValues(data.urls)
+		if (Array.isArray(data.list)) return data.list.map(pickUploadUrl).filter(Boolean)
+		if (data.fileNames !== undefined) return splitUploadValues(data.fileNames)
+		const single = pickUploadUrl(data)
+		if (single) return [single]
+	}
+
+	return []
+}
+
+export const uploadAiImageFileController = async (file: File) => {
+	const request = useRequest()
+	const body = new FormData()
+	body.append('file', file)
+
+	const response = await request<ApiResponse<UploadFileData | string>>('/oss/uploadToDir', {
+		method: 'POST',
+		query: { directory: 'user-upload' },
+		body,
+	})
+
+	const url = extractUploadUrls(response.data)[0]
+	if (!url) {
+		throw new Error('Upload succeeded but no file URL was returned')
+	}
+	return url
+}
+
+export const uploadAiImageFilesController = async (files: File[]) => {
+	const request = useRequest()
+	const body = new FormData()
+	files.forEach(file => body.append('files', file))
+	body.append('directory', 'user-upload')
+
+	const response = await request<ApiResponse<BatchUploadFileData | UploadFileData[] | string>>(
+		'/oss/uploadsToDir',
+		{
+			method: 'POST',
+			query: { directory: 'user-upload' },
+			body,
+		},
+	)
+
+	const urls = extractUploadUrls(response.data)
+	if (!urls.length) {
+		throw new Error('Upload succeeded but no file URLs were returned')
+	}
+	return urls
+}
+
 export interface AiResultMedia {
 	mediaId?: number | string
 	mediaType?: string
@@ -79,50 +164,6 @@ export interface ImageHistoryQuery {
 	startTime?: number
 	endTime?: number
 	prompt?: string
-}
-
-const extractUploadUrls = (payload: unknown) => {
-	if (Array.isArray(payload)) {
-		return payload.map(item => (item as UploadFileData).url).filter(Boolean)
-	}
-	if (payload && typeof payload === 'object') {
-		const data = payload as UploadFileData & { urls?: string[]; list?: UploadFileData[] }
-		if (Array.isArray(data.urls)) return data.urls.filter(Boolean)
-		if (Array.isArray(data.list)) return data.list.map(item => item.url).filter(Boolean)
-		if (data.url) return [data.url]
-	}
-	return []
-}
-
-export const uploadAiImageFileController = async (file: File) => {
-	const request = useRequest()
-	const body = new FormData()
-	body.append('file', file)
-
-	const response = await request<ApiResponse<UploadFileData>>('/oss/uploadToDir', {
-		method: 'POST',
-		query: { directory: 'user-upload' },
-		body,
-	})
-
-	return response.data.url
-}
-
-export const uploadAiImageFilesController = async (files: File[]) => {
-	const request = useRequest()
-	const body = new FormData()
-	files.forEach(file => body.append('files', file))
-
-	const response = await request<ApiResponse<UploadFileData[] | { urls?: string[]; list?: UploadFileData[] }>>(
-		'/oss/uploadsToDir',
-		{
-			method: 'POST',
-			query: { directory: 'user-upload' },
-			body,
-		},
-	)
-
-	return extractUploadUrls(response.data)
 }
 
 export const generateAiImageController = (data: GenerateAiImagePayload) => {

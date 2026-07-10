@@ -342,6 +342,7 @@
     "comingSoon": "Coming Soon",
     "imageUpscaler": "Image Upscaler",
     "backgroundRemover": "Background Remover",
+    "useAction": "使う",
     "upscalerBeforeAlt": "アップスケール前の低解像度ポートレート",
     "upscalerAfterAlt": "アップスケール後のシャープなポートレート",
     "backgroundBeforeAlt": "背景削除前の写真",
