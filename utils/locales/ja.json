@@ -107,7 +107,10 @@
     "emailCodeSentTitle": "認証コードを送信しました",
     "emailCodeSentMessage": "メールを確認し、認証コードを入力してください。",
     "emailCodeFailedTitle": "コードを送信できませんでした",
-    "emailCodeFailedMessage": "メールアドレスを確認するか、後でもう一度お試しください。"
+    "emailCodeFailedMessage": "メールアドレスを確認するか、後でもう一度お試しください。",
+    "loginRequiredTitle": "続行するにはログインしてください",
+    "loginRequiredMessage": "ログインすると生成履歴を確認でき、新しい作品をアカウントに保存できます。",
+    "loginRequiredAction": "ログイン"
   },
   "assets": {
     "title": "生成履歴",

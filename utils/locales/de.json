@@ -107,7 +107,10 @@
       "emailCodeSentTitle": "Bestätigungscode gesendet",
       "emailCodeSentMessage": "Bitte prüfe dein Postfach und gib den Code ein.",
       "emailCodeFailedTitle": "Code konnte nicht gesendet werden",
-      "emailCodeFailedMessage": "Bitte prüfe die E-Mail-Adresse oder versuche es später erneut."
+      "emailCodeFailedMessage": "Bitte prüfe die E-Mail-Adresse oder versuche es später erneut.",
+      "loginRequiredTitle": "Anmelden, um fortzufahren",
+      "loginRequiredMessage": "Melde dich an, um deinen Generierungsverlauf zu sehen und neue Kreationen mit deinem Konto zu verknüpfen.",
+      "loginRequiredAction": "Anmelden"
     },
     "assets": {
       "title": "Generierungsverlauf",

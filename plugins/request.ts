@@ -61,6 +61,14 @@ export default defineNuxtPlugin(() => {
 				data.code !== undefined &&
 				![0, 200].includes(Number(data.code))
 			) {
+				const code = Number(data.code)
+				if (code === 401) {
+					throw createError({
+						statusCode: 401,
+						statusMessage: data.msg || data.message || 'Unauthorized',
+						data,
+					})
+				}
 				showGlobalRequestError(data.msg || data.message)
 				throw createError({
 					statusCode: response.status,
@@ -69,6 +77,7 @@ export default defineNuxtPlugin(() => {
 			}
 		},
 		onResponseError({ response, error }) {
+			if (response?.status === 401) return
 			showGlobalRequestError(
 				(response?._data as { msg?: string; message?: string } | undefined)
 					?.msg ||

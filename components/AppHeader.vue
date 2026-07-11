@@ -298,16 +298,6 @@ const openLang = ref(false);
 const openLogin = ref(false);
 const userMenuOpen = ref(false);
 const headerSiteName = computed(() => t("common.siteName"));
-const localizedAppHomePath = computed(() => locale.value === "en" ? "/home" : `/${locale.value}/home`);
-
-const navItems = computed(() => [
-  { label: t("nav.home"), link: localizedAppHomePath.value },
-  { label: t("nav.aiImage"), link: "/product" },
-  { label: t("nav.aiVideo"), link: "/solution" },
-  { label: t("nav.assets"), link: "/assets" },
-  { label: t("nav.explore"), link: "/explore" },
-  { label: t("nav.pricing"), link: "/pricing" },
-]);
 const languages = [
   { code: "zh", name: "简体中文", short: "中" },
   { code: "en", name: "English", short: "EN" },
@@ -350,6 +340,17 @@ const buildLocalePath = (code: LocaleCode, fullPath: string) => {
       : `/${code}${strippedPath === "/" ? "" : strippedPath}`;
   return `${localizedPath}${query ? `?${query}` : ""}${hash ? `#${hash}` : ""}`;
 };
+const localizeNavPath = (path: string) =>
+  buildLocalePath(locale.value as LocaleCode, path);
+
+const navItems = computed(() => [
+  { label: t("nav.home"), link: localizeNavPath("/home") },
+  { label: t("nav.aiImage"), link: localizeNavPath("/ai-image-generator") },
+  { label: t("nav.aiVideo"), link: localizeNavPath("/ai-video-generator") },
+  { label: t("nav.assets"), link: localizeNavPath("/assets") },
+  { label: t("nav.explore"), link: localizeNavPath("/explore") },
+  { label: t("nav.pricing"), link: localizeNavPath("/pricing") },
+]);
 const syncLocaleFromRoute = () => {
   const routeLocale = getPathLocale(route.path);
   const nextLocale = routeLocale ?? defaultLocale;

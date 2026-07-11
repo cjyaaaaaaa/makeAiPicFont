@@ -18,20 +18,7 @@
 
 				<div ref="modelPickerRef" class="relative z-[8]">
 					<button type="button" class="grid min-h-[58px] w-full grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2.5 rounded-[10px] border border-white/10 bg-[#131315] px-3 text-left text-white/50" :aria-expanded="modelPickerOpen" @click="modelPickerOpen = !modelPickerOpen">
-						<span :class="modelIconClass(selectedModel.icon)" aria-hidden="true">
-							<svg v-if="selectedModel.icon === 'openai'" class="h-[22px] w-[22px]" viewBox="0 0 24 24" fill="none">
-								<circle cx="12" cy="12" r="7.8" stroke="currentColor" stroke-width="1.6" />
-								<path d="M8.8 8.7C9.8 7.7 11 7.2 12.4 7.4C14.6 7.6 16.3 9.4 16.1 11.6C15.9 13.9 14 15.5 11.8 15.3C9.7 15.1 8.1 13.6 7.8 11.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
-								<path d="M11.9 9.4C13.1 9.4 14 10.3 14 11.5C14 12.7 13.1 13.6 11.9 13.6C10.7 13.6 9.8 12.7 9.8 11.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
-							</svg>
-							<svg v-else-if="selectedModel.icon === 'google'" class="h-[22px] w-[22px]" viewBox="0 0 24 24" aria-hidden="true">
-								<path fill="#4285F4" d="M21.6 12.2c0-.7-.1-1.3-.2-1.9H12v3.6h5.4c-.2 1.2-.9 2.2-2 2.9v2.4h3.2c1.9-1.7 3-4.2 3-7Z" />
-								<path fill="#34A853" d="M12 22c2.7 0 5-.9 6.6-2.5l-3.2-2.4c-.9.6-2 .9-3.4.9-2.6 0-4.8-1.7-5.5-4.1H3.2v2.5C4.8 19.7 8.1 22 12 22Z" />
-								<path fill="#FBBC05" d="M6.5 13.9c-.2-.6-.3-1.2-.3-1.9s.1-1.3.3-1.9V7.6H3.2C2.4 8.9 2 10.4 2 12s.4 3.1 1.2 4.4l3.3-2.5Z" />
-								<path fill="#EA4335" d="M12 6c1.5 0 2.8.5 3.9 1.5l2.8-2.8C17 3 14.7 2 12 2 8.1 2 4.8 4.3 3.2 7.6l3.3 2.5C7.2 7.7 9.4 6 12 6Z" />
-							</svg>
-							<span v-else>S</span>
-						</span>
+						<AppModelBrandIcon :name="selectedModel.icon" />
 						<span class="min-w-0">
 							<strong class="block truncate text-[13px] font-[850] text-white/90">{{ selectedModel.name }}</strong>
 							<small class="mt-[3px] block truncate text-[11px] font-semibold text-white/35">{{ selectedModel.desc }}</small>
@@ -61,20 +48,7 @@
 								]"
 								@click="selectModel(model.id)"
 							>
-								<span :class="modelIconClass(model.icon)" aria-hidden="true">
-									<svg v-if="model.icon === 'openai'" class="h-[22px] w-[22px]" viewBox="0 0 24 24" fill="none">
-										<circle cx="12" cy="12" r="7.8" stroke="currentColor" stroke-width="1.6" />
-										<path d="M8.8 8.7C9.8 7.7 11 7.2 12.4 7.4C14.6 7.6 16.3 9.4 16.1 11.6C15.9 13.9 14 15.5 11.8 15.3C9.7 15.1 8.1 13.6 7.8 11.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
-										<path d="M11.9 9.4C13.1 9.4 14 10.3 14 11.5C14 12.7 13.1 13.6 11.9 13.6C10.7 13.6 9.8 12.7 9.8 11.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
-									</svg>
-									<svg v-else-if="model.icon === 'google'" class="h-[22px] w-[22px]" viewBox="0 0 24 24" aria-hidden="true">
-										<path fill="#4285F4" d="M21.6 12.2c0-.7-.1-1.3-.2-1.9H12v3.6h5.4c-.2 1.2-.9 2.2-2 2.9v2.4h3.2c1.9-1.7 3-4.2 3-7Z" />
-										<path fill="#34A853" d="M12 22c2.7 0 5-.9 6.6-2.5l-3.2-2.4c-.9.6-2 .9-3.4.9-2.6 0-4.8-1.7-5.5-4.1H3.2v2.5C4.8 19.7 8.1 22 12 22Z" />
-										<path fill="#FBBC05" d="M6.5 13.9c-.2-.6-.3-1.2-.3-1.9s.1-1.3.3-1.9V7.6H3.2C2.4 8.9 2 10.4 2 12s.4 3.1 1.2 4.4l3.3-2.5Z" />
-										<path fill="#EA4335" d="M12 6c1.5 0 2.8.5 3.9 1.5l2.8-2.8C17 3 14.7 2 12 2 8.1 2 4.8 4.3 3.2 7.6l3.3 2.5C7.2 7.7 9.4 6 12 6Z" />
-									</svg>
-									<span v-else>S</span>
-								</span>
+								<AppModelBrandIcon :name="model.icon" />
 								<span class="min-w-0">
 									<strong class="block truncate text-[13px] font-[850] text-white/90">{{ model.name }}</strong>
 									<small class="mt-[3px] block truncate text-[11px] font-semibold text-white/40">{{ model.desc }}</small>
@@ -197,7 +171,7 @@
 				</div>
 
 				<AppCreationToolbar
-					v-if="activeTab === 'my-creations'"
+					v-if="activeTab === 'my-creations' && !showAuthRequired"
 					v-model:search="searchQuery"
 					v-model:selected-time="timeFilter"
 					v-model:selected-type="typeFilter"
@@ -233,68 +207,40 @@
 				/>
 
 				<template v-else-if="activeTab === 'my-creations'">
-				<div v-if="visibleRecords.length" class="grid gap-3">
-					<article v-for="record in visibleRecords" :key="record.id" class="overflow-hidden rounded-xl border border-white/10 bg-[#0a0a0b] p-3.5">
-						<header class="flex min-h-6 items-center justify-between gap-3">
-							<div class="flex flex-wrap items-center gap-2 text-[11.5px] font-bold text-white/35">
-								<strong class="font-[820] text-white/55">{{ record.model }}</strong>
-								<span class="rounded bg-white/10 px-1.5 py-0.5 text-[9.5px] font-black text-white/45">{{ record.type }}</span>
-								<time>{{ record.time }}</time>
-							</div>
-							<div v-if="record.status === 'success'" class="ml-auto flex items-center gap-1.5">
-								<button type="button" class="grid h-6 w-6 place-items-center rounded-full bg-[#ffd60a]/10 text-[#f6c400]" :aria-label="copy.openAsset">
-									<svg class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-										<path d="M5.5 4.5H10L11.4 6H15A1.5 1.5 0 0 1 16.5 7.5V14A1.5 1.5 0 0 1 15 15.5H5A1.5 1.5 0 0 1 3.5 14V6A1.5 1.5 0 0 1 5 4.5Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" />
-									</svg>
-								</button>
-								<button type="button" class="grid h-6 w-6 place-items-center rounded-full bg-red-500/15 text-red-500 disabled:cursor-not-allowed disabled:opacity-50" :aria-label="copy.delete" :disabled="deletingIds.includes(record.id)" @click="requestDeleteRecord(record.id)">
-									<svg class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-										<path d="M7.5 4.5H12.5M4.5 6.5H15.5M6 6.5L6.6 15A1.5 1.5 0 0 0 8.1 16.4H11.9A1.5 1.5 0 0 0 13.4 15L14 6.5M8.6 9V14M11.4 9V14" stroke="currentColor" stroke-width="1.45" stroke-linecap="round" />
-									</svg>
-								</button>
-							</div>
-						</header>
-						<p class="my-3 text-xs font-semibold leading-normal text-white/50">{{ record.prompt }}</p>
-						<div v-if="record.status === 'processing'" class="grid gap-2.5 rounded-[10px] border border-white/10 bg-white/[0.045] p-3">
-							<div class="flex items-center justify-between gap-3 text-xs font-[850] text-white/80">
-								<strong>{{ copy.generatingImage }}</strong>
-								<span class="text-white/50">{{ record.progress !== undefined ? record.progress + '%' : copy.preparingTask }}</span>
-							</div>
-							<div class="h-2 overflow-hidden rounded-full bg-white/10" aria-hidden="true">
-								<span v-if="record.progress !== undefined" class="block h-full rounded-full bg-gradient-to-r from-[#5b5b60] to-[#f5f5f5] transition-[width] duration-500" :style="{ width: record.progress + '%' }"></span>
-								<span v-else class="block h-full w-1/3 animate-pulse rounded-full bg-white/60"></span>
-							</div>
-							<small class="truncate text-[10.5px] font-semibold text-white/35">{{ record.traceId ? t('aiImageGenerator.traceId', { traceId: record.traceId }) : copy.preparingTask }}</small>
-						</div>
-						<div v-else-if="record.status === 'failed'" class="rounded-[10px] border border-red-500/35 bg-red-950/20 p-3 text-white/50">
-							<strong class="inline-flex items-center gap-2 text-[11.5px] font-[850] text-[#ff5b5b]">
-								<svg class="h-[15px] w-[15px]" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-									<circle cx="10" cy="10" r="7" stroke="currentColor" stroke-width="1.6" />
-									<path d="M10 5.8V10.5M10 14.2H10.01" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
-								</svg>
-								{{ copy.failed }}
-							</strong>
-							<p class="my-2.5 text-[11.5px] font-semibold leading-normal">{{ record.errorInfo || copy.failedMessage }}</p>
-							<small class="block text-[10.5px] font-semibold text-white/30">{{ copy.refundedMessage }}</small>
-							<div class="mt-3 grid grid-cols-[minmax(0,1fr)_34px] gap-2">
-								<button type="button" class="inline-flex h-[30px] items-center justify-center gap-1.5 rounded-lg bg-white/10 text-[11.5px] font-bold text-white/55" @click="applyImageRetry(record)">
-									<svg class="h-[15px] w-[15px]" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-										<path d="M15.5 9.5A5.5 5.5 0 1 1 14 5.7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
-										<path d="M14.4 3.2V6.3H11.3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-									</svg>
-									{{ copy.retry }}
-								</button>
-								<button type="button" class="grid h-[30px] place-items-center rounded-lg bg-red-500/15 text-red-500 disabled:cursor-not-allowed disabled:opacity-50" :aria-label="copy.delete" :disabled="deletingIds.includes(record.id)" @click="requestDeleteRecord(record.id)">
-									<svg class="h-[15px] w-[15px]" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-										<path d="M7.5 4.5H12.5M4.5 6.5H15.5M6 6.5L6.6 15A1.5 1.5 0 0 0 8.1 16.4H11.9A1.5 1.5 0 0 0 13.4 15L14 6.5M8.6 9V14M11.4 9V14" stroke="currentColor" stroke-width="1.45" stroke-linecap="round" />
-									</svg>
-								</button>
-							</div>
-						</div>
-						<button v-else type="button" class="block w-[min(260px,48%)] max-w-full overflow-hidden rounded-lg bg-[#141414]" @click="selectedImage = record">
-							<NuxtImg class="block aspect-square w-full object-cover" :src="record.image" :alt="record.prompt" />
-						</button>
-					</article>
+				<AppAuthRequiredState
+					v-if="showAuthRequired"
+					:title="t('auth.loginRequiredTitle')"
+					:message="t('auth.loginRequiredMessage')"
+					:action-label="t('auth.loginRequiredAction')"
+					@login="loginOpen = true"
+				/>
+				<div v-else-if="visibleRecords.length" class="grid gap-3 xl:grid-cols-2 2xl:grid-cols-3">
+					<AppCreationRecordCard
+						v-for="record in visibleRecords"
+						:key="record.id"
+						:model="record.model"
+						:type-label="record.type"
+						:time="record.time"
+						:prompt="record.prompt"
+						:status="record.status"
+						:media-src="record.image"
+						media-type="image"
+						:progress="record.progress"
+						:processing-label="copy.generatingImage"
+						:progress-label="record.progress !== undefined ? `${record.progress}%` : copy.preparingTask"
+						:trace-label="record.traceId ? t('aiImageGenerator.traceId', { traceId: record.traceId }) : copy.preparingTask"
+						:failed-title="copy.failed"
+						:failed-message="copy.failedMessage"
+						:error-info="record.errorInfo"
+						:refunded-message="copy.refundedMessage"
+						:retry-label="copy.retry"
+						:delete-label="copy.delete"
+						:open-label="copy.openAsset"
+						:deleting="deletingIds.includes(record.id)"
+						@open="selectedImage = record"
+						@delete="requestDeleteRecord(record.id)"
+						@retry="applyImageRetry(record)"
+					/>
 				</div>
 				<div v-else class="grid min-h-[360px] place-items-center rounded-xl border border-dashed border-white/10 bg-white/[0.03] p-8 text-center">
 					<div class="grid max-w-[360px] justify-items-center gap-3">
@@ -325,6 +271,7 @@
 			@cancel="pendingDeleteId = null"
 			@confirm="confirmDeleteRecord"
 		/>
+		<LoginModal :open="loginOpen" @close="loginOpen = false" />
 	</div>
 </template>
 
@@ -345,7 +292,11 @@ import AppCreationTemplatesPanel from '~/components/home/app/AppCreationTemplate
 import AppConfirmDialog from '~/components/home/app/AppConfirmDialog.vue'
 import AppCreationModeSwitcher from '~/components/home/app/AppCreationModeSwitcher.vue'
 import AppCreationToolbar from '~/components/home/app/AppCreationToolbar.vue'
+import AppAuthRequiredState from '~/components/home/app/AppAuthRequiredState.vue'
+import AppCreationRecordCard from '~/components/home/app/AppCreationRecordCard.vue'
 import AppHomeSidebar from '~/components/home/app/AppHomeSidebar.vue'
+import AppModelBrandIcon from '~/components/home/app/AppModelBrandIcon.vue'
+import LoginModal from '~/components/auth/LoginModal.vue'
 import {
 	MODEL_PROFILES,
 	getModelCredits,
@@ -362,6 +313,7 @@ import {
 } from './AIimage'
 import type { TemplateCard, TemplateTabId } from '~/utils/promptTemplates'
 import { AI_IMAGE_TUTORIAL_VIDEO } from '~/utils/creationTutorials'
+import { consumeCreationHandoff, type ImageCreationHandoff } from '~/utils/creationHandoff'
 
 type ToolbarOption = {
 	label: string
@@ -379,6 +331,7 @@ type ToolbarCopy = {
 }
 
 const { t, locale } = useAppI18n()
+const { token, user } = useUser()
 const sidebarCollapsed = ref(false)
 const activeTab = ref<CreationTabId>('my-creations')
 const searchQuery = ref('')
@@ -390,6 +343,10 @@ const modelPickerRef = ref<HTMLElement | null>(null)
 const composerRef = ref<HTMLElement | null>(null)
 const isUploading = ref(false)
 const isGenerating = ref(false)
+const historyAuthRequired = ref(false)
+const isLoggedIn = computed(() => Boolean(token.value && user.value))
+const showAuthRequired = computed(() => historyAuthRequired.value || !isLoggedIn.value)
+const loginOpen = ref(false)
 const imageCount = ref(1)
 const uploadedCount = ref(0)
 const uploadedFiles = ref<File[]>([])
@@ -403,6 +360,10 @@ const selectedImage = ref<HistoryRecord | null>(null)
 const pendingDeleteId = ref<string | null>(null)
 const deletingIds = ref<string[]>([])
 const prompt = ref('')
+const requestLogin = () => {
+	historyAuthRequired.value = true
+	loginOpen.value = true
+}
 const padDatePart = (value: number) => String(value).padStart(2, '0')
 const formatAssetDate = (date: Date) => `${padDatePart(date.getFullYear() % 100)}-${padDatePart(date.getMonth() + 1)}-${padDatePart(date.getDate())}`
 const parseAssetDate = (value: string) => {
@@ -508,14 +469,6 @@ const imageModels: ImageModel[] = [
 		textToImage: { platformCode: 1, modelCode: 1 },
 		imageToImage: { platformCode: 1, modelCode: 2 },
 	},
-]
-const modelIconClass = (icon: ImageModel['icon']) => [
-	'grid h-9 w-9 place-items-center rounded-[10px] border border-white/10 text-lg font-black',
-	icon === 'google'
-		? 'bg-[#242426] text-[#4285f4]'
-		: icon === 'seedream'
-			? 'bg-gradient-to-br from-[#26262a] to-slate-800 text-cyan-200'
-			: 'bg-[#242426] text-white/85',
 ]
 const choiceButtonClass = (active: boolean, minHeight = 'min-h-[38px]') => [
 	'grid min-w-0 place-items-center rounded-[9px] border px-2 text-[13px] font-[850] transition-colors',
@@ -895,6 +848,10 @@ const pollImageResult = async (traceId: string, recordId: string) => {
 }
 const generateImage = async () => {
 	if (isUploading.value || isGenerating.value) return
+	if (!isLoggedIn.value) {
+		requestLogin()
+		return
+	}
 	isGenerating.value = true
 	try {
 		const imageUrls = uploadedFiles.value.length
@@ -937,6 +894,12 @@ const generateImage = async () => {
 			...records.value,
 		]
 		await pollImageResult(traceId, recordId)
+	} catch (error) {
+		if (isUnauthorizedError(error)) {
+			requestLogin()
+			return
+		}
+		throw error
 	} finally {
 		isGenerating.value = false
 	}
@@ -984,12 +947,28 @@ let historyFilterTimer: ReturnType<typeof setTimeout> | null = null
 const loadHistory = async () => {
 	const requestId = historyRequestId + 1
 	historyRequestId = requestId
-	const response = await getAiImageHistoryController(buildHistoryQuery())
-	if (requestId !== historyRequestId) return
-	const history = (response.rows ?? []).map(mapResultToRecord)
+	if (!isLoggedIn.value) {
+		historyAuthRequired.value = true
+		records.value = []
+		return
+	}
+	try {
+		const response = await getAiImageHistoryController(buildHistoryQuery())
+		if (requestId !== historyRequestId) return
+		const history = (response.rows ?? []).map(mapResultToRecord)
 
-	records.value = history
-	resumePendingHistoryPolling(history)
+		historyAuthRequired.value = false
+		records.value = history
+		resumePendingHistoryPolling(history)
+	} catch (error) {
+		if (requestId !== historyRequestId) return
+		if (isUnauthorizedError(error)) {
+			historyAuthRequired.value = true
+			records.value = []
+			return
+		}
+		throw error
+	}
 }
 
 const resumePendingHistoryPolling = (history: HistoryRecord[]) => {
@@ -1001,6 +980,61 @@ const resumePendingHistoryPolling = (history: HistoryRecord[]) => {
 			})
 			void pollImageResult(record.traceId as string, record.id)
 		})
+}
+
+const isImageModelId = (value?: string): value is ImageModelId => {
+	return Boolean(value && imageModels.some(model => model.id === value))
+}
+
+const consumeHomepageImageHandoff = () => {
+	if (!isLoggedIn.value) return
+	const handoff = consumeCreationHandoff('image') as ImageCreationHandoff | null
+	if (!handoff) return
+
+	const params = handoff.params
+	prompt.value = handoff.prompt || params.prompt
+	if (isImageModelId(params.modelId)) selectModel(params.modelId)
+
+	const ratio = params.ratio as AspectRatioValue | undefined
+	if (ratio) {
+		const profile = MODEL_PROFILES[selectedModel.value.profile]
+		if (profile.supportedRatios.includes(ratio) || (ratio === 'auto' && profile.supportsAutoRatio)) {
+			selectedAspectRatio.value = ratio
+		}
+	}
+
+	const resolution = normalizeImageResolution(params.resolution)
+	if (resolution) selectedResolution.value = resolution
+	if (params.quality) selectedQuality.value = params.quality
+	if (params.imageCount) imageCount.value = params.imageCount
+	if (params.userImages?.length) setUploadedImageUrls(params.userImages)
+
+	const existing = records.value.find(record => record.traceId === handoff.traceId)
+	if (existing) {
+		if (existing.status === 'processing') {
+			updateRecord(existing.id, { progress: Math.max(8, existing.progress ?? 0) })
+			void pollImageResult(handoff.traceId, existing.id)
+		}
+		return
+	}
+
+	const recordId = handoff.traceId
+	records.value = [
+		{
+			id: recordId,
+			model: handoff.modelName,
+			type: copy.value.recordTypeImage,
+			time: formatRecordTime(),
+			status: 'processing',
+			prompt: handoff.prompt,
+			image: '',
+			traceId: handoff.traceId,
+			progress: 8,
+			params: params as ImageGenerationParams,
+		},
+		...records.value,
+	]
+	void pollImageResult(handoff.traceId, recordId)
 }
 
 const scheduleHistoryLoad = (delay = 0) => {
@@ -1029,10 +1063,23 @@ watch(searchQuery, () => {
 	scheduleHistoryLoad(300)
 })
 
+watch(isLoggedIn, (loggedIn) => {
+	if (loggedIn) {
+		loginOpen.value = false
+		if (historyAuthRequired.value) {
+			loadHistory().catch(() => {})
+		}
+	}
+})
+
 onMounted(() => {
 	isUnmounted = false
 	document.addEventListener('pointerdown', handleDocumentPointerDown)
-	loadHistory().catch(() => {})
+	void loadHistory()
+		.catch(() => {})
+		.finally(() => {
+			consumeHomepageImageHandoff()
+		})
 })
 
 onBeforeUnmount(() => {

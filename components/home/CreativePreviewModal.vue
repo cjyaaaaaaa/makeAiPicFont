@@ -16,7 +16,13 @@
 							</svg>
 						</button>
 
-						<button type="button" class="preview-modal__download" :aria-label="t('home.preview.download')">
+						<button
+							type="button"
+							class="preview-modal__download"
+							:aria-label="t('home.preview.download')"
+							:disabled="!item.image || isDownloading"
+							@click="downloadImage"
+						>
 							<svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
 								<path d="M10 3.5V11M6.8 8.2L10 11.4L13.2 8.2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
 								<path d="M5 14.5H15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
@@ -88,6 +94,7 @@ const emit = defineEmits<{
 const { t } = useAppI18n()
 const promptExpanded = ref(false)
 const imageAspect = ref<number | null>(null)
+const isDownloading = ref(false)
 const previewImage = computed(() => props.item?.image.replace('fit=crop', 'fit=max') || '')
 const declaredAspect = computed(() => {
 	const [width, height] = props.item?.aspectRatio.split(':').map(Number) || []
@@ -98,6 +105,56 @@ const isLongPreview = computed(() => (imageAspect.value ?? declaredAspect.value 
 const handleImageLoad = (event: Event) => {
 	const image = event.target as HTMLImageElement
 	imageAspect.value = image.naturalWidth && image.naturalHeight ? image.naturalWidth / image.naturalHeight : null
+}
+
+const buildDownloadFilename = () => {
+	const item = props.item
+	if (!item) return 'image.png'
+	const ext = (item.outputFormat || 'png').replace(/^\./, '').toLowerCase() || 'png'
+	const base = (item.title || item.id || 'image')
+		.replace(/[^\w\u4e00-\u9fff\-]+/g, '_')
+		.replace(/_+/g, '_')
+		.replace(/^_|_$/g, '')
+		.slice(0, 80)
+	return `${base || 'image'}.${ext}`
+}
+
+const triggerBlobDownload = (blob: Blob, filename: string) => {
+	const objectUrl = URL.createObjectURL(blob)
+	const link = document.createElement('a')
+	link.href = objectUrl
+	link.download = filename
+	link.rel = 'noopener'
+	document.body.appendChild(link)
+	link.click()
+	link.remove()
+	URL.revokeObjectURL(objectUrl)
+}
+
+const downloadImage = async () => {
+	const url = props.item?.image
+	if (!url || isDownloading.value || !import.meta.client) return
+
+	const filename = buildDownloadFilename()
+	isDownloading.value = true
+	try {
+		const response = await fetch(url, { mode: 'cors' })
+		if (!response.ok) throw new Error(`Download failed: ${response.status}`)
+		const blob = await response.blob()
+		triggerBlobDownload(blob, filename)
+	} catch {
+		// CORS or network failure: open original URL so the browser can still save it
+		const link = document.createElement('a')
+		link.href = url
+		link.download = filename
+		link.target = '_blank'
+		link.rel = 'noopener'
+		document.body.appendChild(link)
+		link.click()
+		link.remove()
+	} finally {
+		isDownloading.value = false
+	}
 }
 
 const handleKeydown = (event: KeyboardEvent) => {
@@ -239,9 +296,14 @@ onBeforeUnmount(() => {
 		height: 18px;
 	}
 
-	&:hover {
+	&:hover:not(:disabled) {
 		background: rgba(255, 255, 255, 0.16);
 		color: #ffffff;
+	}
+
+	&:disabled {
+		cursor: wait;
+		opacity: 0.55;
 	}
 }
 
@@ -276,13 +338,21 @@ onBeforeUnmount(() => {
 		font-size: 14px;
 		font-weight: 500;
 		line-height: 1.48;
+		word-break: break-word;
+		overflow-wrap: anywhere;
 		-webkit-box-orient: vertical;
 		-webkit-line-clamp: 3;
 	}
 
 	p.is-expanded {
 		display: block;
-		overflow: visible;
+		max-height: min(42vh, 360px);
+		overflow-x: hidden;
+		overflow-y: auto;
+		-webkit-line-clamp: unset;
+		white-space: pre-wrap;
+		word-break: break-word;
+		overflow-wrap: anywhere;
 	}
 }
 

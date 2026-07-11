@@ -45,26 +45,29 @@
 				<button
 					type="button"
 					class="app-home-sidebar__user"
-					:class="{ 'is-open': userMenuOpen }"
+					:class="{ 'is-open': userMenuOpen, 'is-guest': !isLoggedIn }"
 					:title="collapsed ? displayUserName : undefined"
-					:aria-expanded="userMenuOpen"
+					:aria-label="isLoggedIn ? displayUserName : t('auth.login')"
+					:aria-expanded="isLoggedIn ? userMenuOpen : undefined"
+					:aria-haspopup="isLoggedIn ? 'menu' : undefined"
 					@click="toggleUserMenu"
 				>
-					<span class="app-home-sidebar__avatar">
-						<img v-if="user?.avatar" :src="user.avatar" alt="" />
-						<span v-else>{{ userInitial }}</span>
+					<span class="app-home-sidebar__avatar" :class="{ 'is-login': !isLoggedIn }">
+						<img v-if="isLoggedIn && user?.avatar" :src="user.avatar" alt="" />
+						<span v-else-if="isLoggedIn">{{ userInitial }}</span>
+						<span v-else class="app-home-sidebar__login-icon" v-html="icons.login" aria-hidden="true"></span>
 					</span>
 					<strong class="app-home-sidebar__label">{{ displayUserName }}</strong>
 				</button>
 
 				<Teleport to="body">
 					<div
-						v-if="userMenuOpen"
+						v-if="isLoggedIn && userMenuOpen"
 						class="app-home-sidebar__menu-backdrop"
 						@click="userMenuOpen = false"
 					></div>
 					<div
-						v-if="userMenuOpen"
+						v-if="isLoggedIn && userMenuOpen"
 						class="app-home-sidebar__account-menu"
 						:class="{ 'is-collapsed-anchor': collapsed }"
 					>
@@ -108,10 +111,14 @@
 				</Teleport>
 			</div>
 		</div>
+
+		<LoginModal :open="loginOpen" @close="loginOpen = false" />
 	</aside>
 </template>
 
 <script setup lang="ts">
+import LoginModal from '~/components/auth/LoginModal.vue'
+
 const props = withDefaults(defineProps<{
 	collapsed?: boolean
 	hideFooter?: boolean
@@ -127,7 +134,7 @@ const hideFooter = computed(() => props.hideFooter)
 
 const { t, locale, setLocale } = useAppI18n()
 const route = useRoute()
-const { user, logout } = useUser()
+const { user, token, logout } = useUser()
 
 const languages = [
 	{ code: 'zh', name: '简体中文' },
@@ -147,15 +154,24 @@ const icons = {
 	tools: '<svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 4H8V8H4V4ZM12 4H16V8H12V4ZM4 12H8V16H4V12ZM12 12H16V16H12V12Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>',
 	upgrade: '<svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 14.5C9.5 14 13.5 10 14 5.5C9.5 6 5.5 10 5 14.5Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M8 12L4 16M12 8L14.5 5.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>',
 	language: '<svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="10" cy="10" r="7" stroke="currentColor" stroke-width="1.4"/><path d="M3.2 10H16.8M10 3C12 5 13 7.3 13 10C13 12.7 12 15 10 17M10 3C8 5 7 7.3 7 10C7 12.7 8 15 10 17" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>',
+	login: '<svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="10" cy="7.2" r="3.1" stroke="currentColor" stroke-width="1.5"/><path d="M4.8 16.2C5.6 13.4 7.5 12 10 12C12.5 12 14.4 13.4 15.2 16.2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>',
 }
 
 const languageOpen = ref(false)
 const userMenuOpen = ref(false)
+const loginOpen = ref(false)
 const siteName = computed(() => t('common.siteName'))
 const localizedHomePath = computed(() => locale.value === 'en' ? '/home' : `/${locale.value}/home`)
 const currentLanguageName = computed(() => languages.find(language => language.code === locale.value)?.name ?? 'English')
-const displayUserName = computed(() => user.value?.nickName || user.value?.userName || user.value?.email || t('home.app.sidebar.guestName'))
-const userInitial = computed(() => displayUserName.value.slice(0, 1).toUpperCase() || 'N')
+const isLoggedIn = computed(() => Boolean(token.value && user.value))
+const displayUserName = computed(() => {
+	if (!isLoggedIn.value) return t('auth.login')
+	return user.value?.nickName || user.value?.userName || user.value?.email || t('home.app.sidebar.guestName')
+})
+const userInitial = computed(() => {
+	const name = user.value?.nickName || user.value?.userName || user.value?.email || ''
+	return name.slice(0, 1).toUpperCase() || 'U'
+})
 const userCredits = computed(() => user.value?.creditBalance ?? 0)
 const accountCreditsLabel = computed(() => `${userCredits.value} credits`)
 const normalizedRoutePath = computed(() => stripLocalePrefix(route.path))
@@ -197,12 +213,25 @@ const switchLanguage = async (code: LocaleCode) => {
 }
 const toggleUserMenu = () => {
 	languageOpen.value = false
+	if (!isLoggedIn.value) {
+		userMenuOpen.value = false
+		loginOpen.value = true
+		return
+	}
 	userMenuOpen.value = !userMenuOpen.value
 }
 const handleLogout = () => {
 	logout()
 	userMenuOpen.value = false
 }
+
+watch(isLoggedIn, (loggedIn) => {
+	if (loggedIn) {
+		loginOpen.value = false
+	} else {
+		userMenuOpen.value = false
+	}
+})
 
 watch(() => props.collapsed, (collapsed) => {
 	if (collapsed) {
@@ -528,6 +557,36 @@ watch(() => props.collapsed, (collapsed) => {
 			width: 100%;
 			height: 100%;
 			object-fit: cover;
+		}
+
+		&.is-login {
+			border: 1px solid rgba(255, 255, 255, 0.16);
+			background: rgba(255, 255, 255, 0.08);
+			color: rgba(255, 255, 255, 0.82);
+		}
+	}
+
+	.app-home-sidebar__login-icon {
+		display: grid;
+		place-items: center;
+		width: 16px;
+		height: 16px;
+
+		:deep(svg) {
+			width: 100%;
+			height: 100%;
+		}
+	}
+
+	&.is-guest {
+		strong {
+			color: rgba(255, 255, 255, 0.88);
+		}
+
+		&:hover .app-home-sidebar__avatar.is-login {
+			border-color: rgba(255, 255, 255, 0.28);
+			background: rgba(255, 255, 255, 0.14);
+			color: #fff;
 		}
 	}
 

@@ -18,7 +18,7 @@
 
 				<div ref="modelPickerRef" class="relative z-[8]">
 					<button type="button" class="grid min-h-[58px] w-full grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2.5 rounded-[10px] border border-white/10 bg-[#131315] px-3 text-left text-white/50" :aria-expanded="modelPickerOpen" @click="modelPickerOpen = !modelPickerOpen">
-						<span class="grid h-9 w-9 place-items-center rounded-[10px] border border-white/10 bg-gradient-to-br from-[#26262a] to-slate-800 text-lg font-black text-cyan-200" aria-hidden="true">S</span>
+						<AppModelBrandIcon name="seedance" />
 						<span class="min-w-0">
 							<strong class="block truncate text-[13px] font-[850] text-white/90">{{ selectedModel.name }}</strong>
 							<small class="mt-[3px] block truncate text-[11px] font-semibold text-white/35">{{ selectedModel.desc }}</small>
@@ -40,7 +40,7 @@
 								]"
 								@click="selectModel(model.id)"
 							>
-								<span class="grid h-9 w-9 place-items-center rounded-[10px] border border-white/10 bg-gradient-to-br from-[#26262a] to-slate-800 text-lg font-black text-cyan-200" aria-hidden="true">S</span>
+								<AppModelBrandIcon name="seedance" />
 								<span class="min-w-0">
 									<strong class="block truncate text-[13px] font-[850] text-white/90">{{ model.name }}</strong>
 									<small class="mt-[3px] block truncate text-[11px] font-semibold text-white/40">{{ model.desc }}</small>
@@ -179,7 +179,7 @@
 				</div>
 
 				<AppCreationToolbar
-					v-if="activeTab === 'my-creations'"
+					v-if="activeTab === 'my-creations' && !showAuthRequired"
 					v-model:search="searchQuery"
 					v-model:selected-time="timeFilter"
 					v-model:selected-type="typeFilter"
@@ -215,62 +215,38 @@
 				/>
 
 				<template v-else-if="activeTab === 'my-creations'">
-				<div v-if="visibleRecords.length" class="grid gap-3">
-					<article v-for="record in visibleRecords" :key="record.id" class="overflow-hidden rounded-xl border border-white/10 bg-[#0a0a0b] p-3.5">
-						<header class="flex min-h-6 items-center justify-between gap-3">
-							<div class="flex flex-wrap items-center gap-2 text-[11.5px] font-bold text-white/35">
-								<strong class="font-[820] text-white/55">{{ record.model }}</strong>
-								<span class="rounded bg-white/10 px-1.5 py-0.5 text-[9.5px] font-black text-white/45">{{ record.type }}</span>
-								<time>{{ record.time }}</time>
-								<span v-if="record.duration" class="text-white/30">{{ record.duration }}s</span>
-							</div>
-							<button v-if="record.status === 'success'" type="button" class="grid h-6 w-6 place-items-center rounded-full bg-[#ffd60a]/10 text-[#f6c400]" :aria-label="copy.openAsset">
-								<svg class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-									<path d="M5.5 4.5H10L11.4 6H15A1.5 1.5 0 0 1 16.5 7.5V14A1.5 1.5 0 0 1 15 15.5H5A1.5 1.5 0 0 1 3.5 14V6A1.5 1.5 0 0 1 5 4.5Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" />
-								</svg>
-							</button>
-						</header>
-						<p class="my-3 text-xs font-semibold leading-normal text-white/50">{{ record.prompt }}</p>
-						<div v-if="record.status === 'processing'" class="grid gap-2.5 rounded-[10px] border border-white/10 bg-white/[0.045] p-3">
-							<div class="flex items-center justify-between gap-3 text-xs font-[850] text-white/80">
-								<strong>{{ copy.generatingVideo }}</strong>
-								<span class="text-white/50">{{ record.progress !== undefined ? record.progress + '%' : copy.preparingTask }}</span>
-							</div>
-							<div class="h-2 overflow-hidden rounded-full bg-white/10" aria-hidden="true">
-								<span v-if="record.progress !== undefined" class="block h-full rounded-full bg-gradient-to-r from-[#5b5b60] to-[#f5f5f5] transition-[width] duration-[2000ms] ease-linear" :style="{ width: record.progress + '%' }"></span>
-								<span v-else class="block h-full w-1/3 animate-pulse rounded-full bg-white/60"></span>
-							</div>
-							<small class="truncate text-[10.5px] font-semibold text-white/35">{{ record.traceId ? t('aiVideoGenerator.traceId', { traceId: record.traceId }) : copy.preparingTask }}</small>
-						</div>
-						<div v-else-if="record.status === 'failed'" class="rounded-[10px] border border-red-500/35 bg-red-950/20 p-3 text-white/50">
-							<strong class="inline-flex items-center gap-2 text-[11.5px] font-[850] text-[#ff5b5b]">
-								<svg class="h-[15px] w-[15px]" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-									<circle cx="10" cy="10" r="7" stroke="currentColor" stroke-width="1.6" />
-									<path d="M10 5.8V10.5M10 14.2H10.01" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
-								</svg>
-								{{ copy.failed }}
-							</strong>
-							<p class="my-2.5 text-[11.5px] font-semibold leading-normal">{{ record.errorInfo || copy.failedMessage }}</p>
-							<small class="block text-[10.5px] font-semibold text-white/30">{{ copy.refundedMessage }}</small>
-							<div class="mt-3 grid grid-cols-[minmax(0,1fr)_34px] gap-2">
-								<button type="button" class="inline-flex h-[30px] items-center justify-center gap-1.5 rounded-lg bg-white/10 text-[11.5px] font-bold text-white/55" @click="applyVideoRetry(record)">
-									<svg class="h-[15px] w-[15px]" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-										<path d="M15.5 9.5A5.5 5.5 0 1 1 14 5.7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
-										<path d="M14.4 3.2V6.3H11.3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-									</svg>
-									{{ copy.retry }}
-								</button>
-								<button type="button" class="grid h-[30px] place-items-center rounded-lg bg-red-500/15 text-red-500" :aria-label="copy.delete">
-									<svg class="h-[15px] w-[15px]" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-										<path d="M7.5 4.5H12.5M4.5 6.5H15.5M6 6.5L6.6 15A1.5 1.5 0 0 0 8.1 16.4H11.9A1.5 1.5 0 0 0 13.4 15L14 6.5M8.6 9V14M11.4 9V14" stroke="currentColor" stroke-width="1.45" stroke-linecap="round" />
-									</svg>
-								</button>
-							</div>
-						</div>
-						<div v-else class="block w-full max-w-[min(480px,100%)] overflow-hidden rounded-lg bg-[#141414]">
-							<video class="block aspect-video w-full bg-black object-contain" :src="record.video" controls playsinline preload="metadata" />
-						</div>
-					</article>
+				<AppAuthRequiredState
+					v-if="showAuthRequired"
+					:title="t('auth.loginRequiredTitle')"
+					:message="t('auth.loginRequiredMessage')"
+					:action-label="t('auth.loginRequiredAction')"
+					@login="loginOpen = true"
+				/>
+				<div v-else-if="visibleRecords.length" class="grid gap-3 xl:grid-cols-2 2xl:grid-cols-3">
+					<AppCreationRecordCard
+						v-for="record in visibleRecords"
+						:key="record.id"
+						:model="record.model"
+						:type-label="record.type"
+						:time="record.duration ? `${record.time} · ${record.duration}s` : record.time"
+						:prompt="record.prompt"
+						:status="record.status"
+						:media-src="record.video"
+						media-type="video"
+						:progress="record.progress"
+						:processing-label="copy.generatingVideo"
+						:progress-label="record.progress !== undefined ? `${record.progress}%` : copy.preparingTask"
+						:trace-label="record.traceId ? t('aiVideoGenerator.traceId', { traceId: record.traceId }) : copy.preparingTask"
+						:failed-title="copy.failed"
+						:failed-message="copy.failedMessage"
+						:error-info="record.errorInfo"
+						:refunded-message="copy.refundedMessage"
+						:retry-label="copy.retry"
+						:delete-label="copy.delete"
+						:open-label="copy.openAsset"
+						:show-delete="false"
+						@retry="applyVideoRetry(record)"
+					/>
 				</div>
 				<div v-else class="grid min-h-[360px] place-items-center rounded-xl border border-dashed border-white/10 bg-white/[0.03] p-8 text-center">
 					<div class="grid max-w-[360px] justify-items-center gap-3">
@@ -287,6 +263,7 @@
 				</template>
 			</section>
 		</main>
+		<LoginModal :open="loginOpen" @close="loginOpen = false" />
 	</div>
 </template>
 
@@ -303,9 +280,14 @@ import AppCreationModeSwitcher from '~/components/home/app/AppCreationModeSwitch
 import AppCreationTemplatesPanel from '~/components/home/app/AppCreationTemplatesPanel.vue'
 import AppCreationTutorialsPanel from '~/components/home/app/AppCreationTutorialsPanel.vue'
 import AppCreationToolbar from '~/components/home/app/AppCreationToolbar.vue'
+import AppAuthRequiredState from '~/components/home/app/AppAuthRequiredState.vue'
+import AppCreationRecordCard from '~/components/home/app/AppCreationRecordCard.vue'
 import AppHomeSidebar from '~/components/home/app/AppHomeSidebar.vue'
+import AppModelBrandIcon from '~/components/home/app/AppModelBrandIcon.vue'
+import LoginModal from '~/components/auth/LoginModal.vue'
 import type { TemplateCard, TemplateTabId } from '~/utils/promptTemplates'
 import { AI_VIDEO_TUTORIAL_VIDEO } from '~/utils/creationTutorials'
+import { consumeCreationHandoff, type VideoCreationHandoff } from '~/utils/creationHandoff'
 import {
 	SEEDANCE_RATIOS,
 	SEEDANCE_RESOLUTIONS,
@@ -340,6 +322,7 @@ type ToolbarCopy = {
 }
 
 const { t, locale } = useAppI18n()
+const { token, user } = useUser()
 const sidebarCollapsed = ref(false)
 const activeTab = ref<CreationTabId>('my-creations')
 const searchQuery = ref('')
@@ -350,6 +333,10 @@ const modelPickerRef = ref<HTMLElement | null>(null)
 const composerRef = ref<HTMLElement | null>(null)
 const isUploading = ref(false)
 const isGenerating = ref(false)
+const historyAuthRequired = ref(false)
+const isLoggedIn = computed(() => Boolean(token.value && user.value))
+const showAuthRequired = computed(() => historyAuthRequired.value || !isLoggedIn.value)
+const loginOpen = ref(false)
 const uploadedCount = ref(0)
 const uploadedFiles = ref<File[]>([])
 const uploadedPreviews = ref<string[]>([])
@@ -360,6 +347,10 @@ const selectedResolution = ref<VideoResolutionValue>('480p')
 const selectedDuration = ref(4)
 const generateAudio = ref(true)
 const prompt = ref('')
+const requestLogin = () => {
+	historyAuthRequired.value = true
+	loginOpen.value = true
+}
 
 const padDatePart = (value: number) => String(value).padStart(2, '0')
 const formatAssetDate = (date: Date) => `${padDatePart(date.getFullYear() % 100)}-${padDatePart(date.getMonth() + 1)}-${padDatePart(date.getDate())}`
@@ -642,7 +633,19 @@ const handleFiles = async (event: Event) => {
 	uploadedCount.value = files.length
 	input.value = ''
 	if (files.length) {
-		await uploadSelectedFiles(files)
+		if (!isLoggedIn.value) {
+			requestLogin()
+			return
+		}
+		try {
+			await uploadSelectedFiles(files)
+		} catch (error) {
+			if (isUnauthorizedError(error)) {
+				requestLogin()
+				return
+			}
+			throw error
+		}
 	}
 }
 
@@ -710,6 +713,10 @@ const pollVideoResult = async (traceId: string, recordId: string) => {
 
 const generateVideo = async () => {
 	if (isUploading.value || isGenerating.value) return
+	if (!isLoggedIn.value) {
+		requestLogin()
+		return
+	}
 	isGenerating.value = true
 	try {
 		const imageUrls = uploadedFiles.value.length
@@ -754,6 +761,12 @@ const generateVideo = async () => {
 			...records.value,
 		]
 		await pollVideoResult(traceId, recordId)
+	} catch (error) {
+		if (isUnauthorizedError(error)) {
+			requestLogin()
+			return
+		}
+		throw error
 	} finally {
 		isGenerating.value = false
 	}
@@ -802,13 +815,77 @@ let historyFilterTimer: ReturnType<typeof setTimeout> | null = null
 const loadHistory = async () => {
 	const requestId = historyRequestId + 1
 	historyRequestId = requestId
-	const response = await getAiVideoHistoryController(buildHistoryQuery())
-	if (requestId !== historyRequestId) return
-	const history = (response.rows ?? []).map(item => ({
-		...mapResultToRecord(item),
-		model: 'Seedance 2.0',
-	}))
-	records.value = history
+	if (!isLoggedIn.value) {
+		historyAuthRequired.value = true
+		records.value = []
+		return
+	}
+	try {
+		const response = await getAiVideoHistoryController(buildHistoryQuery())
+		if (requestId !== historyRequestId) return
+		const history = (response.rows ?? []).map(item => ({
+			...mapResultToRecord(item),
+			model: 'Seedance 2.0',
+		}))
+		historyAuthRequired.value = false
+		records.value = history
+	} catch (error) {
+		if (requestId !== historyRequestId) return
+		if (isUnauthorizedError(error)) {
+			historyAuthRequired.value = true
+			records.value = []
+			return
+		}
+		throw error
+	}
+}
+
+const consumeHomepageVideoHandoff = () => {
+	if (!isLoggedIn.value) return
+	const handoff = consumeCreationHandoff('video') as VideoCreationHandoff | null
+	if (!handoff) return
+
+	const params = handoff.params
+	prompt.value = handoff.prompt || params.prompt
+	if (params.ratio && SEEDANCE_RATIOS.includes(params.ratio as VideoAspectRatioValue)) {
+		selectedAspectRatio.value = params.ratio as VideoAspectRatioValue
+	}
+
+	const resolution = normalizeVideoResolution(params.resolution)
+	if (resolution) selectedResolution.value = resolution
+
+	const duration = normalizeVideoDuration(params.duration)
+	if (duration) selectedDuration.value = duration
+	if (typeof params.generateAudio === 'boolean') generateAudio.value = params.generateAudio
+	if (params.userImages?.length) setUploadedImageUrls(params.userImages)
+
+	const existing = records.value.find(record => record.traceId === handoff.traceId)
+	if (existing) {
+		if (existing.status === 'processing') {
+			updateRecord(existing.id, { progress: Math.max(4, existing.progress ?? 0) })
+			void pollVideoResult(handoff.traceId, existing.id)
+		}
+		return
+	}
+
+	const recordId = handoff.traceId
+	records.value = [
+		{
+			id: recordId,
+			model: handoff.modelName,
+			type: copy.value.recordTypeVideo,
+			time: formatRecordTime(),
+			status: 'processing',
+			prompt: handoff.prompt,
+			video: '',
+			traceId: handoff.traceId,
+			progress: 4,
+			duration: params.duration,
+			params,
+		},
+		...records.value,
+	]
+	void pollVideoResult(handoff.traceId, recordId)
 }
 
 const scheduleHistoryLoad = (delay = 0) => {
@@ -832,9 +909,22 @@ watch(searchQuery, () => {
 	scheduleHistoryLoad(300)
 })
 
+watch(isLoggedIn, (loggedIn) => {
+	if (loggedIn) {
+		loginOpen.value = false
+		if (historyAuthRequired.value) {
+			loadHistory().catch(() => {})
+		}
+	}
+})
+
 onMounted(() => {
 	document.addEventListener('pointerdown', handleDocumentPointerDown)
-	loadHistory().catch(() => {})
+	void loadHistory()
+		.catch(() => {})
+		.finally(() => {
+			consumeHomepageVideoHandoff()
+		})
 })
 
 onBeforeUnmount(() => {

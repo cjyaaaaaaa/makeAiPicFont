@@ -95,7 +95,10 @@
     "emailCodeSentTitle": "Código enviado",
     "emailCodeSentMessage": "Revisa tu correo e introduce el código de verificación.",
     "emailCodeFailedTitle": "No se pudo enviar el código",
-    "emailCodeFailedMessage": "Revisa la dirección de correo o inténtalo más tarde."
+    "emailCodeFailedMessage": "Revisa la dirección de correo o inténtalo más tarde.",
+    "loginRequiredTitle": "Inicia sesión para continuar",
+    "loginRequiredMessage": "Inicia sesión para ver tu historial de generación y guardar tus creaciones en tu cuenta.",
+    "loginRequiredAction": "Iniciar sesión"
   },
   "assets": {
     "title": "Historial de generación",

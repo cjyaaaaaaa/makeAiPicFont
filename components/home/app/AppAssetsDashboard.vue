@@ -18,7 +18,7 @@
           </button>
         </div>
 
-        <div class="app-assets__toolbar">
+        <div v-if="!showAuthRequired" class="app-assets__toolbar">
           <div ref="filtersRef" class="app-assets__filters">
             <div class="app-assets-filter">
               <button
@@ -254,128 +254,47 @@
         </div>
 
         <div class="app-assets__list">
-          <article
-            v-for="record in visibleRecords"
-            :key="record.id"
-            class="app-assets-record"
-          >
-            <header>
-              <div class="app-assets-record__meta">
-                <strong>{{ record.model }}</strong>
-                <span>{{ record.typeLabel }}</span>
-                <time>{{ record.time }}</time>
-              </div>
-              <div class="app-assets-record__header-actions">
-                <button
-                  v-if="record.status === 'success'"
-                  type="button"
-                  class="app-assets-record__open"
-                  :aria-label="copy.openAsset"
-                >
-                  <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
-                    <path
-                      d="M5.5 4.5H10L11.4 6H15A1.5 1.5 0 0 1 16.5 7.5V14A1.5 1.5 0 0 1 15 15.5H5A1.5 1.5 0 0 1 3.5 14V6A1.5 1.5 0 0 1 5 4.5Z"
-                      stroke="currentColor"
-                      stroke-width="1.5"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
-                </button>
-                <button
-                  v-if="record.status === 'success'"
-                  type="button"
-                  class="app-assets-record__delete"
-                  :aria-label="copy.delete"
-                  :disabled="deletingIds.includes(record.id)"
-                  @click="requestDeleteRecord(record.id)"
-                >
-                  <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
-                    <path
-                      d="M7.5 4.5H12.5M4.5 6.5H15.5M6 6.5L6.6 15A1.5 1.5 0 0 0 8.1 16.4H11.9A1.5 1.5 0 0 0 13.4 15L14 6.5M8.6 9V14M11.4 9V14"
-                      stroke="currentColor"
-                      stroke-width="1.45"
-                      stroke-linecap="round"
-                    />
-                  </svg>
-                </button>
-              </div>
-            </header>
+          <AppAuthRequiredState
+            v-if="showAuthRequired"
+            :title="t('auth.loginRequiredTitle')"
+            :message="t('auth.loginRequiredMessage')"
+            :action-label="t('auth.loginRequiredAction')"
+            @login="loginOpen = true"
+          />
+          <template v-else>
+          <div v-if="visibleRecords.length" class="app-assets__grid">
+            <AppCreationRecordCard
+              v-for="record in visibleRecords"
+              :key="record.id"
+              :model="record.model"
+              :type-label="record.typeLabel"
+              :time="record.time"
+              :prompt="record.prompt"
+              :status="record.status"
+              :media-src="record.image"
+              :media-type="record.type"
+              :failed-title="copy.failedTitle"
+              :failed-message="copy.failedMessage"
+              :error-info="record.errorInfo"
+              :refunded-message="copy.refundedMessage"
+              :retry-label="copy.retry"
+              :delete-label="copy.delete"
+              :open-label="copy.openAsset"
+              :deleting="deletingIds.includes(record.id)"
+              @open="openAssetPreview(record)"
+              @delete="requestDeleteRecord(record.id)"
+              @retry="retryRecord(record.id)"
+            />
+          </div>
 
-            <p class="app-assets-record__prompt">{{ record.prompt }}</p>
-
-            <div
-              v-if="record.status === 'failed'"
-              class="app-assets-record__failure"
-            >
-              <strong>
-                <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
-                  <circle
-                    cx="10"
-                    cy="10"
-                    r="7"
-                    stroke="currentColor"
-                    stroke-width="1.6"
-                  />
-                  <path
-                    d="M10 5.8V10.5M10 14.2H10.01"
-                    stroke="currentColor"
-                    stroke-width="1.8"
-                    stroke-linecap="round"
-                  />
-                </svg>
-                {{ copy.failedTitle }}
-              </strong>
-              <p>{{ copy.failedMessage }}</p>
-              <small>{{ copy.refundedMessage }}</small>
-              <div class="app-assets-record__actions">
-                <button type="button" @click="retryRecord(record.id)">
-                  <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
-                    <path
-                      d="M15.5 9.5A5.5 5.5 0 1 1 14 5.7"
-                      stroke="currentColor"
-                      stroke-width="1.5"
-                      stroke-linecap="round"
-                    />
-                    <path
-                      d="M14.4 3.2V6.3H11.3"
-                      stroke="currentColor"
-                      stroke-width="1.5"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
-                  {{ copy.retry }}
-                </button>
-                <button
-                  type="button"
-                  class="is-danger"
-                  :aria-label="copy.delete"
-                  :disabled="deletingIds.includes(record.id)"
-                  @click="requestDeleteRecord(record.id)"
-                >
-                  <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
-                    <path
-                      d="M7.5 4.5H12.5M4.5 6.5H15.5M6 6.5L6.6 15A1.5 1.5 0 0 0 8.1 16.4H11.9A1.5 1.5 0 0 0 13.4 15L14 6.5M8.6 9V14M11.4 9V14"
-                      stroke="currentColor"
-                      stroke-width="1.45"
-                      stroke-linecap="round"
-                    />
-                  </svg>
-                </button>
-              </div>
-            </div>
-
-            <div v-else-if="record.image" class="app-assets-record__image">
-              <NuxtImg :src="record.image" :alt="record.prompt" />
-            </div>
-          </article>
-
-          <div v-if="!visibleRecords.length" class="app-assets__empty">
+          <div v-else class="app-assets__empty">
             {{ copy.emptyState }}
           </div>
+          </template>
         </div>
       </section>
     </main>
+    <CreativePreviewModal :item="previewItem" @close="selectedAsset = null" />
     <AppConfirmDialog
       :open="!!pendingDeleteId"
       :title="deleteDialogCopy.title"
@@ -387,6 +306,7 @@
       @cancel="pendingDeleteId = null"
       @confirm="confirmDeleteRecord"
     />
+    <LoginModal :open="loginOpen" @close="loginOpen = false" />
   </div>
 </template>
 
@@ -396,8 +316,12 @@ import {
   getAiImageHistoryController,
   type AiImageResultItem,
 } from "~/api/ai-image";
+import CreativePreviewModal from "~/components/home/CreativePreviewModal.vue";
 import AppConfirmDialog from "~/components/home/app/AppConfirmDialog.vue";
+import AppAuthRequiredState from "~/components/home/app/AppAuthRequiredState.vue";
+import AppCreationRecordCard from "~/components/home/app/AppCreationRecordCard.vue";
 import AppHomeSidebar from "~/components/home/app/AppHomeSidebar.vue";
+import LoginModal from "~/components/auth/LoginModal.vue";
 
 type FilterOption = {
   label: string;
@@ -415,6 +339,8 @@ type AssetRecord = {
   imageKey?: string;
   image?: string;
   errorInfo?: string;
+  ratio?: string;
+  resolution?: string;
 };
 
 type DateField = "start" | "end";
@@ -498,6 +424,7 @@ const startOfWeek = (date: Date) => {
 };
 
 const { t, locale } = useAppI18n();
+const { token, user } = useUser();
 const sidebarCollapsed = ref(false);
 const timeFilter = ref("all");
 const typeFilter = ref("all");
@@ -509,6 +436,30 @@ const retriedIds = ref<string[]>([]);
 const historyRecords = ref<AssetRecord[]>([]);
 const historyTotal = ref(0);
 const isHistoryLoading = ref(false);
+const historyAuthRequired = ref(false);
+const isLoggedIn = computed(() => Boolean(token.value && user.value));
+const showAuthRequired = computed(() => historyAuthRequired.value || !isLoggedIn.value);
+const loginOpen = ref(false);
+const selectedAsset = ref<AssetRecord | null>(null);
+const previewItem = computed(() =>
+  selectedAsset.value?.image
+    ? {
+        id: selectedAsset.value.id,
+        title: selectedAsset.value.prompt,
+        image: selectedAsset.value.image,
+        alt: selectedAsset.value.prompt,
+        prompt: selectedAsset.value.prompt,
+        model: selectedAsset.value.model,
+        resolution: selectedAsset.value.resolution || "—",
+        aspectRatio: selectedAsset.value.ratio || "1:1",
+        outputFormat: "PNG",
+      }
+    : null,
+);
+const openAssetPreview = (record: AssetRecord) => {
+  if (record.status !== "success" || !record.image) return;
+  selectedAsset.value = record;
+};
 const openFilter = ref<"time" | "type" | null>(null);
 const openDateField = ref<DateField | null>(null);
 const filtersRef = ref<HTMLElement | null>(null);
@@ -662,6 +613,8 @@ const mapHistoryItemToRecord = (
   prompt: item.prompt || "",
   image: item.media?.url || "",
   errorInfo: item.errorInfo,
+  ratio: item.ratio || item.media?.ratio,
+  resolution: item.resolution || item.media?.resolution,
 });
 
 const records = computed(() =>
@@ -770,16 +723,32 @@ let searchTimer: ReturnType<typeof setTimeout> | null = null;
 const loadHistory = async () => {
   const requestId = historyRequestId + 1;
   historyRequestId = requestId;
+  if (!isLoggedIn.value) {
+    historyAuthRequired.value = true;
+    historyTotal.value = 0;
+    historyRecords.value = [];
+    return;
+  }
   isHistoryLoading.value = true;
   try {
     const response = await getAiImageHistoryController(buildHistoryQuery());
     if (requestId !== historyRequestId) return;
+    historyAuthRequired.value = false;
     historyTotal.value = response.total ?? 0;
     historyRecords.value = (response.rows ?? []).map(mapHistoryItemToRecord);
     deletedIds.value = [];
     deletingIds.value = [];
     pendingDeleteId.value = null;
     retriedIds.value = [];
+  } catch (error) {
+    if (requestId !== historyRequestId) return;
+    if (isUnauthorizedError(error)) {
+      historyAuthRequired.value = true;
+      historyTotal.value = 0;
+      historyRecords.value = [];
+      return;
+    }
+    throw error;
   } finally {
     if (requestId === historyRequestId) {
       isHistoryLoading.value = false;
@@ -808,6 +777,7 @@ const confirmDeleteRecord = async () => {
     historyRecords.value = historyRecords.value.filter(
       (record) => record.id !== id,
     );
+    if (selectedAsset.value?.id === id) selectedAsset.value = null;
     pendingDeleteId.value = null;
   } finally {
     deletingIds.value = deletingIds.value.filter(
@@ -831,10 +801,17 @@ onMounted(() => {
 watch(searchQuery, () => {
   if (searchTimer) clearTimeout(searchTimer);
   searchTimer = setTimeout(() => {
-    console.log("执行了");
-
     loadHistory().catch(() => {});
   }, 300);
+});
+
+watch(isLoggedIn, (loggedIn) => {
+  if (loggedIn) {
+    loginOpen.value = false;
+    if (historyAuthRequired.value) {
+      loadHistory().catch(() => {});
+    }
+  }
 });
 
 onBeforeUnmount(() => {
@@ -1227,175 +1204,21 @@ onBeforeUnmount(() => {
   gap: 12px;
 }
 
-.app-assets-record {
-  position: relative;
-  overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 12px;
-  background: #050505;
-  padding: 14px;
-
-  header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 14px;
-    min-height: 24px;
-  }
-}
-
-.app-assets-record__meta {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 8px;
-  color: rgba(255, 255, 255, 0.36);
-  font-size: 12px;
-  font-weight: 760;
-
-  strong {
-    color: rgba(255, 255, 255, 0.5);
-    font-weight: 820;
-  }
-
-  span {
-    border-radius: 5px;
-    background: rgba(255, 255, 255, 0.08);
-    padding: 2px 6px;
-    color: rgba(255, 255, 255, 0.46);
-    font-size: 10px;
-    font-weight: 900;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-  }
-}
-
-.app-assets-record__header-actions {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.app-assets-record__open,
-.app-assets-record__delete {
+.app-assets__grid {
   display: grid;
-  place-items: center;
-  width: 24px;
-  height: 24px;
-  border: 0;
-  border-radius: 999px;
-  cursor: pointer;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: 12px;
+}
 
-  svg {
-    width: 15px;
-    height: 15px;
-  }
-
-  &:disabled {
-    cursor: not-allowed;
-    opacity: 0.5;
+@media (min-width: 1280px) {
+  .app-assets__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
-.app-assets-record__open {
-  background: rgba(255, 214, 10, 0.08);
-  color: #f6c400;
-}
-
-.app-assets-record__delete {
-  background: rgba(239, 68, 68, 0.13);
-  color: #ef4444;
-}
-
-.app-assets-record__prompt {
-  margin: 10px 0 14px;
-  color: rgba(255, 255, 255, 0.47);
-  font-size: 13px;
-  font-weight: 650;
-  line-height: 1.45;
-}
-
-.app-assets-record__failure {
-  border: 1px solid rgba(239, 68, 68, 0.34);
-  border-radius: 10px;
-  background: rgba(127, 29, 29, 0.2);
-  padding: 12px;
-  color: rgba(255, 255, 255, 0.52);
-
-  strong {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    color: #ff5b5b;
-    font-size: 12px;
-    font-weight: 850;
-  }
-
-  svg {
-    width: 14px;
-    height: 14px;
-  }
-
-  p {
-    margin: 10px 0 8px;
-    font-size: 12px;
-    font-weight: 650;
-    line-height: 1.45;
-  }
-
-  small {
-    display: block;
-    color: rgba(255, 255, 255, 0.28);
-    font-size: 11px;
-    font-weight: 650;
-  }
-}
-
-.app-assets-record__actions {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 34px;
-  gap: 8px;
-  margin-top: 12px;
-
-  button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    height: 30px;
-    border: 0;
-    border-radius: 8px;
-    background: rgba(255, 255, 255, 0.07);
-    color: rgba(255, 255, 255, 0.54);
-    font: inherit;
-    font-size: 12px;
-    font-weight: 750;
-    cursor: pointer;
-  }
-
-  button:disabled {
-    cursor: not-allowed;
-    opacity: 0.5;
-  }
-
-  .is-danger {
-    background: rgba(239, 68, 68, 0.13);
-    color: #ef4444;
-  }
-}
-
-.app-assets-record__image {
-  width: 280px;
-  max-width: 100%;
-  overflow: hidden;
-  border-radius: 8px;
-  background: #141414;
-
-  img {
-    display: block;
-    width: 100%;
-    aspect-ratio: 1 / 1;
-    object-fit: cover;
+@media (min-width: 1536px) {
+  .app-assets__grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 

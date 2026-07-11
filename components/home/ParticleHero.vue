@@ -37,23 +37,25 @@
 					</button>
 				</div>
 
-				<button
-					v-if="activeMedia === 'image'"
-					type="button"
-					class="generator-panel__drop"
-					@click="fileInputRef?.click()"
-				>
-					<span>{{ t('home.particleHero.optional') }}</span>
-					<strong>+</strong>
-					<small>{{ uploadedImages.length }}/8</small>
-					<input ref="fileInputRef" type="file" accept="image/*" multiple @change="handleFiles" />
-				</button>
-
-				<div v-if="uploadedImages.length" class="generator-panel__previews">
-					<div v-for="(image, index) in uploadedImages" :key="image.id">
-						<img :src="image.src" :alt="image.name" />
-						<button type="button" :aria-label="t('home.particleHero.removeImage')" @click="removeImage(index)">x</button>
+				<div v-if="showUploadDrop" class="generator-panel__upload">
+					<div v-if="uploadedImages.length" class="generator-panel__previews">
+						<div v-for="(image, index) in uploadedImages" :key="image.id">
+							<img :src="image.src" :alt="image.name" />
+							<button type="button" :aria-label="t('home.particleHero.removeImage')" @click="removeImage(index)">x</button>
+						</div>
 					</div>
+					<button
+						v-if="uploadedImages.length < 8"
+						type="button"
+						class="generator-panel__drop"
+						:class="{ 'is-compact': uploadedImages.length > 0 }"
+						@click="fileInputRef?.click()"
+					>
+						<span v-if="!uploadedImages.length">{{ t('home.particleHero.optional') }}</span>
+						<strong>+</strong>
+						<small>{{ uploadedImages.length }}/8</small>
+					</button>
+					<input ref="fileInputRef" type="file" accept="image/*" multiple class="generator-panel__file-input" @change="handleFiles" />
 				</div>
 
 				<textarea v-model="promptText" :placeholder="currentPlaceholder"></textarea>
@@ -62,7 +64,7 @@
 					<div class="generator-panel__chips">
 						<div class="control-chip-wrap">
 							<button type="button" class="control-chip is-strong" @click="toggleMenu('model')">
-								<span class="chip-google">{{ selectedModel.icon }}</span>
+								<AppModelBrandIcon :name="selectedModel.icon" class-name="is-compact" />
 								<span>{{ selectedModel.name }}</span>
 							</button>
 							<div v-if="openMenu === 'model'" class="select-popover model-popover">
@@ -78,7 +80,7 @@
 										:class="{ 'is-selected': model.id === selectedModel.id }"
 										@click="selectModel(model.id)"
 									>
-										<i>{{ model.icon }}</i>
+										<AppModelBrandIcon :name="model.icon" />
 										<strong>{{ model.name }}</strong>
 										<em v-if="model.badge">{{ model.badge }}</em>
 										<p>{{ model.desc }}</p>
@@ -87,7 +89,7 @@
 								</div>
 							</div>
 						</div>
-
+<!-- 
 						<div class="control-chip-wrap">
 							<button type="button" class="control-chip" @click="toggleMenu('mode')">
 								<span>{{ selectedWorkMode.icon }}</span>
@@ -105,7 +107,7 @@
 									<strong>{{ mode.label }}</strong>
 								</button>
 							</div>
-						</div>
+						</div> -->
 
 						<div class="control-chip-wrap">
 							<button type="button" class="control-chip" @click="toggleMenu('ratio')">
@@ -134,7 +136,7 @@
 							<i></i>
 						</label>
 						<span>{{ t('home.particleHero.credits', { count: currentCredits }) }}</span>
-						<button type="button" class="send-btn" :aria-label="t('home.particleHero.generate')">↑</button>
+						<button type="button" class="send-btn" :aria-label="t('home.particleHero.generate')" :disabled="isSubmitting" @click="submitGeneration">↑</button>
 					</div>
 				</div>
 			</div>
@@ -143,12 +145,39 @@
 </template>
 
 <script setup lang="ts">
+import {
+	generateAiImageController,
+	uploadAiImageFilesController,
+	type GenerateAiImagePayload,
+} from '~/api/ai-image'
+import {
+	generateAiVideoController,
+	type GenerateAiVideoPayload,
+} from '~/api/ai-video'
+import {
+	MODEL_PROFILES,
+	getModelCredits,
+	type AspectRatioValue,
+	type ImageModelId,
+	type ModelProfile,
+	type QualityValue,
+	type ResolutionValue,
+} from '~/components/home/app/AIimage'
+import {
+	SEEDANCE_RATIOS,
+	getVideoCredits,
+	type VideoAspectRatioValue,
+	type VideoModelId,
+} from '~/components/home/app/AIVideo'
+import AppModelBrandIcon, { type ModelBrandIconName } from '~/components/home/app/AppModelBrandIcon.vue'
+import { writeCreationHandoff } from '~/utils/creationHandoff'
+
 type MediaType = 'image' | 'video'
 type MenuType = 'model' | 'mode' | 'ratio' | null
 
 type ModelOption = {
 	id: string
-	icon: string
+	icon: ModelBrandIconName
 	name: string
 	desc: string
 	badge?: string
@@ -163,10 +192,89 @@ type WorkMode = {
 
 type RatioOption = {
 	id: string
+	value: AspectRatioValue | VideoAspectRatioValue
 	label: string
 }
 
+type UploadedHeroImage = {
+	id: string
+	name: string
+	src: string
+	file: File
+}
+
+type HeroImageModelConfig = {
+	id: ImageModelId
+	targetModelId: string
+	name: string
+	icon: ModelBrandIconName
+	profile: 'gpt-image' | 'seedream'
+	textToImage: { platformCode: number; modelCode: number }
+	imageToImage: { platformCode: number; modelCode: number }
+}
+
+const imageModelConfigs: Record<ImageModelId, HeroImageModelConfig> = {
+	'gpt-image-2': {
+		id: 'gpt-image-2',
+		targetModelId: 'gpt-image-2',
+		name: 'GPT Image 2',
+		icon: 'openai',
+		profile: 'gpt-image',
+		textToImage: { platformCode: 2, modelCode: 3 },
+		imageToImage: { platformCode: 2, modelCode: 4 },
+	},
+	'nano-banana-2': {
+		id: 'nano-banana-2',
+		targetModelId: 'nano-banana-2',
+		name: 'Seedream 4.5',
+		icon: 'seedream',
+		profile: 'seedream',
+		textToImage: { platformCode: 2, modelCode: 1 },
+		imageToImage: { platformCode: 2, modelCode: 2 },
+	},
+	'seedream-4-5': {
+		id: 'seedream-4-5',
+		targetModelId: 'seedream-4-5',
+		name: 'Seedream 4.5',
+		icon: 'seedream',
+		profile: 'seedream',
+		textToImage: { platformCode: 1, modelCode: 1 },
+		imageToImage: { platformCode: 1, modelCode: 2 },
+	},
+	'nano-banana-pro': {
+		id: 'nano-banana-pro',
+		targetModelId: 'nano-banana-pro',
+		name: 'Nano Banana Pro',
+		icon: 'google',
+		profile: 'seedream',
+		textToImage: { platformCode: 1, modelCode: 1 },
+		imageToImage: { platformCode: 1, modelCode: 2 },
+	},
+	'nano-banana': {
+		id: 'nano-banana',
+		targetModelId: 'nano-banana',
+		name: 'Nano Banana',
+		icon: 'google',
+		profile: 'seedream',
+		textToImage: { platformCode: 1, modelCode: 1 },
+		imageToImage: { platformCode: 1, modelCode: 2 },
+	},
+}
+
+const videoModelConfig = {
+	id: 'seedance-2-0' as VideoModelId,
+	name: 'Seedance 2.0',
+	icon: 'seedance' as ModelBrandIconName,
+	textToVideo: { platformCode: 2, modelCode: 10001 },
+	imageToVideo: { platformCode: 2, modelCode: 10002 },
+}
+
+const imageModelOrder: ImageModelId[] = ['gpt-image-2', 'nano-banana-2', 'seedream-4-5', 'nano-banana-pro', 'nano-banana']
+const selectedQuality: QualityValue = 'medium'
+const selectedVideoDuration = 4
+
 const { t } = useAppI18n()
+const { token, user } = useUser()
 
 const fallbackText = (key: string, fallback: string) => {
 	const value = t(key)
@@ -179,48 +287,89 @@ const subtitle = computed(() => fallbackText('home.particleHero.subtitle', 'Cine
 const imagePlaceholder = computed(() => fallbackText('home.particleHero.imagePlaceholder', 'Describe the image you want to generate...'))
 const videoPlaceholder = computed(() => fallbackText('home.particleHero.videoPlaceholder', 'Describe your video scene...'))
 
-const imageModels = computed(() => t('home.particleHero.imageModels') as ModelOption[])
-const videoModels = computed(() => t('home.particleHero.videoModels') as ModelOption[])
-const workModes = computed(() => t('home.particleHero.workModes') as WorkMode[])
+const ratioToOption = (value: AspectRatioValue | VideoAspectRatioValue, label = value): RatioOption => ({
+	id: value.replace(':', '-'),
+	value,
+	label,
+})
 
-const videoRatios: RatioOption[] = [
-	{ id: '16-9', label: '16:9' },
-	{ id: '9-16', label: '9:16' },
-	{ id: 'auto', label: 'Auto' },
-]
+const imageModels = computed<ModelOption[]>(() => {
+	const copy = t('aiImageGenerator') as { models?: Record<string, { desc?: string; credits?: string }> }
+	return imageModelOrder.map((id) => {
+		const model = imageModelConfigs[id]
+		return {
+			id: model.id,
+			icon: model.icon,
+			name: model.name,
+			desc: copy.models?.[id]?.desc ?? model.name,
+			tags: [copy.models?.[id]?.credits ?? ''],
+		}
+	})
+})
+const videoModels = computed<ModelOption[]>(() => {
+	const copy = t('aiVideoGenerator') as { models?: Record<string, { desc?: string; credits?: string }> }
+	return [{
+		id: videoModelConfig.id,
+		icon: videoModelConfig.icon,
+		name: videoModelConfig.name,
+		desc: copy.models?.[videoModelConfig.id]?.desc ?? videoModelConfig.name,
+		tags: [copy.models?.[videoModelConfig.id]?.credits ?? ''],
+	}]
+})
+const workModes = computed<WorkMode[]>(() => {
+	const mode = (t('home.particleHero.workModes') as WorkMode[]).find(item => item.id === 'text')
+	return [mode ?? { id: 'text', icon: '✧', label: 'Text' }]
+})
 
 const activeMedia = ref<MediaType>('image')
 const openMenu = ref<MenuType>(null)
-const selectedImageModelId = ref('gpt-image-2')
-const selectedVideoModelId = ref('veo-fast')
+const selectedImageModelId = ref<ImageModelId>('gpt-image-2')
+const selectedVideoModelId = ref<VideoModelId>('seedance-2-0')
 const selectedWorkModeId = ref('text')
-const selectedRatioId = ref('1-1')
+const selectedRatioId = ref('auto')
 const promptText = ref('')
 const isPrivate = ref(false)
-const uploadedImages = ref<Array<{ id: string; name: string; src: string }>>([])
+const isSubmitting = ref(false)
+const uploadedImages = ref<UploadedHeroImage[]>([])
 const fileInputRef = ref<HTMLInputElement | null>(null)
 
-const imageRatios: RatioOption[] = [
-	{ id: '1-1', label: '1:1' },
-	{ id: '4-5', label: '4:5' },
-	{ id: '16-9', label: '16:9' },
-]
+const videoRatios = SEEDANCE_RATIOS.map(ratio => ratioToOption(ratio))
+const selectedImageModelConfig = computed(() => imageModelConfigs[selectedImageModelId.value] ?? imageModelConfigs['gpt-image-2'])
+const selectedImageResolution = computed<ResolutionValue>(() => selectedImageModelConfig.value.profile === 'gpt-image' ? '1K' : '2K')
+const imageRatios = computed<RatioOption[]>(() => {
+	const profile = MODEL_PROFILES[selectedImageModelConfig.value.profile]
+	const ratios = profile.supportedRatios.map(ratio => ratioToOption(ratio))
+	if (profile.supportsAutoRatio) {
+		const copy = t('aiImageGenerator') as { autoRatio?: string }
+		return [ratioToOption('auto', copy.autoRatio ?? 'Auto'), ...ratios]
+	}
+	return ratios
+})
 
 const currentModels = computed(() => activeMedia.value === 'video' ? videoModels.value : imageModels.value)
-const ratios = computed(() => activeMedia.value === 'video' ? videoRatios : imageRatios)
+const ratios = computed(() => activeMedia.value === 'video' ? videoRatios : imageRatios.value)
 const selectedModel = computed(() => {
 	const id = activeMedia.value === 'video' ? selectedVideoModelId.value : selectedImageModelId.value
 	return currentModels.value.find(model => model.id === id) ?? currentModels.value[0]
 })
 const selectedWorkMode = computed(() => workModes.value.find(mode => mode.id === selectedWorkModeId.value) ?? workModes.value[0])
 const selectedRatio = computed(() => ratios.value.find(ratio => ratio.id === selectedRatioId.value) ?? ratios.value[0])
-const currentCredits = computed(() => activeMedia.value === 'video' ? 100 : 5)
+const showUploadDrop = computed(() => true)
+const currentCredits = computed(() => activeMedia.value === 'video'
+	? getVideoCredits(selectedVideoDuration)
+	: getModelCredits(
+			selectedImageModelConfig.value.profile,
+			selectedQuality,
+			selectedImageResolution.value,
+			uploadedImages.value.length > 0,
+			1,
+		))
 const currentPlaceholder = computed(() => activeMedia.value === 'video' ? videoPlaceholder.value : imagePlaceholder.value)
 
 const setMedia = (media: MediaType) => {
 	activeMedia.value = media
 	openMenu.value = null
-	selectedRatioId.value = media === 'video' ? '16-9' : '1-1'
+	selectedRatioId.value = media === 'video' ? '1-1' : getDefaultImageRatioId(selectedImageModelConfig.value.profile)
 }
 
 const toggleMenu = (menu: Exclude<MenuType, null>) => {
@@ -228,8 +377,13 @@ const toggleMenu = (menu: Exclude<MenuType, null>) => {
 }
 
 const selectModel = (id: string) => {
-	if (activeMedia.value === 'video') selectedVideoModelId.value = id
-	else selectedImageModelId.value = id
+	if (activeMedia.value === 'video') {
+		selectedVideoModelId.value = id as VideoModelId
+		selectedRatioId.value = '1-1'
+	} else if (id in imageModelConfigs) {
+		selectedImageModelId.value = id as ImageModelId
+		selectedRatioId.value = getDefaultImageRatioId(imageModelConfigs[id as ImageModelId].profile)
+	}
 	openMenu.value = null
 }
 
@@ -243,6 +397,10 @@ const selectRatio = (id: string) => {
 	openMenu.value = null
 }
 
+const getDefaultImageRatioId = (profile: ModelProfile) => {
+	return MODEL_PROFILES[profile].supportsAutoRatio ? 'auto' : MODEL_PROFILES[profile].supportedRatios[0].replace(':', '-')
+}
+
 const handleFiles = (event: Event) => {
 	const input = event.target as HTMLInputElement
 	const files = Array.from(input.files ?? [])
@@ -252,6 +410,7 @@ const handleFiles = (event: Event) => {
 			id: `${file.name}-${file.lastModified}-${Math.random().toString(36).slice(2)}`,
 			name: file.name,
 			src: URL.createObjectURL(file),
+			file,
 		})
 	})
 	input.value = ''
@@ -261,6 +420,144 @@ const removeImage = (index: number) => {
 	const target = uploadedImages.value[index]
 	if (target) URL.revokeObjectURL(target.src)
 	uploadedImages.value.splice(index, 1)
+}
+
+const formatRatio = (ratioId: string) => ratioId.replace('-', ':')
+
+const normalizeVideoRatio = (ratioId: string) => {
+	const ratio = formatRatio(ratioId)
+	return ratio === 'auto' ? '1:1' : ratio
+}
+
+const getImagePayloadRatio = () => {
+	const ratio = selectedRatio.value?.value ?? '1:1'
+	return ratio === 'auto' ? '1:1' : ratio
+}
+
+const uploadHeroImages = async () => {
+	if (!showUploadDrop.value) return []
+	const files = uploadedImages.value.map(image => image.file)
+	if (!files.length) return []
+	return uploadAiImageFilesController(files)
+}
+
+const submitImageGeneration = async (prompt: string) => {
+	const imageUrls = await uploadHeroImages()
+	const hasImages = imageUrls.length > 0
+	const model = imageModelConfigs[selectedImageModelId.value] ?? imageModelConfigs['gpt-image-2']
+	const codes = hasImages ? model.imageToImage : model.textToImage
+	const ratio = getImagePayloadRatio()
+	const resolution = selectedImageResolution.value.toLowerCase()
+	const payload: GenerateAiImagePayload = {
+		prompt,
+		images: imageUrls,
+		ratio,
+		resolution,
+		platformCode: codes.platformCode,
+		modelCode: codes.modelCode,
+		n: 1,
+	}
+	if (model.profile === 'gpt-image') {
+		payload.quality = 'medium'
+	}
+
+	const response = await generateAiImageController(payload)
+	const traceId = response.data.traceId
+	if (!traceId) throw new Error('Image generation task did not return a traceId')
+
+	writeCreationHandoff({
+		version: 1,
+		media: 'image',
+		traceId,
+		prompt,
+		modelName: model.name,
+		createdAt: Date.now(),
+		params: {
+			modelId: model.targetModelId,
+			platformCode: codes.platformCode,
+			modelCode: codes.modelCode,
+			prompt,
+			ratio,
+			resolution,
+			quality: model.profile === 'gpt-image' ? 'medium' : undefined,
+			imageCount: 1,
+			userImages: imageUrls,
+		},
+	})
+
+	await navigateTo('/ai-image-generator')
+}
+
+const submitVideoGeneration = async (prompt: string) => {
+	const imageUrls = await uploadHeroImages()
+	const hasImages = imageUrls.length > 0
+	const codes = hasImages ? videoModelConfig.imageToVideo : videoModelConfig.textToVideo
+	const payload: GenerateAiVideoPayload = {
+		platformCode: codes.platformCode,
+		modelCode: codes.modelCode,
+		prompt,
+		ratio: normalizeVideoRatio(selectedRatioId.value),
+		resolution: '480p',
+		duration: 4,
+		generateAudio: true,
+		n: 1,
+	}
+	if (hasImages) {
+		payload.images = imageUrls
+	}
+
+	const response = await generateAiVideoController(payload)
+	const traceId = response.data.traceId
+	if (!traceId) throw new Error('Video generation task did not return a traceId')
+
+	writeCreationHandoff({
+		version: 1,
+		media: 'video',
+		traceId,
+		prompt,
+		modelName: videoModelConfig.name,
+		createdAt: Date.now(),
+		params: {
+			platformCode: codes.platformCode,
+			modelCode: codes.modelCode,
+			prompt,
+			ratio: payload.ratio,
+			resolution: payload.resolution,
+			duration: payload.duration,
+			generateAudio: payload.generateAudio,
+			userImages: imageUrls,
+		},
+	})
+
+	await navigateTo('/ai-video-generator')
+}
+
+const submitGeneration = async () => {
+	if (isSubmitting.value) return
+	const prompt = promptText.value.trim()
+	const targetPath = activeMedia.value === 'video' ? '/ai-video-generator' : '/ai-image-generator'
+	if (!prompt) return
+	if (!token.value || !user.value) {
+		await navigateTo(targetPath)
+		return
+	}
+
+	isSubmitting.value = true
+	try {
+		if (activeMedia.value === 'video') {
+			await submitVideoGeneration(prompt)
+		} else {
+			await submitImageGeneration(prompt)
+		}
+	} catch (error) {
+		if (isUnauthorizedError(error)) {
+			await navigateTo(targetPath)
+			return
+		}
+		throw error
+	} finally {
+		isSubmitting.value = false
+	}
 }
 
 const sectionRef = ref<HTMLElement | null>(null)
@@ -559,7 +856,7 @@ onBeforeUnmount(() => {
 }
 
 .generator-panel.is-video {
-	grid-template-columns: auto minmax(0, 1fr);
+	grid-template-columns: auto 72px minmax(0, 1fr);
 }
 
 .generator-panel__flow {
@@ -575,10 +872,9 @@ onBeforeUnmount(() => {
 }
 
 .generator-panel__rail,
-.generator-panel__drop,
+.generator-panel__upload,
 .generator-panel textarea,
-.generator-panel__footer,
-.generator-panel__previews {
+.generator-panel__footer {
 	position: relative;
 	z-index: 1;
 }
@@ -645,11 +941,25 @@ button {
 	box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
 }
 
+.generator-panel__upload {
+	align-self: stretch;
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	width: 72px;
+	min-height: 168px;
+}
+
+.generator-panel__file-input {
+	display: none;
+}
+
 .generator-panel__drop {
 	display: grid;
 	place-items: center;
 	align-content: center;
 	gap: 20px;
+	flex: 1;
 	min-height: 168px;
 	border: 1px dashed rgba(255, 255, 255, 0.18);
 	border-radius: 18px;
@@ -657,8 +967,11 @@ button {
 	color: rgba(248, 250, 252, 0.42);
 }
 
-.generator-panel__drop input {
-	display: none;
+.generator-panel__drop.is-compact {
+	flex: 0 0 auto;
+	gap: 4px;
+	min-height: 64px;
+	padding: 6px 4px;
 }
 
 .generator-panel__drop span,
@@ -672,23 +985,30 @@ button {
 	font-weight: 300;
 }
 
+.generator-panel__drop.is-compact strong {
+	font-size: 18px;
+}
+
 .generator-panel__previews {
-	position: absolute;
-	left: 142px;
-	top: 40px;
 	display: flex;
-	flex-wrap: wrap;
+	flex-direction: column;
 	gap: 8px;
-	max-width: 230px;
+	width: 100%;
+	max-height: 220px;
+	overflow-x: hidden;
+	overflow-y: auto;
+	scrollbar-width: thin;
 }
 
 .generator-panel__previews div {
 	position: relative;
-	width: 46px;
-	height: 46px;
+	flex: 0 0 auto;
+	width: 72px;
+	height: 72px;
 	overflow: hidden;
-	border-radius: 12px;
+	border-radius: 14px;
 	border: 1px solid rgba(255, 255, 255, 0.16);
+	background: #101012;
 }
 
 .generator-panel__previews img {
@@ -699,8 +1019,8 @@ button {
 
 .generator-panel__previews button {
 	position: absolute;
-	right: 2px;
-	top: 2px;
+	right: 4px;
+	top: 4px;
 	display: grid;
 	place-items: center;
 	width: 16px;
@@ -710,6 +1030,7 @@ button {
 	background: rgba(0, 0, 0, 0.68);
 	color: #fff;
 	font-size: 10px;
+	cursor: pointer;
 }
 
 .generator-panel textarea {
@@ -786,11 +1107,6 @@ button {
 			rgba(124, 58, 237, 0.5),
 			rgba(239, 77, 44, 0.98)
 		) border-box;
-}
-
-.chip-google {
-	color: #ef4d2c;
-	font-weight: 800;
 }
 
 .generator-panel__actions {
@@ -915,12 +1231,6 @@ button {
 	background: rgba(255, 255, 255, 0.1);
 }
 
-.model-grid i {
-	color: #ef4d2c;
-	font-style: normal;
-	font-weight: 800;
-}
-
 .model-grid strong {
 	font-size: 14px;
 }
@@ -995,14 +1305,37 @@ button {
 	height: 14px;
 }
 
+.ratio-icon--21-9 {
+	width: 28px;
+	height: 12px;
+}
+
 .ratio-icon--9-16 {
 	width: 14px;
 	height: 24px;
 }
 
+.ratio-icon--9-21 {
+	width: 12px;
+	height: 28px;
+}
+
+.ratio-icon--2-3,
+.ratio-icon--3-4 {
+	width: 14px;
+	height: 20px;
+}
+
+.ratio-icon--3-2,
+.ratio-icon--4-3 {
+	width: 20px;
+	height: 14px;
+}
+
 .ratio-icon--auto,
 .ratio-icon--1-1,
-.ratio-icon--4-5 {
+.ratio-icon--4-5,
+.ratio-icon--5-4 {
 	width: 18px;
 	height: 18px;
 }
@@ -1053,6 +1386,32 @@ button {
 	.generator-panel.is-video {
 		grid-template-columns: 1fr;
 		padding: 20px;
+	}
+
+	.generator-panel__upload {
+		width: 100%;
+		min-height: 0;
+		flex-direction: row;
+		flex-wrap: wrap;
+		align-items: flex-start;
+	}
+
+	.generator-panel__previews {
+		flex-direction: row;
+		flex-wrap: wrap;
+		max-height: none;
+		width: auto;
+	}
+
+	.generator-panel__drop {
+		min-height: 96px;
+		width: 96px;
+		flex: 0 0 auto;
+	}
+
+	.generator-panel__drop.is-compact {
+		width: 72px;
+		min-height: 72px;
 	}
 
 	.generator-panel__rail {
