@@ -81,7 +81,7 @@ export const uploadAiImageFileController = async (file: File) => {
 	const body = new FormData()
 	body.append('file', file)
 
-	const response = await request<ApiResponse<UploadFileData | string>>('/oss/uploadToDir', {
+	const response = await request<ApiResponse<UploadFileData | string>>('/object/upload', {
 		method: 'POST',
 		query: { directory: 'user-upload' },
 		body,
@@ -100,7 +100,7 @@ export const uploadAiImageFilesController = async (files: File[]) => {
 	files.forEach(file => body.append('files', file))
 
 	const response = await request<ApiResponse<BatchUploadFileData | UploadFileData[] | string>>(
-		'/oss/uploadsToDir',
+		'/object/uploads',
 		{
 			method: 'POST',
 			query: { directory: 'user-upload' },
