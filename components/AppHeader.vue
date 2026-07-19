@@ -1,6 +1,7 @@
 <template>
   <header
-    class="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-[#15161a]"
+    class="fixed inset-x-0 top-0 z-50 transition-[background-color,border-color,backdrop-filter] duration-300"
+    :class="headerSurfaceClass"
   >
     <div
       class="mx-auto flex h-[64px] max-w-[1440px] items-center justify-between gap-4 px-4 md:px-6 lg:px-8"
@@ -343,6 +344,64 @@ const buildLocalePath = (code: LocaleCode, fullPath: string) => {
 const localizeNavPath = (path: string) =>
   buildLocalePath(locale.value as LocaleCode, path);
 
+const isMarketingHome = computed(() => {
+  const stripped = stripLocalePrefix(route.path);
+  return stripped === "/";
+});
+const isOverHero = ref(true);
+const isHeaderOpaque = computed(
+  () => !isMarketingHome.value || !isOverHero.value,
+);
+const headerSurfaceClass = computed(() =>
+  isHeaderOpaque.value
+    ? "border-b border-white/10 bg-[#15161a]"
+    : "border-b border-transparent bg-transparent",
+);
+
+let heroObserver: IntersectionObserver | null = null;
+
+const disconnectHeroObserver = () => {
+  heroObserver?.disconnect();
+  heroObserver = null;
+};
+
+const observeHeroSection = () => {
+  if (!import.meta.client) return;
+  disconnectHeroObserver();
+
+  if (!isMarketingHome.value) {
+    isOverHero.value = false;
+    return;
+  }
+
+  const attach = (attempt = 0) => {
+    if (!isMarketingHome.value) return;
+    const hero = document.querySelector(".particle-hero");
+    if (!hero) {
+      isOverHero.value = true;
+      if (attempt < 8) {
+        window.setTimeout(() => attach(attempt + 1), 50);
+      }
+      return;
+    }
+
+    heroObserver = new IntersectionObserver(
+      ([entry]) => {
+        isOverHero.value = Boolean(entry?.isIntersecting);
+      },
+      {
+        threshold: 0,
+        // Treat header height as off-limits so solid kicks in as the next section arrives
+        rootMargin: "-64px 0px 0px 0px",
+      },
+    );
+    heroObserver.observe(hero);
+    isOverHero.value = true;
+  };
+
+  attach();
+};
+
 const navItems = computed(() => [
   { label: t("nav.home"), link: localizeNavPath("/home") },
   { label: t("nav.aiImage"), link: localizeNavPath("/ai-image-generator") },
@@ -389,11 +448,19 @@ onMounted(() => {
   if (process.client) {
     syncLocaleFromRoute();
     void initUser().catch(() => logout());
+    nextTick(() => observeHeroSection());
   }
+});
+
+onBeforeUnmount(() => {
+  disconnectHeroObserver();
 });
 
 watch(
   () => route.fullPath,
-  () => syncLocaleFromRoute(),
+  () => {
+    syncLocaleFromRoute();
+    nextTick(() => observeHeroSection());
+  },
 );
 </script>

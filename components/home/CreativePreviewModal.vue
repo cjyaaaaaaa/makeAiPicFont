@@ -3,10 +3,66 @@
 		<Transition name="preview-fade">
 			<div v-if="item" class="preview-modal" role="dialog" aria-modal="true" :aria-label="item.title" @click.self="emit('close')">
 				<div class="preview-modal__shell">
-					<section class="preview-modal__media" :class="{ 'is-long': isLongPreview }">
-						<img v-if="item.image" :src="previewImage" :alt="item.alt || item.title" @load="handleImageLoad" />
+					<section class="preview-modal__media" :class="{ 'is-long': isLongPreview, 'is-video': isVideoPreview }">
+						<div v-if="isVideoPreview && previewVideo" class="preview-modal__player">
+							<video
+								ref="videoRef"
+								:key="previewVideo"
+								:src="previewVideo"
+								:poster="previewImage || undefined"
+								autoplay
+								muted
+								playsinline
+								preload="metadata"
+								@loadedmetadata="handleVideoLoad"
+								@timeupdate="onVideoTimeUpdate"
+								@play="isPlaying = true"
+								@pause="isPlaying = false"
+								@volumechange="onVideoVolumeChange"
+								@click="togglePlay"
+							></video>
+							<div class="preview-modal__controls" @click.stop>
+								<button type="button" class="preview-modal__ctrl-btn" :aria-label="isPlaying ? 'Pause' : 'Play'" @click="togglePlay">
+									<svg v-if="isPlaying" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+										<rect x="5" y="4" width="3.5" height="12" rx="0.8" />
+										<rect x="11.5" y="4" width="3.5" height="12" rx="0.8" />
+									</svg>
+									<svg v-else viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+										<path d="M6.5 4.2v11.6L15.8 10 6.5 4.2Z" />
+									</svg>
+								</button>
+								<span class="preview-modal__time">{{ formatTime(currentTime) }} / {{ formatTime(duration) }}</span>
+								<input
+									class="preview-modal__seek"
+									type="range"
+									min="0"
+									:max="duration || 0"
+									step="0.01"
+									:value="currentTime"
+									:style="{ '--seek-progress': seekProgress }"
+									aria-label="Seek"
+									@input="onSeek"
+								/>
+								<button type="button" class="preview-modal__ctrl-btn" :aria-label="isMuted ? 'Unmute' : 'Mute'" @click="toggleMute">
+									<svg v-if="isMuted || volume === 0" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+										<path d="M3.5 7.5h2.6L10 4.2v11.6L6.1 12.5H3.5V7.5Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" />
+										<path d="M13.2 8.2l3.6 3.6M16.8 8.2l-3.6 3.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
+									</svg>
+									<svg v-else viewBox="0 0 20 20" fill="none" aria-hidden="true">
+										<path d="M3.5 7.5h2.6L10 4.2v11.6L6.1 12.5H3.5V7.5Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" />
+										<path d="M12.4 7.4a3.2 3.2 0 0 1 0 5.2M14.4 5.6a5.4 5.4 0 0 1 0 8.8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
+									</svg>
+								</button>
+								<button type="button" class="preview-modal__ctrl-btn" aria-label="Fullscreen" @click="toggleFullscreen">
+									<svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+										<path d="M4 7.5V4h3.5M16 7.5V4h-3.5M4 12.5V16h3.5M16 12.5V16h-3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+									</svg>
+								</button>
+							</div>
+						</div>
+						<img v-else-if="item.image" :src="previewImage" :alt="item.alt || item.title" @load="handleImageLoad" />
 						<div v-else class="preview-modal__placeholder"></div>
-						<span class="preview-modal__zoom">100%</span>
+						<span v-if="!isVideoPreview" class="preview-modal__zoom">100%</span>
 					</section>
 
 					<aside class="preview-modal__panel">
@@ -20,8 +76,8 @@
 							type="button"
 							class="preview-modal__download"
 							:aria-label="t('home.preview.download')"
-							:disabled="!item.image || isDownloading"
-							@click="downloadImage"
+							:disabled="!downloadUrl || isDownloading"
+							@click="downloadMedia"
 						>
 							<svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
 								<path d="M10 3.5V11M6.8 8.2L10 11.4L13.2 8.2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
@@ -44,7 +100,7 @@
 									<dt>{{ t('home.preview.model') }}</dt>
 									<dd>{{ item.model }}</dd>
 								</div>
-								<div>
+								<div v-if="!isVideoPreview">
 									<dt>{{ t('home.preview.resolution') }}</dt>
 									<dd>{{ item.resolution }}</dd>
 								</div>
@@ -52,7 +108,7 @@
 									<dt>{{ t('home.preview.aspectRatio') }}</dt>
 									<dd>{{ item.aspectRatio }}</dd>
 								</div>
-								<div>
+								<div v-if="!isVideoPreview">
 									<dt>{{ t('home.preview.outputFormat') }}</dt>
 									<dd>{{ item.outputFormat }}</dd>
 								</div>
@@ -75,6 +131,8 @@ type CreativePreviewItem = {
 	id: string
 	title: string
 	image: string
+	video?: string
+	mediaType?: 'image' | 'video'
 	alt?: string
 	prompt: string
 	model: string
@@ -95,7 +153,31 @@ const { t } = useAppI18n()
 const promptExpanded = ref(false)
 const imageAspect = ref<number | null>(null)
 const isDownloading = ref(false)
+const videoRef = ref<HTMLVideoElement | null>(null)
+const isPlaying = ref(false)
+const isMuted = ref(true)
+const volume = ref(0)
+const currentTime = ref(0)
+const duration = ref(0)
+const seekProgress = computed(() => {
+	if (!duration.value) return '0%'
+	return `${Math.min(100, Math.max(0, (currentTime.value / duration.value) * 100))}%`
+})
+const isVideoPreview = computed(() => {
+	const item = props.item
+	if (!item) return false
+	if (item.mediaType === 'video') return Boolean(item.video)
+	if (item.mediaType === 'image') return false
+	return Boolean(item.video) || /\.mp4($|\?)/i.test(item.image || '')
+})
 const previewImage = computed(() => props.item?.image.replace('fit=crop', 'fit=max') || '')
+const previewVideo = computed(() => {
+	const item = props.item
+	if (!item) return ''
+	if (item.video) return item.video
+	return /\.mp4($|\?)/i.test(item.image) ? item.image : ''
+})
+const downloadUrl = computed(() => (isVideoPreview.value ? previewVideo.value : previewImage.value) || '')
 const declaredAspect = computed(() => {
 	const [width, height] = props.item?.aspectRatio.split(':').map(Number) || []
 	return width > 0 && height > 0 ? width / height : null
@@ -107,16 +189,96 @@ const handleImageLoad = (event: Event) => {
 	imageAspect.value = image.naturalWidth && image.naturalHeight ? image.naturalWidth / image.naturalHeight : null
 }
 
+const formatTime = (seconds: number) => {
+	if (!Number.isFinite(seconds) || seconds < 0) return '0:00'
+	const total = Math.floor(seconds)
+	const m = Math.floor(total / 60)
+	const s = total % 60
+	return `${m}:${s.toString().padStart(2, '0')}`
+}
+
+const handleVideoLoad = (event: Event) => {
+	const video = event.target as HTMLVideoElement
+	imageAspect.value = video.videoWidth && video.videoHeight ? video.videoWidth / video.videoHeight : null
+	duration.value = video.duration || 0
+	currentTime.value = video.currentTime || 0
+	isMuted.value = video.muted
+	volume.value = video.muted ? 0 : video.volume
+	isPlaying.value = !video.paused
+}
+
+const onVideoTimeUpdate = () => {
+	const video = videoRef.value
+	if (!video) return
+	currentTime.value = video.currentTime || 0
+	if (video.duration) duration.value = video.duration
+}
+
+const onVideoVolumeChange = () => {
+	const video = videoRef.value
+	if (!video) return
+	isMuted.value = video.muted
+	volume.value = video.muted ? 0 : video.volume
+}
+
+const togglePlay = async () => {
+	const video = videoRef.value
+	if (!video) return
+	if (video.paused) {
+		try {
+			await video.play()
+		} catch {
+			/* autoplay / play may be blocked */
+		}
+	} else {
+		video.pause()
+	}
+}
+
+const onSeek = (event: Event) => {
+	const video = videoRef.value
+	if (!video) return
+	const value = Number((event.target as HTMLInputElement).value)
+	video.currentTime = value
+	currentTime.value = value
+}
+
+const toggleMute = () => {
+	const video = videoRef.value
+	if (!video) return
+	video.muted = !video.muted
+	if (!video.muted && video.volume === 0) {
+		video.volume = 1
+	}
+}
+
+const toggleFullscreen = async () => {
+	const video = videoRef.value
+	if (!video || !import.meta.client) return
+	try {
+		if (document.fullscreenElement) {
+			await document.exitFullscreen()
+		} else if (video.requestFullscreen) {
+			await video.requestFullscreen()
+		} else if ((video as HTMLVideoElement & { webkitEnterFullscreen?: () => void }).webkitEnterFullscreen) {
+			;(video as HTMLVideoElement & { webkitEnterFullscreen: () => void }).webkitEnterFullscreen()
+		}
+	} catch {
+		/* fullscreen may be denied */
+	}
+}
+
 const buildDownloadFilename = () => {
 	const item = props.item
-	if (!item) return 'image.png'
-	const ext = (item.outputFormat || 'png').replace(/^\./, '').toLowerCase() || 'png'
-	const base = (item.title || item.id || 'image')
+	if (!item) return isVideoPreview.value ? 'video.mp4' : 'image.png'
+	const fallbackExt = isVideoPreview.value ? 'mp4' : 'png'
+	const ext = (item.outputFormat || fallbackExt).replace(/^\./, '').toLowerCase() || fallbackExt
+	const base = (item.title || item.id || (isVideoPreview.value ? 'video' : 'image'))
 		.replace(/[^\w\u4e00-\u9fff\-]+/g, '_')
 		.replace(/_+/g, '_')
 		.replace(/^_|_$/g, '')
 		.slice(0, 80)
-	return `${base || 'image'}.${ext}`
+	return `${base || (isVideoPreview.value ? 'video' : 'image')}.${ext}`
 }
 
 const triggerBlobDownload = (blob: Blob, filename: string) => {
@@ -131,8 +293,8 @@ const triggerBlobDownload = (blob: Blob, filename: string) => {
 	URL.revokeObjectURL(objectUrl)
 }
 
-const downloadImage = async () => {
-	const url = props.item?.image
+const downloadMedia = async () => {
+	const url = downloadUrl.value
 	if (!url || isDownloading.value || !import.meta.client) return
 
 	const filename = buildDownloadFilename()
@@ -143,7 +305,6 @@ const downloadImage = async () => {
 		const blob = await response.blob()
 		triggerBlobDownload(blob, filename)
 	} catch {
-		// CORS or network failure: open original URL so the browser can still save it
 		const link = document.createElement('a')
 		link.href = url
 		link.download = filename
@@ -168,6 +329,11 @@ watch(
 	(value) => {
 		promptExpanded.value = false
 		imageAspect.value = null
+		isPlaying.value = false
+		isMuted.value = true
+		volume.value = 0
+		currentTime.value = 0
+		duration.value = 0
 		if (!import.meta.client) return
 		document.body.style.overflow = value ? 'hidden' : ''
 	},
@@ -244,10 +410,136 @@ onBeforeUnmount(() => {
 		object-fit: contain;
 	}
 
+	&.is-video {
+		align-content: center;
+		padding: clamp(20px, 3vw, 36px);
+	}
+
 	.preview-modal__placeholder {
 		display: block;
 		width: 100%;
 		max-height: 100%;
+	}
+}
+
+.preview-modal__player {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	max-width: 100%;
+	max-height: 100%;
+	min-height: 0;
+	overflow: hidden;
+	border-radius: 4px;
+	background: #000;
+
+	video {
+		display: block;
+		flex: 0 1 auto;
+		min-height: 0;
+		width: 100%;
+		object-fit: contain;
+		background: #000;
+		cursor: pointer;
+	}
+}
+
+.preview-modal__media.is-long .preview-modal__player {
+	width: auto;
+	max-width: min(100%, 620px);
+
+	video {
+		width: auto;
+		max-width: 100%;
+		margin: 0 auto;
+	}
+}
+
+.preview-modal__controls {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	flex-shrink: 0;
+	width: 100%;
+	height: 44px;
+	padding: 0 12px;
+	background: linear-gradient(180deg, rgba(20, 20, 20, 0.92), rgba(8, 8, 8, 0.98));
+	color: #ffffff;
+}
+
+.preview-modal__ctrl-btn {
+	display: grid;
+	place-items: center;
+	flex-shrink: 0;
+	width: 28px;
+	height: 28px;
+	border: 0;
+	border-radius: 6px;
+	background: transparent;
+	color: rgba(255, 255, 255, 0.92);
+	cursor: pointer;
+	transition: background 160ms ease, color 160ms ease;
+
+	svg {
+		width: 18px;
+		height: 18px;
+	}
+
+	&:hover {
+		background: rgba(255, 255, 255, 0.1);
+		color: #ffffff;
+	}
+}
+
+.preview-modal__time {
+	flex-shrink: 0;
+	min-width: 72px;
+	color: rgba(255, 255, 255, 0.88);
+	font-size: 12px;
+	font-variant-numeric: tabular-nums;
+	line-height: 1;
+	white-space: nowrap;
+}
+
+.preview-modal__seek {
+	appearance: none;
+	flex: 1;
+	min-width: 0;
+	height: 4px;
+	border-radius: 999px;
+	background: linear-gradient(
+		to right,
+		#ffffff 0%,
+		#ffffff calc(var(--seek-progress, 0%)),
+		rgba(255, 255, 255, 0.28) calc(var(--seek-progress, 0%)),
+		rgba(255, 255, 255, 0.28) 100%
+	);
+	outline: none;
+	cursor: pointer;
+
+	&::-webkit-slider-thumb {
+		appearance: none;
+		width: 12px;
+		height: 12px;
+		border-radius: 50%;
+		background: #ffffff;
+		box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.25);
+		cursor: pointer;
+	}
+
+	&::-moz-range-thumb {
+		width: 12px;
+		height: 12px;
+		border: 0;
+		border-radius: 50%;
+		background: #ffffff;
+		cursor: pointer;
+	}
+
+	&::-moz-range-track {
+		height: 4px;
+		border-radius: 999px;
+		background: rgba(255, 255, 255, 0.28);
 	}
 }
 
@@ -431,6 +723,21 @@ onBeforeUnmount(() => {
 
 	.preview-modal__media {
 		min-height: 48vh;
+
+		&.is-video {
+			min-height: 42vh;
+			padding: 16px;
+		}
+
+		.preview-modal__controls {
+			gap: 8px;
+			padding: 0 10px;
+		}
+
+		.preview-modal__time {
+			min-width: 0;
+			font-size: 11px;
+		}
 	}
 
 	.preview-modal__panel {

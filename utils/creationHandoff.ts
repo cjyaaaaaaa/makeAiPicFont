@@ -5,6 +5,7 @@ type CreationHandoffMedia = 'image' | 'video'
 type CreationHandoffBase = {
 	version: 1
 	media: CreationHandoffMedia
+	intent?: 'generation' | 'template'
 	traceId: string
 	prompt: string
 	modelName: string

@@ -13,8 +13,29 @@
 			</div>
 
 			<div class="models-section__grid">
-				<article v-for="model in modelItems" :key="model.id" class="model-card" tabindex="0" role="button" @click="selectedPreview = toPreviewItem(model)" @keydown.enter.prevent="selectedPreview = toPreviewItem(model)" @keydown.space.prevent="selectedPreview = toPreviewItem(model)">
-					<img v-if="model.image" v-bind="getLazyImageAttrs(model.image, { alt: model.name })" />
+				<article
+					v-for="model in modelItems"
+					:key="model.id"
+					class="model-card"
+					:class="{ 'is-video': model.kind === 'video' }"
+					tabindex="0"
+					role="button"
+					@click="selectedPreview = toPreviewItem(model)"
+					@keydown.enter.prevent="selectedPreview = toPreviewItem(model)"
+					@keydown.space.prevent="selectedPreview = toPreviewItem(model)"
+				>
+					<video
+						v-if="model.kind === 'video' && model.video"
+						:src="model.video"
+						:poster="model.image"
+						muted
+						loop
+						playsinline
+						autoplay
+						preload="metadata"
+						aria-hidden="true"
+					></video>
+					<img v-else-if="model.image" v-bind="getLazyImageAttrs(model.image, { alt: model.name })" />
 					<div v-else class="model-card__placeholder"></div>
 					<div class="model-card__content">
 						<p class="model-card__type">
@@ -55,12 +76,15 @@ type ModelCopy = {
 
 type ModelItem = ModelCopy & {
 	image: string
+	video?: string
 }
 
 type CreativePreviewItem = {
 	id: string
 	title: string
 	image: string
+	video?: string
+	mediaType?: 'image' | 'video'
 	alt?: string
 	prompt: string
 	model: string
@@ -69,24 +93,35 @@ type CreativePreviewItem = {
 	outputFormat: string
 }
 
-const photo = (id: string, width = 1100) => `https://images.unsplash.com/${id}?auto=format&fit=crop&w=${width}&q=84`
-
 const modelImages: Record<string, string> = {
-	gptImage2: photo('photo-1497215728101-856f4ea42174'),
-	nanoBanana2: photo('photo-1524504388940-b1c1722653e1'),
-	nanoBananaPro: photo('photo-1492144534655-ae79c964c9d7'),
-	veo31: photo('photo-1517841905240-472988babdf9'),
-	seedanceFast: photo('photo-1500530855697-b586d89ba3ee'),
-	seedance2: photo('photo-1500534314209-a25ddb2bd429'),
+	gptImage2: '/home/models/gpt-image-2.jpg',
+	nanoBanana2: '/home/models/nano-banana-2.jpg',
+	nanoBananaPro: '/home/models/nano-banana-pro.jpg',
+	veo31: '/home/models/veo-3-1.jpg',
+	seedanceFast: '/home/models/seedance-fast.jpg',
+	seedance2: '/home/models/seedance-2.jpg',
+}
+
+const modelVideos: Partial<Record<string, string>> = {
+	nanoBananaPro: '/home/models/nano-banana-pro.mp4',
+	veo31: '/home/models/veo-3-1.mp4',
+	seedanceFast: '/home/models/seedance-fast.mp4',
+	seedance2: '/home/models/seedance-2.mp4',
 }
 
 const modelPromptMap: Record<string, string> = {
-	gptImage2: 'A cinematic product scene with crisp studio lighting, premium materials, controlled reflections, and clean editorial composition.',
-	nanoBanana2: 'A luxury fashion editorial runway video featuring the same female model walking confidently toward the camera in a single continuous shot.',
-	nanoBananaPro: 'High-end automotive commercial shot at golden hour with smooth camera movement, glossy reflections, and cinematic depth.',
-	veo31: 'Elegant portrait motion with natural facial detail, soft backlight, realistic skin texture, and slow camera push-in.',
-	seedanceFast: 'Wide coastal scene with a camera drifting over architecture and ocean light, fast generation style with clean motion.',
-	seedance2: 'Dreamlike travel film with layered foreground, consistent subject identity, soft daylight, and premium campaign pacing.',
+	gptImage2:
+		'Photorealistic architectural interior, sunlit Japandi living room, cognac leather sofa, light oak herringbone credenza, black-frame gallery wall, fiddle-leaf fig in woven basket, soft afternoon sidelight with long shadows, editorial interior photography, 85mm, f/4, ultra-detailed materials, 8k',
+	nanoBanana2:
+		'Cinematic beauty close-up, East Asian model, wet-look slicked hair, dual-tone studio lighting cyan and soft white, shallow depth of field, freckle-level skin detail, fashion campaign portrait, 85mm prime, f/1.8, high-end editorial, photorealistic',
+	nanoBananaPro:
+		'Cinematic aerial travel film, terracotta sandstone cliffs meeting turquoise ocean, off-road vehicles on the shoreline, golden-hour shadows, drone push forward, anamorphic flare, high-end commercial grade, photoreal 4K',
+	veo31:
+		'Lifestyle motion film, solitary figure walking a tree-lined path at golden hour, sun flare through trunks, lush green meadow beyond, slow tracking shot, warm cinematic grade, natural handheld feel, photoreal 4K',
+	seedanceFast:
+		'Epic drone shot of turquoise waves crashing on a dark rocky coastline, overhead camera drift, sparkling highlights on foam, high contrast ocean texture, viral nature cinematography, seamless loop energy, 4K',
+	seedance2:
+		'Premium nature campaign, cascading waterfall into a turquoise jungle pool, mossy cliff and hanging vines, slow cinematic pan, soft daylight, ultra-detailed foliage and water spray, photoreal 4K',
 }
 
 const selectedPreview = ref<CreativePreviewItem | null>(null)
@@ -96,6 +131,7 @@ const modelItems = computed(() => {
 	return items.map(item => ({
 		...item,
 		image: modelImages[item.id],
+		video: item.kind === 'video' ? modelVideos[item.id] : undefined,
 	}))
 })
 
@@ -103,6 +139,8 @@ const toPreviewItem = (model: ModelItem): CreativePreviewItem => ({
 	id: model.id,
 	title: model.name,
 	image: model.image,
+	video: model.video,
+	mediaType: model.kind,
 	alt: model.name,
 	prompt: modelPromptMap[model.id] || model.name,
 	model: model.name,
@@ -199,6 +237,7 @@ const toPreviewItem = (model: ModelItem): CreativePreviewItem => ({
 	}
 
 	img,
+	video,
 	.model-card__placeholder {
 		position: absolute;
 		inset: 0;
@@ -207,8 +246,13 @@ const toPreviewItem = (model: ModelItem): CreativePreviewItem => ({
 		object-fit: cover;
 	}
 
-	img {
-		filter: saturate(0.9) contrast(1.02);
+	img,
+	video {
+		filter: saturate(1.05) contrast(1.04);
+	}
+
+	video {
+		pointer-events: none;
 	}
 
 	&::before {

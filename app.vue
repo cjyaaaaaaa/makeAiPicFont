@@ -5,11 +5,15 @@
 			<NuxtPage />
 		</main>
 		<SiteFooterSection v-if="!isAppHome" />
+		<ClientOnly>
+			<GoogleOneTap />
+		</ClientOnly>
 		<TipToast ref="tipToastRef" />
 	</div>
 </template>
 
 <script setup lang="ts">
+import GoogleOneTap from '~/components/auth/GoogleOneTap.vue'
 import SiteFooterSection from '~/components/home/SiteFooterSection.vue'
 
 import TipToast from '~/components/TipToast.vue'

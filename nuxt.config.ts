@@ -22,7 +22,7 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
-      baseURL: 'http://localhost:8081'
+      baseURL: 'http://129.204.14.3:8081'
     }
   },
 

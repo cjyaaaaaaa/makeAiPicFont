@@ -46,7 +46,7 @@
 						</div>
 						<h3>{{ item.title }}</h3>
 						<p>{{ item.desc }}</p>
-						<button type="button" class="case-card__cta">
+						<button type="button" class="case-card__cta" @click="tryCase(item)">
 							{{ item.cta }}
 							<span aria-hidden="true">→</span>
 						</button>
@@ -58,6 +58,8 @@
 </template>
 
 <script setup lang="ts">
+import { writeCreationHandoff } from '~/utils/creationHandoff'
+
 const { t } = useAppI18n()
 const { getLazyImageAttrs } = useLazyImage()
 
@@ -80,6 +82,7 @@ type CaseVisual = {
 		label: string
 		image: string
 		thumb: string
+		prompt: string
 		badgeTone?: 'yellow' | 'dark'
 	}>
 	activeThumb: number
@@ -90,45 +93,45 @@ const photo = (id: string, width = 1200) => `https://images.unsplash.com/${id}?a
 const visuals: Record<string, CaseVisual> = {
 	sceneSwap: {
 		variants: [
-			{ label: 'Original', image: photo('photo-1524504388940-b1c1722653e1'), thumb: photo('photo-1524504388940-b1c1722653e1', 180) },
-			{ label: 'Stone Hall', image: photo('photo-1518005020951-eccb494ad742'), thumb: photo('photo-1518005020951-eccb494ad742', 180) },
-			{ label: 'Desert Horizon', image: photo('photo-1500534314209-a25ddb2bd429'), thumb: photo('photo-1500534314209-a25ddb2bd429', 180) },
-			{ label: 'Coastal Cliff', image: photo('photo-1500530855697-b586d89ba3ee'), thumb: photo('photo-1500530855697-b586d89ba3ee', 180) },
+			{ label: 'Original', image: '/images/editing-cases/scene-original.jpg', thumb: '/images/editing-cases/scene-original.jpg', prompt: 'Use this image as the identity reference. Keep the exact same woman, face, skin tone, hairstyle with the same loose strand, expression, gaze, black crew-neck top, body proportions, and chest-up composition. Change only the scene requested by the user, and match the new environmental light naturally on her. Photorealistic editorial photography; no additional people, text, logo, jewelry, wardrobe changes, facial changes, or pose changes.' },
+			{ label: 'Future Architecture', image: '/images/editing-cases/scene-future-architecture.webp', thumb: '/images/editing-cases/scene-future-architecture.webp', prompt: 'Keep the exact same woman, face, hairstyle, expression, black crew-neck top, chest-up composition, and camera angle. Change only the background to a monumental futuristic gallery with pale geometric concrete and glass architecture, sculptural lines, soft skylight, and cool reflections. Match the environmental light naturally on her. Photorealistic premium fashion editorial; no additional people, text, logo, wardrobe changes, facial changes, or pose changes.' },
+			{ label: 'Desert Horizon', image: '/images/editing-cases/scene-desert-horizon.webp', thumb: '/images/editing-cases/scene-desert-horizon.webp', prompt: 'Keep the exact same woman, face, hairstyle, expression, black crew-neck top, chest-up composition, and camera angle. Change only the background to a vast desert with warm sand dunes, distant red sandstone formations, a clean horizon, and golden-hour light. Match the warm environmental light naturally on her. Photorealistic premium fashion editorial; no additional people, text, logo, wardrobe changes, facial changes, or pose changes.' },
+			{ label: 'Mountain Summit', image: '/images/editing-cases/scene-mountain-summit.webp', thumb: '/images/editing-cases/scene-mountain-summit.webp', prompt: 'Keep the exact same woman, face, hairstyle, expression, black crew-neck top, and identity. Change only the background to a dramatic high mountain summit with dark sculptural rock, layered green peaks, mist-filled valleys, and a vast horizon. Match the cool mountain light naturally on her. Photorealistic premium outdoor fashion editorial; no additional people, text, logo, wardrobe changes, or facial changes.' },
 		],
 		activeThumb: 1,
 	},
 	adRemix: {
 		variants: [
-			{ label: 'Original', image: photo('photo-1523275335684-37898b6baf30'), thumb: photo('photo-1523275335684-37898b6baf30', 180) },
-			{ label: 'Wrist Detail', image: photo('photo-1523170335258-f5ed11844a49'), thumb: photo('photo-1523170335258-f5ed11844a49', 180) },
-			{ label: 'Boutique Display', image: photo('photo-1517430816045-df4b7de11d1d'), thumb: photo('photo-1517430816045-df4b7de11d1d', 180) },
-			{ label: 'Craftsmanship', image: photo('photo-1523170335258-f5ed11844a49'), thumb: photo('photo-1523170335258-f5ed11844a49', 180) },
+			{ label: 'Original', image: photo('photo-1522312346375-d1a52e2b99b3'), thumb: photo('photo-1522312346375-d1a52e2b99b3', 180), prompt: 'Retouch this product into a premium modern catalog image. Preserve the exact product design, logo, materials, proportions, and colors. Clean studio lighting, precise edges, realistic metal and glass, subtle shadow, high-end commercial photography.' },
+			{ label: 'Wrist Detail', image: photo('photo-1524805444758-089113d48a6d'), thumb: photo('photo-1524805444758-089113d48a6d', 180), prompt: 'Create an extreme macro luxury campaign focused on the product dial, crown, and brushed metal texture. Preserve every product detail and marking exactly. Razor-sharp focal plane, liquid-chrome highlights, deep black background, controlled specular light, premium watch editorial.' },
+			{ label: 'Boutique Display', image: photo('photo-1547996160-81dfa63595aa'), thumb: photo('photo-1547996160-81dfa63595aa', 180), prompt: 'Stage the exact product in a minimalist futuristic boutique display made of smoked glass, brushed aluminum, and soft white light panels. Preserve all design details and branding. Quiet-luxury retail campaign, balanced composition, realistic reflections, photorealistic.' },
+			{ label: 'Craftsmanship', image: photo('photo-1526045431048-f857369baa09'), thumb: photo('photo-1526045431048-f857369baa09', 180), prompt: 'Turn this into a contemporary craftsmanship campaign: the exact product on a dark precision workbench with subtle tools and metal components in soft focus. Preserve all markings and geometry. Dramatic rim light, tactile material detail, cinematic macro photography.' },
 		],
 		activeThumb: 3,
 	},
 	moodLight: {
 		variants: [
-			{ label: 'Day', badgeTone: 'yellow', image: photo('photo-1506973035872-a4ec16b8e8d9'), thumb: photo('photo-1506973035872-a4ec16b8e8d9', 180) },
-			{ label: 'Night', image: photo('photo-1449824913935-59a10b8d2000'), thumb: photo('photo-1449824913935-59a10b8d2000', 180) },
-			{ label: 'Sunset', image: photo('photo-1500534314209-a25ddb2bd429'), thumb: photo('photo-1500534314209-a25ddb2bd429', 180) },
-			{ label: 'Snowy Winter', image: photo('photo-1519681393784-d120267933ba'), thumb: photo('photo-1519681393784-d120267933ba', 180) },
+			{ label: 'Day', badgeTone: 'yellow', image: photo('photo-1477959858617-67f85cf4f1df'), thumb: photo('photo-1477959858617-67f85cf4f1df', 180), prompt: 'Transform only the lighting into a bright contemporary daytime scene. Keep the architecture, camera angle, objects, and geography unchanged. Clear atmospheric depth, soft white sunlight, clean sky, realistic reflections, premium travel editorial color.' },
+			{ label: 'Night', image: photo('photo-1519608487953-e999c86e7455'), thumb: photo('photo-1519608487953-e999c86e7455', 180), prompt: 'Transform this exact scene into cinematic blue hour at night. Preserve all structures and composition. Add tasteful warm window lights, deep cobalt sky, subtle wet reflections, crisp city detail, modern teal-and-amber film grade, photorealistic.' },
+			{ label: 'Sunset', image: photo('photo-1495616811223-4d98c6e9c869'), thumb: photo('photo-1495616811223-4d98c6e9c869', 180), prompt: 'Transform this exact lakeside scene into a vivid late-sunset atmosphere. Keep the pier, water, distant forest, boat, and camera position unchanged. Deep orange horizon, lavender shadows, golden water reflections, soft mist, cinematic color grade, realistic detail.' },
+			{ label: 'Snowy Winter', image: photo('photo-1483664852095-d6cc6870702d'), thumb: photo('photo-1483664852095-d6cc6870702d', 180), prompt: 'Transform this exact location into an elegant snowy winter day. Preserve architecture and composition. Fresh snow on surfaces, light snowfall, cool pearl-gray sky, warm interior accents, crisp air, realistic material response, cinematic travel photography.' },
 		],
 		activeThumb: 0,
 	},
 	portraitStyles: {
 		layout: 'strip',
 		mediaImages: [
+			photo('photo-1506794778202-cad84cf45f1d', 520),
+			photo('photo-1544005313-94ddf0286df2', 520),
+			photo('photo-1534528741775-53994a69daeb', 520),
+			photo('photo-1488426862026-3ee34a7d66df', 520),
 			photo('photo-1524504388940-b1c1722653e1', 520),
-			photo('photo-1494790108377-be9c29b29330', 520),
-			photo('photo-1517841905240-472988babdf9', 520),
-			photo('photo-1522335789203-aabd1fc54bc9', 520),
-			photo('photo-1508214751196-bcfd4ca60f91', 520),
 		],
 		variants: [
-			{ label: 'Luxury Dark', image: photo('photo-1524504388940-b1c1722653e1'), thumb: photo('photo-1524504388940-b1c1722653e1', 180) },
-			{ label: 'Vintage Film', image: photo('photo-1494790108377-be9c29b29330'), thumb: photo('photo-1494790108377-be9c29b29330', 180) },
-			{ label: 'Bold Fashion Color', image: photo('photo-1517841905240-472988babdf9'), thumb: photo('photo-1517841905240-472988babdf9', 180) },
-			{ label: 'Romantic Painterly', image: photo('photo-1522335789203-aabd1fc54bc9'), thumb: photo('photo-1522335789203-aabd1fc54bc9', 180) },
+			{ label: 'Luxury Dark', image: photo('photo-1506794778202-cad84cf45f1d'), thumb: photo('photo-1506794778202-cad84cf45f1d', 180), prompt: 'Refine this exact dark portrait as a quiet-luxury fashion editorial. Preserve the face, identity, expression, hair, knit wardrobe, and black background exactly. Soft chiaroscuro, charcoal and silver palette, rich fabric texture, medium-format photography, natural skin.' },
+			{ label: 'Vintage Film', image: photo('photo-1544005313-94ddf0286df2'), thumb: photo('photo-1544005313-94ddf0286df2', 180), prompt: 'Restyle this exact person as a 1990s editorial film portrait. Preserve identity, facial features, expression, and pose. Direct flash balanced with window light, fine 35mm grain, slightly faded color, candid framing, authentic skin texture, no beauty-filter effect.' },
+			{ label: 'Bold Fashion Color', image: photo('photo-1534528741775-53994a69daeb'), thumb: photo('photo-1534528741775-53994a69daeb', 180), prompt: 'Create a bold contemporary fashion portrait using saturated cherry red and electric cyan color blocking. Preserve the person and face exactly. Graphic studio set, sharp confident styling, glossy magazine lighting, clean geometry, natural skin texture, high-fashion campaign.' },
+			{ label: 'Romantic Soft Light', image: photo('photo-1488426862026-3ee34a7d66df'), thumb: photo('photo-1488426862026-3ee34a7d66df', 180), prompt: 'Refine this exact portrait into a modern romantic soft-light editorial while preserving the face, identity, pose, loose hair, denim styling, and blush background. Diffused window light, soft rose tones, natural skin texture, gentle film grain, elegant contemporary composition.' },
 		],
 		activeThumb: 3,
 	},
@@ -157,6 +160,47 @@ const getVariantLabel = (item: CaseCopy & CaseVisual, index: number) => item.tab
 const getActiveLabel = (item: CaseCopy & CaseVisual) => getVariantLabel(item, getActiveIndex(item.id))
 
 const getActiveImage = (item: CaseCopy & CaseVisual) => getActiveVariant(item).image
+
+const tryCase = async (item: CaseCopy & CaseVisual) => {
+	const variantIndex = getActiveIndex(item.id)
+	const variant = getActiveVariant(item)
+	const ratio = '16:9'
+
+	writeCreationHandoff({
+		version: 1,
+		media: 'image',
+		intent: 'template',
+		traceId: `editing-case-${item.id}-${Date.now()}`,
+		prompt: variant.prompt,
+		modelName: 'GPT Image 2',
+		createdAt: Date.now(),
+		params: {
+			modelId: 'gpt-image-2',
+			platformCode: 2,
+			modelCode: 4,
+			prompt: variant.prompt,
+			ratio,
+			resolution: '2k',
+			quality: 'high',
+			imageCount: 1,
+			userImages: [variant.image],
+		},
+	})
+
+	await navigateTo({
+		path: '/ai-image-generator',
+		query: {
+			source: 'editing-cases',
+			case: item.id,
+			variant: String(variantIndex),
+			model: 'gpt-image-2',
+			ratio,
+			resolution: '2K',
+			quality: 'high',
+			n: '1',
+		},
+	})
+}
 
 const getDisplayImages = (item: CaseCopy & CaseVisual) => {
 	if (item.layout !== 'strip') return [getActiveImage(item)]

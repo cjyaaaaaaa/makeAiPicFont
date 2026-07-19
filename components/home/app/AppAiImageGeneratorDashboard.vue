@@ -987,7 +987,6 @@ const isImageModelId = (value?: string): value is ImageModelId => {
 }
 
 const consumeHomepageImageHandoff = () => {
-	if (!isLoggedIn.value) return
 	const handoff = consumeCreationHandoff('image') as ImageCreationHandoff | null
 	if (!handoff) return
 
@@ -1008,6 +1007,7 @@ const consumeHomepageImageHandoff = () => {
 	if (params.quality) selectedQuality.value = params.quality
 	if (params.imageCount) imageCount.value = params.imageCount
 	if (params.userImages?.length) setUploadedImageUrls(params.userImages)
+	if (handoff.intent === 'template' || !isLoggedIn.value) return
 
 	const existing = records.value.find(record => record.traceId === handoff.traceId)
 	if (existing) {
