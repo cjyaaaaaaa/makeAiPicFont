@@ -13,13 +13,13 @@
 				]"
 				role="tab"
 				:aria-selected="activeCategory === tab.id"
-				@click="activeCategory = tab.id"
+				@click="selectCategory(tab.id)"
 			>
 				{{ tab.label }}
 			</button>
 		</div>
 
-		<div class="grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
+		<div class="grid min-h-[260px] grid-cols-2 content-start gap-3 sm:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
 			<button
 				v-for="card in activeCards"
 				:key="card.id"
@@ -49,6 +49,18 @@
 					{{ card.title }}
 				</span>
 			</button>
+			<div
+				v-for="index in (templatesLoading ? 5 : 0)"
+				:key="`loading-${index}`"
+				class="grid animate-pulse gap-2"
+				aria-hidden="true"
+			>
+				<div class="aspect-[3/4] rounded-xl border border-white/10 bg-white/[0.06]" />
+				<div class="h-3 w-2/3 rounded bg-white/[0.06]" />
+			</div>
+			<p v-if="!categoriesLoading && !templatesLoading && !activeCards.length" class="col-span-full py-16 text-center text-sm font-semibold text-white/35">
+				No templates yet
+			</p>
 		</div>
 	</div>
 </template>
@@ -65,6 +77,6 @@ const emit = defineEmits<{
 }>()
 
 const { t } = useAppI18n()
-const { activeCategory, tabs, activeCards } = usePromptTemplates()
+const { activeCategory, tabs, activeCards, categoriesLoading, templatesLoading, selectCategory } = usePromptTemplates()
 const useActionLabel = computed(() => t('home.promptTemplates.useAction'))
 </script>

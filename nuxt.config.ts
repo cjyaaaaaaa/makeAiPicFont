@@ -1,12 +1,17 @@
 export default defineNuxtConfig({
   devtools: { enabled: true },
 
+  experimental: {
+    appManifest: false
+  },
+
   nitro: {
     preset: 'cloudflare_module',
     compatibilityDate: '2026-07-19'
   },
 
   modules: [
+    '@pinia/nuxt',
     '@nuxtjs/tailwindcss',
     '@nuxtjs/i18n'
   ],
@@ -27,7 +32,7 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
-      baseURL: 'http://43.114.177.140:8081'
+      baseURL: 'https://api.gptpix.ai:8081'
     }
   },
 

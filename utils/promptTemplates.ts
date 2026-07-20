@@ -1,4 +1,4 @@
-export type TemplateTabId = 'people' | 'fashion' | 'scenery' | 'product' | 'whimsical'
+export type TemplateTabId = string
 
 export type TemplateCardCopy = {
 	id: string

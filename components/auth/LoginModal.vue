@@ -93,7 +93,7 @@
                   <div
                     id="orange-eyes"
                     class="eyes"
-                    style="left: 82px; top: 90px; gap: 28px"
+                    style="left: 82px; top: 52px; gap: 28px"
                   >
                     <div id="orange-pupil-l" class="bare-pupil"></div>
                     <div id="orange-pupil-r" class="bare-pupil"></div>
@@ -499,10 +499,8 @@ const isPurpleBlinking = ref(false);
 const isBlackBlinking = ref(false);
 const isYellowBlinking = ref(false);
 const isPurplePeeking = ref(false);
-const isLoginError = ref(false);
 
 let typingTimer: ReturnType<typeof setTimeout> | null = null;
-let errorRecoverTimer: ReturnType<typeof setTimeout> | null = null;
 let blinkPurpleTimer: ReturnType<typeof setTimeout> | null = null;
 let blinkBlackTimer: ReturnType<typeof setTimeout> | null = null;
 let blinkYellowTimer: ReturnType<typeof setTimeout> | null = null;
@@ -516,14 +514,12 @@ const clamp = (value: number, min: number, max: number) =>
 const clearAllTimers = () => {
   [
     typingTimer,
-    errorRecoverTimer,
     blinkPurpleTimer,
     blinkBlackTimer,
     blinkYellowTimer,
     peekTimer,
   ].forEach((timer) => timer && clearTimeout(timer));
   typingTimer =
-    errorRecoverTimer =
     blinkPurpleTimer =
     blinkBlackTimer =
     blinkYellowTimer =
@@ -590,7 +586,7 @@ const updateCharacters = () => {
 
   const isPasswordMode = focusedField.value === "password";
   const isEmailMode = focusedField.value === "email";
-  const isShowingPwd = isPasswordMode;
+  const isShowingPwd = isPasswordMode && !showPassword.value;
   const isLookingAway =
     isEmailMode && !showPassword.value && hasInteracted.value;
 
@@ -660,7 +656,7 @@ const updateCharacters = () => {
       blackEyes.style.left = `${26 + blackPos.faceX}px`;
       blackEyes.style.top = `${32 + blackPos.faceY}px`;
     }
-    const blackBlink = isBlackBlinking.value || isLoginError.value;
+    const blackBlink = isBlackBlinking.value;
     blackEyeL.style.height = blackBlink ? "2px" : "11px";
     blackEyeR.style.height = blackBlink ? "2px" : "11px";
     blackEyeL.style.transform = blackBlink ? "scaleY(0.12)" : "scaleY(1)";
@@ -725,7 +721,7 @@ const updateCharacters = () => {
 
   if (purpleMouth) {
     purpleMouth.style.opacity =
-      isPurpleBlinking.value || isLoginError.value ? "0.85" : "1";
+      isPurpleBlinking.value ? "0.85" : "1";
   }
 
   const orangeEyes = document.getElementById(
@@ -748,7 +744,7 @@ const updateCharacters = () => {
       orangePupilL.style.transform = `translate(${oo.x}px, ${oo.y}px)`;
       orangePupilR.style.transform = `translate(${oo.x}px, ${oo.y}px)`;
       orangeEyes.style.left = `${82 + orangePos.faceX}px`;
-      orangeEyes.style.top = `${90 + orangePos.faceY}px`;
+      orangeEyes.style.top = `${52 + orangePos.faceY}px`;
     }
   }
 
@@ -776,7 +772,7 @@ const updateCharacters = () => {
       yellowEyes.style.top = `${40 + yellowPos.faceY}px`;
     }
 
-    const yellowBlink = isPurpleBlinking.value || isLoginError.value;
+    const yellowBlink = isPurpleBlinking.value;
     yellowPupilL.style.opacity = yellowBlink ? "0" : "1";
     yellowPupilR.style.opacity = yellowBlink ? "0" : "1";
     yellowEyes.style.transform = yellowBlink ? "scaleY(0.1)" : "scaleY(1)";
@@ -996,14 +992,7 @@ const initGoogleButton = async () => {
 };
 
 const handleLoginError = () => {
-  clearTimeout(errorRecoverTimer as any);
-  isLoginError.value = true;
   hasInteracted.value = true;
-  updateCharacters();
-  errorRecoverTimer = setTimeout(() => {
-    isLoginError.value = false;
-    updateCharacters();
-  }, 2500);
 };
 
 const validateEmail = (value: string) =>
@@ -1074,6 +1063,12 @@ const completeTokenLogin = async (response: unknown, loggedEmail?: string) => {
 const handleLoginSubmit = async () => {
   const normalizedEmail = email.value.trim();
   if (!validateEmail(normalizedEmail) || !password.value) return;
+
+  focusedField.value = null;
+  isBlackBlinking.value = false;
+  isPurpleBlinking.value = false;
+  isYellowBlinking.value = false;
+  updateCharacters();
 
   const token = await loginWithEmailController({
     email: normalizedEmail,
@@ -1174,7 +1169,6 @@ watch(
       isBlackBlinking.value = false;
       isYellowBlinking.value = false;
       isPurplePeeking.value = false;
-      isLoginError.value = false;
       if (process.client) updateCharacters();
       return;
     }

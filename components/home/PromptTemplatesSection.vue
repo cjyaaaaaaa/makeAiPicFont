@@ -11,20 +11,28 @@
 			</header>
 
 			<div class="prompt-templates__tabs" role="tablist" :aria-label="t('home.promptTemplates.tabsLabel')">
-				<button v-for="tab in tabs" :key="tab.id" type="button" :class="{ 'is-active': activeTab === tab.id }" role="tab" :aria-selected="activeTab === tab.id" @click="activeTab = tab.id">
+				<button v-for="tab in serverTabs" :key="tab.id" type="button" :class="{ 'is-active': serverActiveCategory === tab.id }" role="tab" :aria-selected="serverActiveCategory === tab.id" @click="selectCategory(tab.id)">
 					{{ tab.label }}
 				</button>
 			</div>
 
 			<div class="prompt-templates__rail">
-				<article v-for="card in activeCards" :key="card.id" class="template-card">
+				<article v-for="card in serverActiveCards" :key="card.id" class="template-card">
 					<div class="template-card__image">
 						<NuxtImg v-bind="getLazyImageAttrs(card.image, { alt: card.alt })" />
-						<button type="button">{{ t('home.promptTemplates.useAction') }}</button>
+						<button type="button" @click="useTemplate(card)">{{ t('home.promptTemplates.useAction') }}</button>
 					</div>
 					<p>{{ activeTabLabel }}</p>
 					<h3>{{ card.title }}</h3>
 				</article>
+				<article v-for="index in (templatesLoading ? 5 : 0)" :key="`loading-${index}`" class="template-card template-card--loading" aria-hidden="true">
+					<div class="template-card__image" />
+					<p />
+					<h3 />
+				</article>
+				<p v-if="!categoriesLoading && !templatesLoading && !serverActiveCards.length" class="prompt-templates__empty">
+					No templates yet
+				</p>
 			</div>
 		</div>
 	</section>
@@ -148,7 +156,37 @@ const tabs = computed(() => {
 })
 
 const activeCards = computed(() => tabs.value.find(tab => tab.id === activeTab.value)?.cards ?? tabs.value[0]?.cards ?? [])
-const activeTabLabel = computed(() => tabs.value.find(tab => tab.id === activeTab.value)?.label ?? 'People')
+const {
+	activeCategory: serverActiveCategory,
+	activeCards: serverActiveCards,
+	tabs: serverTabs,
+	categoriesLoading,
+	templatesLoading,
+	selectCategory,
+} = usePromptTemplates()
+const activeTabLabel = computed(() => serverTabs.value.find(tab => tab.id === serverActiveCategory.value)?.label ?? '')
+
+const useTemplate = async (card: { id: string; prompt: string }) => {
+	writeCreationHandoff({
+		version: 1,
+		media: 'image',
+		intent: 'template',
+		templateCategoryId: serverActiveCategory.value,
+		traceId: `homepage-template-${card.id}-${Date.now()}`,
+		prompt: card.prompt,
+		modelName: 'GPT Image 2',
+		createdAt: Date.now(),
+		params: {
+			modelId: 'gpt-image-2',
+			platformCode: 2,
+			modelCode: 3,
+			prompt: card.prompt,
+			imageCount: 1,
+		},
+	})
+
+	await navigateTo('/ai-image-generator')
+}
 </script>
 
 <style scoped lang="scss">
@@ -273,6 +311,41 @@ const activeTabLabel = computed(() => tabs.value.find(tab => tab.id === activeTa
 
 .template-card {
 	min-width: 0;
+}
+
+.template-card--loading {
+	pointer-events: none;
+
+	.template-card__image,
+	p,
+	h3 {
+		background: rgba(255, 255, 255, 0.07);
+		animation: template-loading 1.2s ease-in-out infinite alternate;
+	}
+
+	p {
+		width: 35%;
+		height: 12px;
+	}
+
+	h3 {
+		width: 65%;
+		height: 22px;
+	}
+}
+
+.prompt-templates__empty {
+	grid-column: 1 / -1;
+	margin: 0;
+	padding: 120px 0;
+	color: rgba(255, 255, 255, 0.42);
+	text-align: center;
+}
+
+@keyframes template-loading {
+	to {
+		background: rgba(255, 255, 255, 0.12);
+	}
 }
 
 .template-card__image {

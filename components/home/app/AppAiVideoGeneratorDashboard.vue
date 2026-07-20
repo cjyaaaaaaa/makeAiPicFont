@@ -563,7 +563,7 @@ const applyVideoRetry = (record: VideoHistoryRecord) => {
 	composerRef.value?.scrollIntoView({ behavior: 'smooth', block: 'start' })
 }
 
-const TEMPLATE_ASPECT_RATIOS: Record<TemplateTabId, VideoAspectRatioValue> = {
+const TEMPLATE_ASPECT_RATIOS: Record<string, VideoAspectRatioValue> = {
 	people: '9:16',
 	fashion: '9:16',
 	scenery: '16:9',
@@ -573,7 +573,7 @@ const TEMPLATE_ASPECT_RATIOS: Record<TemplateTabId, VideoAspectRatioValue> = {
 
 const applyTemplate = ({ card, category }: { card: TemplateCard; category: TemplateTabId }) => {
 	prompt.value = card.prompt
-	const ratio = TEMPLATE_ASPECT_RATIOS[category]
+	const ratio = TEMPLATE_ASPECT_RATIOS[category] ?? '1:1'
 	if (SEEDANCE_RATIOS.includes(ratio)) {
 		selectedAspectRatio.value = ratio
 	}

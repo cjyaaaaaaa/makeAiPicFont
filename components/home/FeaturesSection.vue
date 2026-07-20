@@ -84,7 +84,7 @@ import AiCarousel from '~/components/home/AiCarousel.vue'
 const { t } = useAppI18n()
 
 const sampleImages = [
-	{ src: 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=640&q=80', alt: 'Sample 1' },
+	{ src: 'https://nanobananaai.ai/oneimage-manydirections/2/2-1.webp?auto=format&fit=crop&w=640&q=80', alt: 'Sample 1' },
 	{ src: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=640&q=80', alt: 'Sample 2' },
 	{ src: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=640&q=80', alt: 'Sample 3' },
 ]

@@ -6,6 +6,7 @@ type CreationHandoffBase = {
 	version: 1
 	media: CreationHandoffMedia
 	intent?: 'generation' | 'template'
+	templateCategoryId?: string
 	traceId: string
 	prompt: string
 	modelName: string

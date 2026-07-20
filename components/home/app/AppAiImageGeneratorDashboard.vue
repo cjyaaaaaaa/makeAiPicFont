@@ -674,7 +674,7 @@ const applyImageRetry = (record: HistoryRecord) => {
 	composerRef.value?.scrollIntoView({ behavior: 'smooth', block: 'start' })
 }
 
-const TEMPLATE_ASPECT_RATIOS: Record<TemplateTabId, AspectRatioValue> = {
+const TEMPLATE_ASPECT_RATIOS: Record<string, AspectRatioValue> = {
 	people: '9:16',
 	fashion: '9:16',
 	scenery: '16:9',
@@ -684,7 +684,7 @@ const TEMPLATE_ASPECT_RATIOS: Record<TemplateTabId, AspectRatioValue> = {
 
 const applyTemplate = ({ card, category }: { card: TemplateCard; category: TemplateTabId }) => {
 	prompt.value = card.prompt
-	const ratio = TEMPLATE_ASPECT_RATIOS[category]
+	const ratio = TEMPLATE_ASPECT_RATIOS[category] ?? '1:1'
 	const profile = MODEL_PROFILES[selectedModel.value.profile]
 	if (profile.supportedRatios.includes(ratio)) {
 		selectedAspectRatio.value = ratio
@@ -992,6 +992,12 @@ const consumeHomepageImageHandoff = () => {
 
 	const params = handoff.params
 	prompt.value = handoff.prompt || params.prompt
+	if (handoff.intent === 'template') {
+		activeTab.value = 'templates'
+		if (handoff.templateCategoryId) {
+			void useAiTemplateStore().selectCategory(handoff.templateCategoryId)
+		}
+	}
 	if (isImageModelId(params.modelId)) selectModel(params.modelId)
 
 	const ratio = params.ratio as AspectRatioValue | undefined

@@ -18,17 +18,34 @@
 
 			<div class="editing-cases__grid">
 				<article v-for="item in caseItems" :key="item.id" class="case-card">
-					<div class="case-card__media" :class="{ 'case-card__media--strip': item.layout === 'strip' }">
+					<div
+						class="case-card__media"
+						:class="{
+							'case-card__media--strip': item.layout === 'strip',
+							'case-card__media--product': item.id === 'adRemix',
+						}"
+					>
 						<template v-if="item.layout === 'strip'">
-							<img v-for="image in getDisplayImages(item)" :key="image" v-bind="getLazyImageAttrs(image, { alt: item.title })" />
+							<img
+								v-for="(image, index) in getDisplayImages(item)"
+								:key="`${image}-${index}`"
+								v-bind="getLazyImageAttrs(image, { alt: getVariantLabel(item, index) })"
+								:class="{ 'is-active': getActiveIndex(item.id) === index }"
+								:style="{ objectPosition: item.mediaPositions?.[index] ?? 'center 30%' }"
+							/>
 						</template>
-						<img v-else v-bind="getLazyImageAttrs(getActiveImage(item), { alt: item.title })" />
-						<span class="case-card__badge" :class="{ 'case-card__badge--yellow': getActiveVariant(item).badgeTone === 'yellow' }">{{ getActiveLabel(item) }}</span>
+						<img
+							v-else
+							:key="getActiveImage(item)"
+							v-bind="getLazyImageAttrs(getActiveImage(item), { alt: getActiveLabel(item), eager: item.id === 'adRemix' })"
+							:style="{ objectPosition: getActiveVariant(item).objectPosition ?? 'center' }"
+						/>
+						<span v-if="item.layout !== 'strip'" class="case-card__badge" :class="{ 'case-card__badge--yellow': getActiveVariant(item).badgeTone === 'yellow' }">{{ getActiveLabel(item) }}</span>
 					</div>
 
 					<div class="case-card__variants">
 						<div class="case-card__thumbs">
-							<button v-for="(variant, index) in item.variants" :key="`${item.id}-${variant.image}`" type="button" class="case-card__thumb" :class="{ 'is-active': getActiveIndex(item.id) === index }" :aria-label="getVariantLabel(item, index)" @click="setActiveVariant(item.id, index)">
+							<button v-for="(variant, index) in item.variants" :key="`${item.id}-${variant.label}`" type="button" class="case-card__thumb" :class="{ 'is-active': getActiveIndex(item.id) === index }" :aria-label="getVariantLabel(item, index)" @click="setActiveVariant(item.id, index)">
 								<img v-bind="getLazyImageAttrs(variant.thumb, { alt: getVariantLabel(item, index) })" />
 							</button>
 						</div>
@@ -77,12 +94,13 @@ type CaseCopy = {
 
 type CaseVisual = {
 	layout?: 'single' | 'strip'
-	mediaImages?: string[]
+	mediaPositions?: string[]
 	variants: Array<{
 		label: string
 		image: string
 		thumb: string
 		prompt: string
+		objectPosition?: string
 		badgeTone?: 'yellow' | 'dark'
 	}>
 	activeThumb: number
@@ -102,10 +120,10 @@ const visuals: Record<string, CaseVisual> = {
 	},
 	adRemix: {
 		variants: [
-			{ label: 'Original', image: photo('photo-1522312346375-d1a52e2b99b3'), thumb: photo('photo-1522312346375-d1a52e2b99b3', 180), prompt: 'Retouch this product into a premium modern catalog image. Preserve the exact product design, logo, materials, proportions, and colors. Clean studio lighting, precise edges, realistic metal and glass, subtle shadow, high-end commercial photography.' },
-			{ label: 'Wrist Detail', image: photo('photo-1524805444758-089113d48a6d'), thumb: photo('photo-1524805444758-089113d48a6d', 180), prompt: 'Create an extreme macro luxury campaign focused on the product dial, crown, and brushed metal texture. Preserve every product detail and marking exactly. Razor-sharp focal plane, liquid-chrome highlights, deep black background, controlled specular light, premium watch editorial.' },
-			{ label: 'Boutique Display', image: photo('photo-1547996160-81dfa63595aa'), thumb: photo('photo-1547996160-81dfa63595aa', 180), prompt: 'Stage the exact product in a minimalist futuristic boutique display made of smoked glass, brushed aluminum, and soft white light panels. Preserve all design details and branding. Quiet-luxury retail campaign, balanced composition, realistic reflections, photorealistic.' },
-			{ label: 'Craftsmanship', image: photo('photo-1526045431048-f857369baa09'), thumb: photo('photo-1526045431048-f857369baa09', 180), prompt: 'Turn this into a contemporary craftsmanship campaign: the exact product on a dark precision workbench with subtle tools and metal components in soft focus. Preserve all markings and geometry. Dramatic rim light, tactile material detail, cinematic macro photography.' },
+			{ label: 'Original', image: 'https://nanobananaai.ai/oneimage-manydirections/2/2-1.webp',thumb: 'https://nanobananaai.ai/oneimage-manydirections/2/2-1.webp', objectPosition: 'center 66%', prompt: 'Retouch this product into a premium modern catalog image. Preserve the exact product design, logo, materials, proportions, and colors. Clean studio lighting, precise edges, realistic metal and glass, subtle shadow, high-end commercial photography.' },
+			{ label: 'Wrist Detail', image: photo('photo-1524805444758-089113d48a6d'), thumb: photo('photo-1524805444758-089113d48a6d', 180), objectPosition: 'center 74%', prompt: 'Create an extreme macro luxury campaign focused on the product dial, crown, and brushed metal texture. Preserve every product detail and marking exactly. Razor-sharp focal plane, liquid-chrome highlights, deep black background, controlled specular light, premium watch editorial.' },
+			{ label: 'Boutique Display', image: photo('photo-1547996160-81dfa63595aa'), thumb: photo('photo-1547996160-81dfa63595aa', 180), objectPosition: 'center 68%', prompt: 'Stage the exact product in a minimalist futuristic boutique display made of smoked glass, brushed aluminum, and soft white light panels. Preserve all design details and branding. Quiet-luxury retail campaign, balanced composition, realistic reflections, photorealistic.' },
+			{ label: 'Craftsmanship', image: photo('photo-1526045431048-f857369baa09'), thumb: photo('photo-1526045431048-f857369baa09', 180), objectPosition: 'center', prompt: 'Turn this into a contemporary craftsmanship campaign: the exact product on a dark precision workbench with subtle tools and metal components in soft focus. Preserve all markings and geometry. Dramatic rim light, tactile material detail, cinematic macro photography.' },
 		],
 		activeThumb: 3,
 	},
@@ -120,18 +138,12 @@ const visuals: Record<string, CaseVisual> = {
 	},
 	portraitStyles: {
 		layout: 'strip',
-		mediaImages: [
-			photo('photo-1506794778202-cad84cf45f1d', 520),
-			photo('photo-1544005313-94ddf0286df2', 520),
-			photo('photo-1534528741775-53994a69daeb', 520),
-			photo('photo-1488426862026-3ee34a7d66df', 520),
-			photo('photo-1524504388940-b1c1722653e1', 520),
-		],
+		mediaPositions: ['center 32%', 'center 30%', 'center 34%', 'center 30%'],
 		variants: [
-			{ label: 'Luxury Dark', image: photo('photo-1506794778202-cad84cf45f1d'), thumb: photo('photo-1506794778202-cad84cf45f1d', 180), prompt: 'Refine this exact dark portrait as a quiet-luxury fashion editorial. Preserve the face, identity, expression, hair, knit wardrobe, and black background exactly. Soft chiaroscuro, charcoal and silver palette, rich fabric texture, medium-format photography, natural skin.' },
-			{ label: 'Vintage Film', image: photo('photo-1544005313-94ddf0286df2'), thumb: photo('photo-1544005313-94ddf0286df2', 180), prompt: 'Restyle this exact person as a 1990s editorial film portrait. Preserve identity, facial features, expression, and pose. Direct flash balanced with window light, fine 35mm grain, slightly faded color, candid framing, authentic skin texture, no beauty-filter effect.' },
-			{ label: 'Bold Fashion Color', image: photo('photo-1534528741775-53994a69daeb'), thumb: photo('photo-1534528741775-53994a69daeb', 180), prompt: 'Create a bold contemporary fashion portrait using saturated cherry red and electric cyan color blocking. Preserve the person and face exactly. Graphic studio set, sharp confident styling, glossy magazine lighting, clean geometry, natural skin texture, high-fashion campaign.' },
-			{ label: 'Romantic Soft Light', image: photo('photo-1488426862026-3ee34a7d66df'), thumb: photo('photo-1488426862026-3ee34a7d66df', 180), prompt: 'Refine this exact portrait into a modern romantic soft-light editorial while preserving the face, identity, pose, loose hair, denim styling, and blush background. Diffused window light, soft rose tones, natural skin texture, gentle film grain, elegant contemporary composition.' },
+			{ label: 'Luxury Dark', image: '/images/editing-cases/scene-original.jpg', thumb: '/images/editing-cases/scene-original.jpg', prompt: 'Restyle this exact portrait as a quiet-luxury dark fashion editorial. Preserve the same face, identity, expression, hairstyle, pose, wardrobe, and body proportions exactly. Soft chiaroscuro, charcoal and silver palette, rich fabric texture, medium-format photography, natural skin; no facial changes, additional people, text, or logo.' },
+			{ label: 'Vintage Film', image: '/images/editing-cases/scene-original.jpg', thumb: '/images/editing-cases/scene-original.jpg', prompt: 'Restyle this exact portrait as a 1990s editorial film photograph. Preserve the same face, identity, expression, hairstyle, pose, wardrobe, and body proportions exactly. Direct flash balanced with window light, fine 35mm grain, slightly faded color, authentic skin texture; no facial changes, additional people, text, or logo.' },
+			{ label: 'Bold Fashion Color', image: '/images/editing-cases/scene-original.jpg', thumb: '/images/editing-cases/scene-original.jpg', prompt: 'Restyle this exact portrait as a bold contemporary fashion campaign. Preserve the same face, identity, expression, hairstyle, pose, wardrobe, and body proportions exactly. Saturated cherry-red and electric-cyan color blocking, glossy magazine lighting, clean geometry, natural skin; no facial changes, additional people, text, or logo.' },
+			{ label: 'Romantic Soft Light', image: '/images/editing-cases/scene-original.jpg', thumb: '/images/editing-cases/scene-original.jpg', prompt: 'Restyle this exact portrait as a modern romantic soft-light editorial. Preserve the same face, identity, expression, hairstyle, pose, wardrobe, and body proportions exactly. Diffused window light, soft rose tones, natural skin texture, gentle film grain; no facial changes, additional people, text, or logo.' },
 		],
 		activeThumb: 3,
 	},
@@ -204,10 +216,7 @@ const tryCase = async (item: CaseCopy & CaseVisual) => {
 
 const getDisplayImages = (item: CaseCopy & CaseVisual) => {
 	if (item.layout !== 'strip') return [getActiveImage(item)]
-	const active = getActiveIndex(item.id)
-	const images = [...(item.mediaImages ?? item.variants.map(variant => variant.image))]
-	if (item.variants[active]?.image) images[3] = item.variants[active].image
-	return images
+	return item.variants.map(variant => variant.image)
 }
 </script>
 
@@ -315,11 +324,49 @@ const getDisplayImages = (item: CaseCopy & CaseVisual) => {
 }
 
 .case-card__media--strip {
-	grid-template-columns: repeat(5, minmax(0, 1fr));
+	grid-template-columns: repeat(4, minmax(0, 1fr));
 
 	img {
 		min-width: 0;
 		border-right: 1px solid rgba(255, 255, 255, 0.08);
+		opacity: 0.72;
+		transition: opacity 180ms ease, filter 180ms ease;
+	}
+
+	img:nth-child(1) {
+		filter: saturate(0.7) brightness(0.68) contrast(1.16);
+	}
+
+	img:nth-child(2) {
+		filter: sepia(0.3) saturate(0.76) contrast(0.94) brightness(1.04);
+	}
+
+	img:nth-child(3) {
+		filter: saturate(1.5) hue-rotate(325deg) contrast(1.08);
+	}
+
+	img:nth-child(4) {
+		filter: sepia(0.14) saturate(0.82) brightness(1.12) contrast(0.9);
+	}
+
+	img.is-active {
+		opacity: 1;
+	}
+}
+
+.case-card__media--product {
+	background:
+		radial-gradient(circle at 50% 58%, rgba(74, 78, 84, 0.2), transparent 52%),
+		#050606;
+
+	img {
+		object-fit: contain;
+		padding: clamp(14px, 2vw, 28px);
+		filter: saturate(1.02) contrast(1.02);
+	}
+
+	&::after {
+		background: none;
 	}
 }
 
@@ -397,6 +444,24 @@ const getDisplayImages = (item: CaseCopy & CaseVisual) => {
 		img {
 			opacity: 1;
 		}
+	}
+}
+
+.case-card__media--strip + .case-card__variants {
+	.case-card__thumb:nth-child(1) img {
+		filter: saturate(0.7) brightness(0.68) contrast(1.16);
+	}
+
+	.case-card__thumb:nth-child(2) img {
+		filter: sepia(0.3) saturate(0.76) contrast(0.94) brightness(1.04);
+	}
+
+	.case-card__thumb:nth-child(3) img {
+		filter: saturate(1.5) hue-rotate(325deg) contrast(1.08);
+	}
+
+	.case-card__thumb:nth-child(4) img {
+		filter: sepia(0.14) saturate(0.82) brightness(1.12) contrast(0.9);
 	}
 }
 
