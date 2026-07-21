@@ -50,6 +50,13 @@ export default defineNuxtConfig({
           name: 'description',
           content: 'gptpix.ai AI image and video generation studio'
         }
+      ],
+      link: [
+        {
+          rel: 'icon',
+          type: 'image/svg+xml',
+          href: '/gptpix-logo.svg'
+        }
       ]
     }
   },

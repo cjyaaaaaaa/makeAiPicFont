@@ -27,6 +27,9 @@
     "subtitle": "Choose the monthly credit pack that fits your creative workflow. No annual commitment.",
     "monthlyOnly": "Simple monthly pricing",
     "monthly": "Monthly",
+    "tabsLabel": "Pricing type",
+    "packsTab": "Credit Packs",
+    "packsNote": "One-time purchase · Credits never expire",
     "monthlyNote": "Monthly billing · Cancel anytime",
     "credits": "credits",
     "perDay": "/ day by check-in",
@@ -50,7 +53,15 @@
     "paymentSoonMessage": "Payment for the {plan} plan will be available soon.",
     "packs": {
       "title": "One-time Credit Packs",
-      "description": "Purchase additional credits. Credits never expire and can be used anytime."
+      "description": "Purchase additional credits. Credits never expire and can be used anytime.",
+      "packName": "Credit Pack",
+      "oneTime": "one-time purchase",
+      "buyNow": "Buy credits",
+      "features": {
+        "neverExpire": "Credits never expire",
+        "allModels": "Use with all image and video models",
+        "addedInstantly": "Added to your balance instantly"
+      }
     },
     "costsTitle": "Model Credit Costs & Monthly Generations",
     "costsSubtitle": "See how many images and videos you can generate each month with each plan",

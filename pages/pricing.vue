@@ -4,15 +4,18 @@
       <h1 class="m-0 text-[clamp(40px,4vw,58px)] font-bold leading-[1.1] tracking-normal max-sm:text-[38px]">
         {{ t('pricing.title') }}
       </h1>
-      <div class="mt-[42px] inline-flex rounded-full bg-[#1c1c1d] p-[7px] max-sm:mt-[30px]" :aria-label="t('pricing.monthlyOnly')">
-        <span class="block min-w-[120px] rounded-full bg-[#303031] px-[22px] py-[10px] text-[14px] font-semibold text-white">
+      <div class="mt-[42px] inline-flex rounded-full bg-[#1c1c1d] p-[7px] max-sm:mt-[30px]" role="tablist" :aria-label="t('pricing.tabsLabel')">
+        <button type="button" role="tab" class="min-w-[120px] rounded-full px-[22px] py-[10px] text-[14px] font-semibold transition-[background-color,color] duration-200" :class="activePricingTab === 'monthly' ? 'bg-[#303031] text-white' : 'text-white/45 hover:text-white/75'" :aria-selected="activePricingTab === 'monthly'" @click="activePricingTab = 'monthly'">
           {{ t('pricing.monthly') }}
-        </span>
+        </button>
+        <button type="button" role="tab" class="min-w-[140px] rounded-full px-[22px] py-[10px] text-[14px] font-semibold transition-[background-color,color] duration-200" :class="activePricingTab === 'packs' ? 'bg-[#303031] text-white' : 'text-white/45 hover:text-white/75'" :aria-selected="activePricingTab === 'packs'" @click="activePricingTab = 'packs'">
+          {{ t('pricing.packsTab') }}
+        </button>
       </div>
-      <p class="mt-[14px] text-[12px] text-[#d5bb24]">{{ t('pricing.monthlyNote') }}</p>
+      <p class="mt-[14px] text-[12px] text-[#d5bb24]">{{ activePricingTab === 'monthly' ? t('pricing.monthlyNote') : t('pricing.packsNote') }}</p>
     </section>
 
-    <section class="mx-auto grid max-w-[1320px] grid-cols-4 items-stretch gap-4 max-[1100px]:max-w-[760px] max-[1100px]:grid-cols-2 max-sm:max-w-[420px] max-sm:grid-cols-1 max-sm:gap-[22px]" :aria-label="t('pricing.title')">
+    <section v-if="activePricingTab === 'monthly'" class="mx-auto grid max-w-[1320px] grid-cols-4 items-stretch gap-4 max-[1100px]:max-w-[760px] max-[1100px]:grid-cols-2 max-sm:max-w-[420px] max-sm:grid-cols-1 max-sm:gap-[22px]" :aria-label="t('pricing.title')">
       <article
         v-for="plan in plans"
         :key="plan.id"
@@ -75,17 +78,34 @@
       </article>
     </section>
 
-    <section class="mx-auto mt-[120px] grid max-w-[1300px] grid-cols-[1fr_1.4fr] gap-[45px] rounded-[8px] bg-[#0d0d0e] px-[52px] py-12 max-[1100px]:max-w-[760px] max-[1100px]:grid-cols-1 max-sm:mt-[70px] max-sm:px-[22px] max-sm:py-[30px]">
-      <div>
-        <h2 class="m-0 text-[29px] font-bold">{{ t('pricing.packs.title') }}</h2>
-        <p class="mt-4 max-w-[470px] text-[14px] leading-[1.65] text-[#9a9a97]">{{ t('pricing.packs.description') }}</p>
-      </div>
-      <div class="grid grid-cols-3 gap-4 max-sm:grid-cols-1">
-        <button v-for="pack in creditPacks" :key="pack.credits" type="button" class="flex min-h-[108px] flex-col items-start justify-center gap-[9px] rounded-[8px] border border-[#3b3b3c] bg-[#2b2b2c] px-6 py-5 transition-[transform,border-color,background-color,box-shadow] duration-300 hover:-translate-y-[5px] hover:border-[#777052] hover:bg-[#303031] hover:shadow-[0_18px_35px_rgba(0,0,0,.28)] motion-reduce:transition-none" @click="handlePack(pack)">
-          <strong class="text-[18px] text-[#f0d424]">{{ pack.credits }} {{ t('pricing.credits') }}</strong>
-          <span class="text-[22px] font-bold text-white">${{ pack.price }}</span>
+    <section v-else class="mx-auto grid max-w-[1000px] grid-cols-3 items-stretch gap-4 max-[900px]:max-w-[620px] max-[900px]:grid-cols-1 max-sm:max-w-[420px] max-sm:gap-[22px]" :aria-label="t('pricing.packs.title')">
+      <article v-for="pack in creditPacks" :key="pack.credits" class="plan-card group relative flex min-h-[520px] min-w-0 flex-col overflow-visible rounded-[8px] border border-[#303031] bg-[#19191a] px-7 py-8 shadow-[0_18px_45px_rgba(0,0,0,0)] transition-[transform,border-color,background-color,box-shadow] duration-[380ms] ease-[cubic-bezier(.2,.75,.25,1)] motion-reduce:transition-none max-sm:min-h-0 max-sm:px-6 max-sm:py-7" :class="pack.featured ? 'border-[#645919] bg-[#1c1b18] hover:border-[#9d8c20] hover:bg-[#201f19] hover:shadow-[0_28px_68px_rgba(0,0,0,.34),0_12px_38px_rgba(240,212,36,.07)]' : 'hover:border-[#515153] hover:bg-[#1c1c1d] hover:shadow-[0_28px_64px_rgba(0,0,0,.32)]'">
+        <span class="card-sweep" :class="{ 'card-sweep--featured': pack.featured }" aria-hidden="true"></span>
+        <div v-if="pack.featured" class="absolute left-1/2 top-0 z-10 -translate-x-1/2 -translate-y-1/2 whitespace-nowrap rounded-full bg-[#f0d424] px-[19px] py-[6px] text-[10px] font-extrabold uppercase text-[#161616]">{{ t('pricing.popular') }}</div>
+        <div v-if="pack.discount" class="mb-[18px] w-fit rounded-full bg-[#403b1b] px-3 py-[6px] text-[11px] font-bold uppercase text-[#f0d424]">{{ pack.discount }}</div>
+        <h2 class="m-0 text-[20px] font-bold">{{ t('pricing.packs.packName') }}</h2>
+        <div class="mt-8 flex min-h-[74px] items-baseline text-[#77776f]">
+          <span class="mr-[6px] text-[14px]">$</span>
+          <strong class="text-[50px] font-semibold leading-none text-[#fafafa] transition-transform duration-300 group-hover:-translate-y-[3px] motion-reduce:transition-none">{{ pack.price }}</strong>
+          <del v-if="pack.oldPrice" class="ml-3 text-[14px] text-[#6f6f68]">${{ pack.oldPrice }}</del>
+        </div>
+        <div class="mb-7 mt-[-2px] flex items-baseline gap-[5px] text-[12px] text-[#74746e]">
+          <strong class="text-[14px] text-[#f0d424]">{{ pack.credits }} {{ t('pricing.credits') }}</strong>
+          <span>{{ t('pricing.packs.oneTime') }}</span>
+        </div>
+        <button type="button" class="flex min-h-[46px] w-full items-center justify-center gap-2 rounded-full border border-[#383839] bg-transparent text-[13px] font-bold text-[#eee] transition-[transform,border-color,background-color,box-shadow] duration-300 hover:-translate-y-0.5 hover:border-[#626263] hover:bg-[#222223] hover:shadow-[0_10px_25px_rgba(0,0,0,.22)] motion-reduce:transition-none" :class="pack.featured ? '!border-[#f0d424] !bg-[#f0d424] !text-[#171717] hover:!bg-[#ffe33a]' : ''" @click="handlePack(pack)">
+          <svg class="h-4 w-4 transition-transform duration-300 group-hover:translate-x-[3px] motion-reduce:transition-none" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12H19M14 7L19 12L14 17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" /></svg>
+          {{ t('pricing.packs.buyNow') }}
         </button>
-      </div>
+        <div class="my-7 h-px bg-[#2a2a2b]"></div>
+        <p class="mb-[18px] text-[13px] font-bold text-[#e4e4e2]">{{ t('pricing.includes') }}</p>
+        <ul class="m-0 grid list-none gap-[15px] p-0">
+          <li v-for="feature in packFeatures" :key="feature" class="flex items-start gap-[10px] text-[13px] leading-[1.45] text-[#a4a4a0] transition-[transform,color] duration-300 group-hover:translate-x-1 group-hover:text-[#c0c0bc] motion-reduce:transition-none">
+            <svg class="h-4 w-4 flex-none" :class="pack.featured ? 'text-[#e0c923]' : 'text-[#85877d]'" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 10.5L8 14.5L16 6.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" /></svg>
+            <span>{{ feature }}</span>
+          </li>
+        </ul>
+      </article>
     </section>
 
     <section class="mx-auto mt-[115px] text-center max-sm:mt-[70px]">
@@ -189,6 +209,7 @@ const { user } = useUser()
 const { showTipToast } = useTipToast()
 const loginOpen = ref(false)
 const checkedInToday = ref(false)
+const activePricingTab = ref<'monthly' | 'packs'>('monthly')
 const imageGeneratorPath = computed(() => {
   const localePrefix = route.path.split('/').filter(Boolean)[0]
   return ['zh', 'de', 'es', 'ja'].includes(localePrefix)
@@ -196,7 +217,12 @@ const imageGeneratorPath = computed(() => {
     : '/ai-image-generator'
 })
 const openFaqs = ref<number[]>([0])
-const creditPacks = [{ credits: '2,000', price: 20 }, { credits: '5,000', price: 50 }, { credits: '12,000', price: 100 }]
+const creditPacks = [
+  { credits: '5,000', price: 9.99 },
+  { credits: '12,000', price: 19.99, oldPrice: 24.99, discount: '20% OFF', featured: true },
+  { credits: '30,000', price: 50, oldPrice: 83.33, discount: '40% OFF' },
+]
+const packFeatures = computed(() => [t('pricing.packs.features.neverExpire'), t('pricing.packs.features.allModels'), t('pricing.packs.features.addedInstantly')])
 const todayKey = () => new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Shanghai' }).format(new Date())
 const checkInStorageKey = computed(() => `gptpix-check-in:${user.value?.userId || 'guest'}`)
 
@@ -260,7 +286,7 @@ const handleSubscribe = (plan: Plan) => {
   if (!user.value) { loginOpen.value = true; return }
   showTipToast({ title: t('pricing.paymentSoon'), message: t('pricing.paymentSoonMessage', { plan: plan.name }), type: 'info' })
 }
-const handlePack = (pack: { credits: string; price: number }) => {
+const handlePack = (pack: { credits: string; price: number; oldPrice?: number; discount?: string; featured?: boolean }) => {
   if (!user.value) { loginOpen.value = true; return }
   showTipToast({ title: t('pricing.paymentSoon'), message: `${pack.credits} ${t('pricing.credits')} · $${pack.price}`, type: 'info' })
 }

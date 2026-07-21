@@ -27,6 +27,9 @@
     "subtitle": "选择适合你创作节奏的月付积分方案，无需年付承诺。",
     "monthlyOnly": "简单透明的月付价格",
     "monthly": "月付",
+    "tabsLabel": "价格类型",
+    "packsTab": "积分包",
+    "packsNote": "一次性购买 · 积分永不过期",
     "monthlyNote": "按月付费 · 随时取消",
     "credits": "积分",
     "perDay": "/ 每日签到",
@@ -50,7 +53,15 @@
     "paymentSoonMessage": "{plan} 方案的支付通道正在接入中。",
     "packs": {
       "title": "一次性积分包",
-      "description": "购买额外积分，积分永不过期，可随时使用。"
+      "description": "购买额外积分，积分永不过期，可随时使用。",
+      "packName": "积分包",
+      "oneTime": "一次性购买",
+      "buyNow": "购买积分",
+      "features": {
+        "neverExpire": "积分永不过期",
+        "allModels": "适用于全部图片和视频模型",
+        "addedInstantly": "购买后立即到账"
+      }
     },
     "costsTitle": "模型积分消耗与每月生成量",
     "costsSubtitle": "查看每个方案每月可以生成多少图片和视频",
