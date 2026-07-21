@@ -291,7 +291,7 @@ import { consumeCreationHandoff, type VideoCreationHandoff } from '~/utils/creat
 import {
 	SEEDANCE_RATIOS,
 	SEEDANCE_RESOLUTIONS,
-	SEEDANCE_CREDITS_PER_SECOND,
+	VIDEO_CREDITS_PER_SECOND,
 	SEEDANCE_DURATION_OPTIONS,
 	SEEDANCE_DURATION_MIN,
 	SEEDANCE_DURATION_MAX,
@@ -323,6 +323,7 @@ type ToolbarCopy = {
 
 const { t, locale } = useAppI18n()
 const { token, user } = useUser()
+const { showTipToast } = useTipToast()
 const sidebarCollapsed = ref(false)
 const activeTab = ref<CreationTabId>('my-creations')
 const searchQuery = ref('')
@@ -417,7 +418,7 @@ const durationOptions = SEEDANCE_DURATION_OPTIONS
 const resolutionOptions = SEEDANCE_RESOLUTIONS.map(value => ({
 	label: value,
 	value,
-	creditsPerSecond: SEEDANCE_CREDITS_PER_SECOND,
+	creditsPerSecond: VIDEO_CREDITS_PER_SECOND[value],
 }))
 const localizedVideoModels = computed(() => videoModels.map(model => ({
 	...model,
@@ -425,7 +426,7 @@ const localizedVideoModels = computed(() => videoModels.map(model => ({
 	credits: copy.value.models[model.id]?.credits ?? '',
 })))
 const selectedModel = computed(() => localizedVideoModels.value.find(model => model.id === selectedModelId.value) ?? localizedVideoModels.value[0])
-const requiredCredits = computed(() => getVideoCredits(selectedDuration.value))
+const requiredCredits = computed(() => getVideoCredits(selectedDuration.value, selectedResolution.value))
 
 const records = ref<VideoHistoryRecord[]>([])
 
@@ -715,6 +716,10 @@ const generateVideo = async () => {
 	if (isUploading.value || isGenerating.value) return
 	if (!isLoggedIn.value) {
 		requestLogin()
+		return
+	}
+	if ((user.value?.creditBalance ?? 0) < requiredCredits.value) {
+		showTipToast({ title: t('aiVideoGenerator.insufficientCreditsTitle'), message: t('aiVideoGenerator.insufficientCreditsMessage', { count: requiredCredits.value }), type: 'error' })
 		return
 	}
 	isGenerating.value = true

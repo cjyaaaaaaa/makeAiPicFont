@@ -22,6 +22,90 @@
     "pricing": "Pricing",
     "dashboard": "Dashboard"
   },
+  "pricing": {
+    "title": "Plans that scale with your ideas",
+    "subtitle": "Choose the monthly credit pack that fits your creative workflow. No annual commitment.",
+    "monthlyOnly": "Simple monthly pricing",
+    "monthly": "Monthly",
+    "monthlyNote": "Monthly billing · Cancel anytime",
+    "credits": "credits",
+    "perDay": "/ day by check-in",
+    "perMonth": "per month",
+    "cancelAnytime": "Cancel anytime",
+    "choosePlan": "Choose your plan",
+    "secureCheckout": "Secure monthly checkout",
+    "popular": "Most popular",
+    "free": "Free",
+    "month": "month",
+    "dailyCredits": "credits per daily check-in",
+    "creditsMonthly": "credits each month",
+    "checkIn": "Check in for 40 credits",
+    "checkedIn": "Checked in today",
+    "subscribe": "Subscribe now",
+    "includes": "What's included",
+    "note": "Subscriptions renew monthly. You can change or cancel your plan at any time.",
+    "checkInSuccess": "Check-in complete",
+    "checkInSuccessMessage": "40 credits have been added to your balance.",
+    "paymentSoon": "Checkout coming soon",
+    "paymentSoonMessage": "Payment for the {plan} plan will be available soon.",
+    "packs": {
+      "title": "One-time Credit Packs",
+      "description": "Purchase additional credits. Credits never expire and can be used anytime."
+    },
+    "costsTitle": "Model Credit Costs & Monthly Generations",
+    "costsSubtitle": "See how many images and videos you can generate each month with each plan",
+    "table": {
+      "model": "Model",
+      "day": "day",
+      "month": "month",
+      "tryNow": "Try now",
+      "upgrade": "Upgrade",
+      "imageModels": "Image models",
+      "videoModels": "Video models",
+      "creditsPerImage": "credits / image",
+      "creditsPerSecond": "credits / second",
+      "images": "images",
+      "videos": "videos"
+    },
+    "faq": {
+      "title": "Frequently Asked Questions",
+      "items": [
+        { "question": "How do credits work?", "answer": "Credits are deducted when you successfully submit a generation task. The exact cost is shown beside the Generate button before you start and depends on the model, resolution, duration, and number of outputs selected." },
+        { "question": "Do unused credits expire?", "answer": "Purchased credits do not expire. Unused credits remain in your account so you can use them whenever you return to create." },
+        { "question": "How does the daily free check-in work?", "answer": "Sign in and press the check-in button once per day to receive 40 credits. Free credits are only granted after you actively check in and cannot be claimed more than once on the same day." },
+        { "question": "Can I buy extra credits?", "answer": "Yes. One-time credit packs are available in addition to monthly plans. Select a pack on this page whenever you need more capacity." },
+        { "question": "Can I upgrade or downgrade my plan?", "answer": "You can change your monthly plan from the pricing page. The new plan and credit allowance will apply according to the billing confirmation shown during checkout." },
+        { "question": "Which models are included in each plan?", "answer": "Paid plans include access to the image and video models shown in the model cost table. Generation costs vary by model and settings, but they draw from the same credit balance." },
+        { "question": "Does my subscription renew automatically?", "answer": "Yes. Monthly subscriptions renew at the end of each billing cycle until canceled. You can cancel before the next renewal date to prevent another charge." },
+        { "question": "How do I cancel my subscription?", "answer": "Open your account menu and choose Subscription. You can manage or cancel your current plan there. Canceling does not remove credits already in your account." },
+        { "question": "What does the commercial license cover?", "answer": "Paid plans allow generated content to be used in commercial projects, publishing, client work, and other business use, subject to our Terms of Service and applicable model policies." }
+      ]
+    },
+    "cta": {
+      "title": "Ready to redefine your workflow?",
+      "action": "Get Started Now"
+    },
+    "plans": {
+      "free": { "name": "Daily", "description": "A fresh start every day" },
+      "starter": { "name": "Starter", "description": "For everyday creation" },
+      "pro": { "name": "Pro", "description": "For focused workflows" },
+      "ultra": { "name": "Ultra", "description": "For high-volume teams" }
+    },
+    "features": {
+      "daily": "40 credits available once per day",
+      "models": "Access to core image models",
+      "standard": "Standard generation speed",
+      "imageVideo": "Image and video generation",
+      "commercial": "Commercial usage rights",
+      "storage30": "30 days of cloud storage",
+      "allTools": "Access to all models and tools",
+      "priority": "Priority processing speed",
+      "storage365": "365 days of cloud storage",
+      "fastest": "Fastest processing speed",
+      "prioritySupport": "Priority support",
+      "unlimited": "Unlimited concurrent tasks"
+    }
+  },
   "auth": {
     "login": "Log in",
     "emailPlaceholder": "Enter your email",
@@ -158,6 +242,8 @@
     "creditsHelp": "Credits help",
     "credits": "{count} Credits",
     "creditsShort": "{count} credits",
+    "insufficientCreditsTitle": "Not enough credits",
+    "insufficientCreditsMessage": "This generation requires {count} credits. Check in or upgrade your plan to continue.",
     "uploading": "Uploading...",
     "generating": "Generating...",
     "create": "Create",
@@ -228,6 +314,8 @@
     "creditsHelp": "Credits help",
     "credits": "{count} Credits",
     "creditsPerSecond": "{count} credits/s",
+    "insufficientCreditsTitle": "Not enough credits",
+    "insufficientCreditsMessage": "This video requires {count} credits. Check in or upgrade your plan to continue.",
     "uploading": "Uploading...",
     "generating": "Generating...",
     "create": "Create",

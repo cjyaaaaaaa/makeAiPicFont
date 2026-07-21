@@ -107,9 +107,18 @@ export type AiVideoGeneratorCopy = {
 
 export const SEEDANCE_RATIOS: VideoAspectRatioValue[] = ['21:9', '16:9', '9:16', '4:3', '3:4', '1:1']
 export const SEEDANCE_RESOLUTIONS: VideoResolutionValue[] = ['480p', '720p', '1080p', '4k']
-export const SEEDANCE_CREDITS_PER_SECOND = 100
+export const VIDEO_CREDITS_PER_SECOND: Record<VideoResolutionValue, number> = {
+	'480p': 19,
+	'720p': 31,
+	'1080p': 50,
+	'4k': 100,
+}
+export const SEEDANCE_CREDITS_PER_SECOND = VIDEO_CREDITS_PER_SECOND['480p']
 export const SEEDANCE_DURATION_MIN = 4
 export const SEEDANCE_DURATION_MAX = 15
 export const SEEDANCE_DURATION_OPTIONS = [4, 5, 6, 8, 10, 12, 15] as const
 
-export const getVideoCredits = (duration: number) => SEEDANCE_CREDITS_PER_SECOND * duration
+export const getVideoCredits = (
+	duration: number,
+	resolution: VideoResolutionValue = '480p',
+) => VIDEO_CREDITS_PER_SECOND[resolution] * duration

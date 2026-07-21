@@ -22,6 +22,90 @@
     "pricing": "价格",
     "dashboard": "控制台"
   },
+  "pricing": {
+    "title": "让每一个创意都有合适的方案",
+    "subtitle": "选择适合你创作节奏的月付积分方案，无需年付承诺。",
+    "monthlyOnly": "简单透明的月付价格",
+    "monthly": "月付",
+    "monthlyNote": "按月付费 · 随时取消",
+    "credits": "积分",
+    "perDay": "/ 每日签到",
+    "perMonth": "每月",
+    "cancelAnytime": "随时取消",
+    "choosePlan": "选择你的方案",
+    "secureCheckout": "安全月付结算",
+    "popular": "最受欢迎",
+    "free": "免费",
+    "month": "月",
+    "dailyCredits": "积分 / 每日签到",
+    "creditsMonthly": "积分 / 月",
+    "checkIn": "签到领取 40 积分",
+    "checkedIn": "今日已签到",
+    "subscribe": "立即订阅",
+    "includes": "方案包含",
+    "note": "订阅按月续费，你可以随时更换或取消方案。",
+    "checkInSuccess": "签到成功",
+    "checkInSuccessMessage": "40 积分已添加到你的账户。",
+    "paymentSoon": "支付功能即将开放",
+    "paymentSoonMessage": "{plan} 方案的支付通道正在接入中。",
+    "packs": {
+      "title": "一次性积分包",
+      "description": "购买额外积分，积分永不过期，可随时使用。"
+    },
+    "costsTitle": "模型积分消耗与每月生成量",
+    "costsSubtitle": "查看每个方案每月可以生成多少图片和视频",
+    "table": {
+      "model": "模型",
+      "day": "天",
+      "month": "月",
+      "tryNow": "立即体验",
+      "upgrade": "升级",
+      "imageModels": "图片模型",
+      "videoModels": "视频模型",
+      "creditsPerImage": "积分 / 张",
+      "creditsPerSecond": "积分 / 秒",
+      "images": "张",
+      "videos": "个视频"
+    },
+    "faq": {
+      "title": "常见问题",
+      "items": [
+        { "question": "积分如何扣除？", "answer": "成功提交生成任务时会扣除积分。点击生成前，按钮附近会展示准确费用；实际消耗取决于模型、分辨率、视频时长和生成数量。" },
+        { "question": "未使用的积分会过期吗？", "answer": "购买获得的积分不会过期，未使用的积分会继续保留在账户中，你可以在之后创作时继续使用。" },
+        { "question": "每日免费签到如何使用？", "answer": "登录后每天可以点击一次签到按钮领取 40 积分。必须主动签到才会发放，同一天不能重复领取。" },
+        { "question": "可以额外购买积分吗？", "answer": "可以。除月付套餐外，你还可以在本页面购买一次性积分包，需要更多积分时随时补充。" },
+        { "question": "可以升级或降级套餐吗？", "answer": "你可以从价格页面更换月付套餐，新套餐和积分额度将按照结算页面确认的计费规则生效。" },
+        { "question": "每个套餐包含哪些模型？", "answer": "付费套餐可以使用模型积分表中展示的图片和视频模型。不同模型及设置消耗不同，但都从同一个积分余额中扣除。" },
+        { "question": "订阅会自动续费吗？", "answer": "会。月付订阅会在每个计费周期结束时自动续费，直到你主动取消。你可以在下一次续费前取消，避免再次扣款。" },
+        { "question": "如何取消订阅？", "answer": "打开账户菜单并进入“订阅”，即可管理或取消当前套餐。取消订阅不会清除账户中已经获得的积分。" },
+        { "question": "商业授权包含哪些用途？", "answer": "付费套餐生成的内容可以用于商业项目、发布、客户工作和其他商业用途，但仍需遵守服务条款及相应模型政策。" }
+      ]
+    },
+    "cta": {
+      "title": "准备好重新定义你的创作流程了吗？",
+      "action": "立即开始创作"
+    },
+    "plans": {
+      "free": { "name": "每日免费", "description": "每天签到，持续创作" },
+      "starter": { "name": "入门版", "description": "适合日常创作" },
+      "pro": { "name": "专业版", "description": "适合专注创作流程" },
+      "ultra": { "name": "旗舰版", "description": "适合高频创作团队" }
+    },
+    "features": {
+      "daily": "每天可领取一次 40 积分",
+      "models": "使用基础图片模型",
+      "standard": "标准生成速度",
+      "imageVideo": "图片与视频生成",
+      "commercial": "商业使用授权",
+      "storage30": "30 天云端存储",
+      "allTools": "使用全部模型与工具",
+      "priority": "优先处理速度",
+      "storage365": "365 天云端存储",
+      "fastest": "最快处理速度",
+      "prioritySupport": "优先客户支持",
+      "unlimited": "不限并发任务"
+    }
+  },
   "auth": {
     "login": "登录",
     "emailPlaceholder": "请输入邮箱",
@@ -158,6 +242,8 @@
     "creditsHelp": "积分说明",
     "credits": "{count} 积分",
     "creditsShort": "{count} 积分",
+    "insufficientCreditsTitle": "积分不足",
+    "insufficientCreditsMessage": "本次生成需要 {count} 积分，请先签到或升级套餐。",
     "uploading": "上传中...",
     "generating": "生成中...",
     "create": "创建",
@@ -228,6 +314,8 @@
     "creditsHelp": "积分说明",
     "credits": "{count} 积分",
     "creditsPerSecond": "{count} 积分/秒",
+    "insufficientCreditsTitle": "积分不足",
+    "insufficientCreditsMessage": "本次视频生成需要 {count} 积分，请先签到或升级套餐。",
     "uploading": "上传中...",
     "generating": "生成中...",
     "create": "创建",

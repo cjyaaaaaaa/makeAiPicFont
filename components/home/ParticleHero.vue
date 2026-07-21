@@ -358,7 +358,7 @@ const showUploadDrop = computed(() => true)
 const currentCredits = computed(() => activeMedia.value === 'video'
 	? getVideoCredits(selectedVideoDuration)
 	: getModelCredits(
-			selectedImageModelConfig.value.profile,
+			selectedImageModelId.value,
 			selectedQuality,
 			selectedImageResolution.value,
 			uploadedImages.value.length > 0,

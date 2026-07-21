@@ -110,7 +110,7 @@
 						</div>
 					</section>
 
-					<section v-if="selectedModelProfile.supportsQuality" class="grid gap-2.5">
+					<section class="grid gap-2.5">
 						<h3 class="m-0 text-[13px] font-[850] text-white/90">{{ copy.quality }}</h3>
 						<div class="grid grid-cols-3 gap-2">
 							<button v-for="quality in qualityOptions" :key="quality.value" type="button" :class="choiceButtonClass(selectedQuality === quality.value, 'min-h-[52px]')" @click="selectedQuality = quality.value">
@@ -331,6 +331,7 @@ type ToolbarCopy = {
 }
 
 const { t, locale } = useAppI18n()
+const { showTipToast } = useTipToast()
 const { token, user } = useUser()
 const sidebarCollapsed = ref(false)
 const activeTab = ref<CreationTabId>('my-creations')
@@ -431,10 +432,10 @@ const imageModels: ImageModel[] = [
 	},
 	{
 		id: 'nano-banana-2',
-		name: 'Seedream 4.5',
+		name: 'Nano Banana 2',
 		desc: '',
 		credits: '',
-		icon: 'seedream',
+		icon: 'google',
 		profile: 'seedream',
 		textToImage: { platformCode: 2, modelCode: 1 },
 		imageToImage: { platformCode: 2, modelCode: 2 },
@@ -501,7 +502,7 @@ const resolutionOptions = computed<Array<{ label: ResolutionValue; value: Resolu
 		label: value,
 		value,
 		credits: getModelCredits(
-			selectedModel.value.profile,
+			selectedModel.value.id,
 			selectedQuality.value,
 			value,
 			hasImages,
@@ -517,7 +518,7 @@ const filteredModels = computed(() => {
 	return localizedImageModels.value.filter(model => `${model.name} ${model.desc}`.toLowerCase().includes(query))
 })
 const requiredCredits = computed(() => getModelCredits(
-	selectedModel.value.profile,
+	selectedModel.value.id,
 	selectedQuality.value,
 	selectedResolution.value,
 	uploadedCount.value > 0,
@@ -852,6 +853,10 @@ const generateImage = async () => {
 		requestLogin()
 		return
 	}
+	if ((user.value?.creditBalance ?? 0) < requiredCredits.value) {
+		showTipToast({ title: t('aiImageGenerator.insufficientCreditsTitle'), message: t('aiImageGenerator.insufficientCreditsMessage', { count: requiredCredits.value }), type: 'error' })
+		return
+	}
 	isGenerating.value = true
 	try {
 		const imageUrls = uploadedFiles.value.length
@@ -870,7 +875,7 @@ const generateImage = async () => {
 			resolution: selectedResolution.value.toLowerCase(),
 			platformCode: codes.platformCode,
 			modelCode: codes.modelCode,
-			n: selectedModel.value.profile === 'seedream' ? 1 : imageCount.value,
+			n: imageCount.value,
 		}
 		if (selectedModel.value.profile === 'gpt-image') {
 			payload.quality = selectedQuality.value

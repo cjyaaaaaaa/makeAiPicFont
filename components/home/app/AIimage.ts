@@ -160,20 +160,20 @@ export type AiImageGeneratorCopy = {
 }
 
 export const SEEDREAM_RATIOS: AspectRatioValue[] = ['1:1', '2:3', '3:2', '3:4', '4:3', '9:16', '16:9', '9:21', '21:9']
-export const SEEDREAM_RESOLUTIONS: ResolutionValue[] = ['2K', '4K']
+export const SEEDREAM_RESOLUTIONS: ResolutionValue[] = ['1K', '2K', '4K']
 export const GPT_IMAGE_RATIOS: AspectRatioValue[] = ['1:1', '2:3', '3:2', '3:4', '4:3', '9:16', '16:9', '21:9']
 export const GPT_IMAGE_RESOLUTIONS: ResolutionValue[] = ['1K', '2K', '4K']
 
 export const GPT_IMAGE_TEXT_CREDITS: Record<QualityValue, Record<ResolutionValue, number>> = {
-	low: { '1K': 10, '2K': 20, '4K': 30 },
-	medium: { '1K': 20, '2K': 30, '4K': 40 },
-	high: { '1K': 30, '2K': 40, '4K': 50 },
+	low: { '1K': 5, '2K': 5, '4K': 5 },
+	medium: { '1K': 5, '2K': 5, '4K': 5 },
+	high: { '1K': 5, '2K': 5, '4K': 5 },
 }
 
 export const GPT_IMAGE_EDIT_CREDITS: Record<QualityValue, Record<ResolutionValue, number>> = {
-	low: { '1K': 10, '2K': 10, '4K': 100 },
-	medium: { '1K': 10, '2K': 10, '4K': 10 },
-	high: { '1K': 10, '2K': 10, '4K': 10 },
+	low: { '1K': 5, '2K': 5, '4K': 5 },
+	medium: { '1K': 5, '2K': 5, '4K': 5 },
+	high: { '1K': 5, '2K': 5, '4K': 5 },
 }
 
 export const SEEDREAM_CREDITS_PER_TASK = 10
@@ -208,12 +208,15 @@ export const getGptImageCredits = (
 }
 
 export const getModelCredits = (
-	profile: ModelProfile,
+	modelId: ImageModelId,
 	quality: QualityValue,
 	resolution: ResolutionValue,
 	hasImages: boolean,
 	imageCount: number,
 ) => {
-	if (profile === 'seedream') return SEEDREAM_CREDITS_PER_TASK
-	return getGptImageCredits(quality, resolution, hasImages) * imageCount
+	if (modelId === 'gpt-image-2') return getGptImageCredits(quality, resolution, hasImages) * imageCount
+	if (modelId === 'nano-banana-2' || modelId === 'nano-banana-pro') {
+		return ({ '1K': 10, '2K': 15, '4K': 20 } satisfies Record<ResolutionValue, number>)[resolution] * imageCount
+	}
+	return SEEDREAM_CREDITS_PER_TASK * imageCount
 }
