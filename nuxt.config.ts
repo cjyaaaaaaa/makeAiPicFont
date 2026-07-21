@@ -32,7 +32,7 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
-      baseURL: 'https://api.gptpix.ai:8081'
+      baseURL: 'https://api.gptpix.ai'
     }
   },
 
