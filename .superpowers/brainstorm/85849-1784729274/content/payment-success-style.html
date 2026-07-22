@@ -1,0 +1,40 @@
+<h2>支付成功动效风格</h2>
+<p class="subtitle">三种方案都沿用当前定价页的黑色背景与亮黄色品牌色。请选择你希望支付成功返回定价页时看到的效果。</p>
+
+<div class="cards">
+  <div class="card" data-choice="celebration" onclick="toggleSelect(this)">
+    <div class="card-image" style="min-height:260px;background:radial-gradient(circle at 50% 46%,rgba(240,212,36,.24),transparent 42%),#121213;display:grid;place-items:center;overflow:hidden;position:relative">
+      <div style="position:absolute;inset:0;background:repeating-conic-gradient(from 10deg at 50% 45%,rgba(240,212,36,.16) 0 2deg,transparent 2deg 18deg);mask:radial-gradient(circle,black 0 48%,transparent 72%)"></div>
+      <div style="text-align:center;position:relative;z-index:2">
+        <div style="width:76px;height:76px;border-radius:50%;margin:auto;background:#f0d424;color:#171717;display:grid;place-items:center;font-size:42px;box-shadow:0 0 0 12px rgba(240,212,36,.1),0 0 55px rgba(240,212,36,.35)">✓</div>
+        <div style="font-size:25px;font-weight:800;color:white;margin-top:22px">Payment successful!</div>
+        <div style="color:#aaa;margin-top:8px">Your plan is ready</div>
+      </div>
+      <i style="position:absolute;left:18%;top:25%;width:7px;height:18px;background:#f0d424;transform:rotate(28deg)"></i><i style="position:absolute;right:19%;top:30%;width:9px;height:9px;border-radius:50%;background:#fff"></i><i style="position:absolute;left:28%;bottom:22%;width:8px;height:14px;background:#8d7eff;transform:rotate(-35deg)"></i><i style="position:absolute;right:28%;bottom:19%;width:10px;height:17px;background:#f0d424;transform:rotate(45deg)"></i>
+    </div>
+    <div class="card-body"><h3>A · 庆典绽放（推荐）</h3><p>全屏柔光、勾选弹跳、彩屑和光线绽放，约 2.8 秒后收束成精致成功卡片。花哨但仍贴合当前品牌。</p></div>
+  </div>
+
+  <div class="card" data-choice="premium" onclick="toggleSelect(this)">
+    <div class="card-image" style="min-height:260px;background:#111112;display:grid;place-items:center;overflow:hidden;position:relative">
+      <div style="position:absolute;width:240px;height:240px;border:1px solid rgba(240,212,36,.3);border-radius:50%;box-shadow:0 0 60px rgba(240,212,36,.12)"></div>
+      <div style="position:absolute;width:190px;height:190px;border:1px dashed rgba(255,255,255,.16);border-radius:50%"></div>
+      <div style="text-align:center;position:relative;z-index:2">
+        <div style="width:72px;height:72px;border:2px solid #f0d424;border-radius:22px;transform:rotate(45deg);margin:auto;display:grid;place-items:center;color:#f0d424"><span style="transform:rotate(-45deg);font-size:36px">✓</span></div>
+        <div style="font-size:24px;font-weight:750;color:white;margin-top:25px">Welcome to Pro</div>
+        <div style="color:#999;margin-top:8px">Payment confirmed</div>
+      </div>
+    </div>
+    <div class="card-body"><h3>B · 高级仪式感</h3><p>旋转几何光环、细腻金色描边和慢速呼吸光，整体更克制、更像高端会员开通仪式。</p></div>
+  </div>
+
+  <div class="card" data-choice="compact" onclick="toggleSelect(this)">
+    <div class="card-image" style="min-height:260px;background:linear-gradient(145deg,#181819,#101011);display:grid;place-items:center;padding:28px">
+      <div style="width:100%;max-width:330px;border:1px solid rgba(240,212,36,.35);border-radius:18px;background:rgba(28,27,24,.96);padding:28px;box-shadow:0 20px 70px rgba(0,0,0,.45)">
+        <div style="display:flex;align-items:center;gap:16px"><div style="width:52px;height:52px;border-radius:50%;background:#f0d424;color:#171717;display:grid;place-items:center;font-size:28px">✓</div><div><div style="font-size:20px;font-weight:750;color:#fff">Payment successful</div><div style="color:#92928e;margin-top:5px;font-size:13px">Subscription activated</div></div></div>
+        <div style="height:5px;background:#303031;border-radius:9px;margin-top:24px;overflow:hidden"><div style="width:78%;height:100%;background:#f0d424"></div></div>
+      </div>
+    </div>
+    <div class="card-body"><h3>C · 悬浮成功卡片</h3><p>定价页上方弹出轻量结果卡片，带进度线与少量粒子。反馈直接，对页面内容遮挡最少。</p></div>
+  </div>
+</div>

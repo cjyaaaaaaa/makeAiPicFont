@@ -1,0 +1,43 @@
+<h2>当前订阅页面</h2>
+<p class="subtitle">左侧新增第三个账户导航项；右侧显示当前订阅状态，并通过 Stripe Portal 管理或取消订阅。</p>
+
+<div class="mockup">
+  <div class="mockup-header">/account/subscription</div>
+  <div class="mockup-body" style="background:#050505;padding:34px;color:#f5f5f5;overflow:auto">
+    <div style="display:grid;grid-template-columns:175px minmax(600px,780px);gap:30px;min-width:820px">
+      <aside>
+        <h3 style="font-size:30px;margin:0 0 28px">Account</h3>
+        <div style="padding:13px 15px;border-radius:11px;color:#aaa">♙　Profile</div>
+        <div style="padding:13px 15px;border-radius:11px;color:#aaa">▣　Billing</div>
+        <div style="padding:13px 15px;border-radius:11px;background:#2c2c2e;color:#fff;font-weight:750">✦　Current subscription</div>
+      </aside>
+      <section style="border:1px solid #303033;border-radius:18px;background:#1a1a1c;padding:28px;box-shadow:0 24px 70px rgba(0,0,0,.24)">
+        <div style="display:flex;align-items:start;justify-content:space-between;padding-bottom:22px;border-bottom:1px solid #2c2c2f">
+          <div><h3 style="font-size:27px;margin:0 0 7px">Current subscription</h3><p style="margin:0;color:#808085;font-size:13px">Manage your plan and billing cycle.</p></div>
+          <span style="padding:7px 11px;border-radius:99px;background:rgba(65,197,122,.12);color:#68d495;font-size:11px;font-weight:750">● Active</span>
+        </div>
+        <div style="position:relative;overflow:hidden;margin-top:22px;border:1px solid rgba(240,212,36,.28);border-radius:18px;padding:25px;background:radial-gradient(circle at 90% 0,rgba(240,212,36,.13),transparent 40%),#141416">
+          <div style="color:#f0d424;font-size:10px;font-weight:850;letter-spacing:.16em">YOUR PLAN</div>
+          <div style="display:flex;justify-content:space-between;gap:24px;align-items:end;margin-top:10px"><div><h4 style="font-size:31px;margin:0">Pro</h4><p style="margin:8px 0 0;color:#85858a">1,000 credits every billing period</p></div><div style="text-align:right"><small style="color:#777">Provider</small><div style="font-weight:750;margin-top:3px">Stripe</div></div></div>
+          <div style="margin-top:28px"><div style="display:flex;justify-content:space-between;color:#838388;font-size:11px"><span>Jun 1, 2026</span><span>Jul 1, 2026</span></div><div style="height:7px;margin-top:9px;border-radius:99px;background:#303033;overflow:hidden"><div style="width:58%;height:100%;border-radius:99px;background:#f0d424;box-shadow:0 0 16px rgba(240,212,36,.28)"></div></div><div style="margin-top:9px;color:#a6a6aa;font-size:12px">9 days remaining in this period</div></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:15px">
+          <div style="border:1px solid #2e2e31;border-radius:13px;padding:17px;background:#151517"><small style="color:#777">Subscription ID</small><div style="margin-top:5px;font-weight:700">#1</div></div>
+          <div style="border:1px solid #2e2e31;border-radius:13px;padding:17px;background:#151517"><small style="color:#777">Created at</small><div style="margin-top:5px;font-weight:700">Jun 18, 2026</div></div>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:20px;margin-top:24px;padding-top:21px;border-top:1px solid #2c2c2f"><p style="margin:0;color:#777;font-size:11px;line-height:1.5">Cancellation and payment methods are securely managed by Stripe.</p><button style="border:0;border-radius:99px;padding:13px 20px;background:#f0d424;color:#171717;font-weight:850;white-space:nowrap">Manage subscription →</button></div>
+      </section>
+    </div>
+  </div>
+</div>
+
+<div class="section" style="margin-top:24px">
+  <h3>状态处理</h3>
+  <div class="options" data-multiselect>
+    <div class="option"><div class="letter">A</div><div class="content"><h3>Active</h3><p>绿色状态、周期进度和黄色 Manage subscription 按钮。</p></div></div>
+    <div class="option"><div class="letter">B</div><div class="content"><h3>Cancelled / Expired</h3><p>显示取消或过期时间；仍可打开 Portal 查看账单信息。</p></div></div>
+    <div class="option"><div class="letter">C</div><div class="content"><h3>No subscription</h3><p>简洁空状态，并提供跳转 Pricing 的“查看套餐”按钮。</p></div></div>
+  </div>
+</div>
+
+<div class="option" data-choice="approved-subscription" onclick="toggleSelect(this)" style="margin-top:22px"><div class="letter">✓</div><div class="content"><h3>采用这个设计</h3><p>第三个账户导航 Tab + 独立订阅页 + Stripe Portal 管理按钮。</p></div></div>

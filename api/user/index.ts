@@ -42,12 +42,75 @@ export interface UserProfile {
 	creditBalance: number
 	emailVerified: string
 	passwordLoginEnabled: string
+	checkedInToday: boolean
+	subscribed: boolean
+}
+
+export interface CustomerCheckIn {
+	checkInDate: string
+	rewardCredit: number
+	creditBalance: number
 }
 
 export interface LoginData {
 	token?: string
 	accessToken?: string
 	access_token?: string
+}
+
+export interface PaymentCheckoutRequest {
+	planId: string | number
+	paymentProvider: 'stripe'
+	checkoutSuccessUrl: string
+	checkoutCancelUrl: string
+}
+
+export interface PaymentCheckoutResult {
+	orderNo: string
+	paymentProvider: string
+	paymentMode: string
+	checkoutUrl: string
+}
+
+export interface CustomerPaymentOrder {
+	orderNo: string
+	planId: string | number
+	planName: string
+	billingType: string
+	amountCent: number
+	currency: string
+	creditAmount: number
+	orderStatus: string
+	subscriptionId?: string | number | null
+	payTime?: string | null
+	deliverTime?: string | null
+	createTime: string
+}
+
+export interface PaymentOrderListResponse {
+	total: number
+	rows: CustomerPaymentOrder[]
+	code: number | string
+	msg: string
+}
+
+export interface CustomerUserSubscription {
+	subscriptionId: string | number
+	planId: string | number
+	planName: string
+	paymentProvider: string
+	status: string
+	currentPeriodStart?: string | null
+	currentPeriodEnd?: string | null
+	cancelledAt?: string | null
+	expiredAt?: string | null
+	creditAmountPerPeriod: number
+	createTime: string
+}
+
+export interface CustomerPortalSession {
+	paymentProvider: string
+	portalUrl: string
 }
 
 const extractAuthToken = (response: unknown) => {
@@ -87,6 +150,45 @@ const isSuccessResponse = (response: unknown) => {
 export const getUser = () => {
 	const request = useRequest()
 	return request<ApiResponse<UserProfile>>('/user/profile')
+}
+
+export const executeDailyCheckIn = () => {
+	const request = useRequest()
+	return request<ApiResponse<CustomerCheckIn>>('/user/check-in', {
+		method: 'POST',
+	})
+}
+
+export const createPaymentCheckout = (data: PaymentCheckoutRequest) => {
+	const request = useRequest()
+	return request<ApiResponse<PaymentCheckoutResult>>('/user/payment/checkout', {
+		method: 'POST',
+		body: data,
+	})
+}
+
+export const getPaymentOrders = (pageNum = 1, pageSize = 10) => {
+	const request = useRequest()
+	return request<PaymentOrderListResponse>('/user/payment/orders', {
+		query: { pageNum, pageSize },
+	})
+}
+
+export const getPaymentOrderDetail = (orderNo: string) => {
+	const request = useRequest()
+	return request<ApiResponse<CustomerPaymentOrder>>(
+		`/user/payment/order/${encodeURIComponent(orderNo)}`,
+	)
+}
+
+export const getCurrentSubscription = () => {
+	const request = useRequest()
+	return request<ApiResponse<CustomerUserSubscription | null>>('/user/subscription/current')
+}
+
+export const createStripePortalSession = () => {
+	const request = useRequest()
+	return request<ApiResponse<CustomerPortalSession>>('/user/payment/stripe/portal')
 }
 
 export const thirdPartyLoginController = async (data: ThirdPartyLoginPayload) => {

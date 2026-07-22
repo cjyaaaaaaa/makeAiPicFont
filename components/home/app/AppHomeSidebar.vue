@@ -83,7 +83,7 @@
 								</svg>
 								<span>{{ accountCreditsLabel }}</span>
 							</div>
-							<button type="button" class="app-home-sidebar__account-item" @click="userMenuOpen = false">
+							<button type="button" class="app-home-sidebar__account-item" @click="goToAccountSettings">
 								<svg class="is-settings" viewBox="0 0 24 24" fill="none" aria-hidden="true">
 									<path d="M12 12.5A3.5 3.5 0 1 0 12 5.5A3.5 3.5 0 0 0 12 12.5Z" stroke="currentColor" stroke-width="1.8" />
 									<path d="M6.5 20C7.2 17.3 9.2 15.8 12 15.8C14.8 15.8 16.8 17.3 17.5 20" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
@@ -223,6 +223,11 @@ const toggleUserMenu = () => {
 const handleLogout = () => {
 	logout()
 	userMenuOpen.value = false
+}
+
+const goToAccountSettings = async () => {
+	userMenuOpen.value = false
+	await navigateTo(locale.value === 'en' ? '/account/profile' : `/${locale.value}/account/profile`)
 }
 
 watch(isLoggedIn, (loggedIn) => {

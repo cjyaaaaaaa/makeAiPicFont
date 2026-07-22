@@ -37,6 +37,7 @@ export const useUser = () => {
 	const pending = useState('user.pending', () => false)
 	const error = useState<unknown>('user.error', () => null)
 	const token = useState<string | null>('user.token', () => readToken())
+	const clientProfileLoaded = useState('user.clientProfileLoaded', () => false)
 
 	const loadUser = async () => {
 		const currentToken = token.value || readToken()
@@ -50,6 +51,7 @@ export const useUser = () => {
 
 		try {
 			user.value = await service.fetchUser()
+			if (import.meta.client) clientProfileLoaded.value = true
 			return user.value
 		} catch (err) {
 			error.value = err
@@ -70,6 +72,7 @@ export const useUser = () => {
 		user.value = null
 		error.value = null
 		pending.value = false
+		clientProfileLoaded.value = false
 	}
 
 	const loginWithToken = async (nextToken: string) => {
@@ -86,16 +89,17 @@ export const useUser = () => {
 		}
 	}
 
-	const initUser = async () => {
+	const initUser = async (options: { force?: boolean } = {}) => {
 		const savedToken = readToken()
 		token.value = savedToken
-		if (!savedToken || user.value || pending.value) return user.value
+		if (!savedToken || pending.value || (user.value && !options.force)) return user.value
 		return await loadUser()
 	}
 
 	return {
 		user,
 		pending,
+		clientProfileLoaded,
 		error,
 		token,
 		setToken,

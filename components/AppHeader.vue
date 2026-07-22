@@ -139,6 +139,7 @@
               <button
                 type="button"
                 class="flex w-full items-center gap-4 px-5 py-3 text-left text-[15px] text-white transition hover:bg-white/5"
+                @click="goToAccountSettings"
               >
                 <svg
                   class="h-5 w-5 text-[#2f80ff]"
@@ -442,6 +443,11 @@ const handleLogout = () => {
   logout();
   userMenuOpen.value = false;
   openLogin.value = false;
+};
+
+const goToAccountSettings = async () => {
+  userMenuOpen.value = false;
+  await navigateTo(localizeNavPath("/account/profile"));
 };
 
 onMounted(() => {
